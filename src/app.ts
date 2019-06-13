@@ -23,6 +23,22 @@ app.post('/courses', (req, res, next) => {
     res.json(courses);
 });
 
+app.post('/findOpenSpace', (req, res, next) => {
+    let body = req.body;
+    let cellNumber = body.cellNumber;
+
+    setInterval(function (this: any) {
+        let courses = utils.doGetRequests(body.query);
+        // check if any of the courses have room
+        if (true) {
+            //send text to number
+            clearInterval(this);
+        }
+    }, 60000);
+
+
+});
+
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log('Listening on port ' + port);
