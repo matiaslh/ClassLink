@@ -1,0 +1,28 @@
+{
+  "name": "guelphcoursereminder",
+  "version": "1.0.0",
+  "description": "Get into any guelph course as soon as it is open",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc -w",
+    "dev": "nodemon build/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiaslh/GuelphCourseReminder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matiaslh/GuelphCourseReminder/issues"
+  },
+  "homepage": "https://github.com/matiaslh/GuelphCourseReminder#readme",
+  "dependencies": {
+    "@types/express": "^4.17.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "requestify": "^0.2.5",
+    "typescript": "^3.5.1"
+  }
+}
