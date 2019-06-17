@@ -1,40 +1,47 @@
+
 const requestify = require('requestify');
 
 
-export function doGetRequests(query: any){
-    const url = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
+export function doGetRequests(query: any, callback: Function) {
+    const urlGet = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
+    const urlPost = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX='
+    const urlPostParams = '&SS=1&APP=ST&CONSTITUENCY=WBST'
 
-    requestify.get(url).then((response: any) => {
+    let postFields = getPostFields(query);
 
-        let originalCookies = response.headers["set-cookie"];
-        let cookies = getCookies(originalCookies);
+    requestify.get(urlGet).then((response: any) => {
+        console.log('first')
+        let cookies = getCookies(response.headers["set-cookie"]);
         let session_id = cookies.LASTTOKEN;
-        let options = { cookies: originalCookies }
-        console.log(options)
-        console.log(url + session_id)
 
-        requestify.get(url + session_id, options).then((response_cookie: any) => {
-
-            let originalCookies = response.headers["set-cookie"];
-            let cookies = getCookies(originalCookies);
+        requestify.request(urlGet + session_id, {
+            method: 'GET',
+            cookies: cookies,
+            redirect: true
+        }).then((response: any) => {
+            let cookies = getCookies(response.headers["set-cookie"]);
             let session_id = cookies.LASTTOKEN;
-            let options = { cookies: originalCookies }
-            let postFields = getPostFields(query);
+            let new_url = urlPost + session_id + urlPostParams
 
-            requestify.post(url + session_id + '&SS=1&APP=ST&CONSTITUENCY=WBST', postFields, options).then((response_final: any) => {
 
-                var html = document.createElement('html');
-                html.innerHTML = response_final
+            console.log('second')
+            console.log(response.getBody())
 
-                let result = getAllCourses(html);
+            console.log(new_url)
+            console.log(cookies)
 
-                console.log(result);
-                return result;
-            });
-        });
-    }).catch(function (err: Error) {
-        console.log('Requestify Error', err);
-    });
+            requestify.post(new_url, postFields, {
+                cookies: cookies,
+                redirect: true
+            }).then((response: any) => {
+
+                console.log('third')
+                console.log(response.getBody())
+
+                callback({});
+            }).catch(console.error);
+        }).catch(console.error);
+    }).catch(console.error);
 }
 
 export function getAllCourses(html: HTMLHtmlElement): any {
@@ -91,8 +98,8 @@ export function getPostFields(query: any): any {
 export function getCookies(cookieArray: Array<string>) {
     let newObject: any = {};
     for (let cookie of cookieArray) {
-        let split: Array<string> = cookie.split("=");
-        newObject[split[0]] = split[1];
+        let index = cookie.indexOf('=');
+        newObject[cookie.substring(0, index)] = cookie.substring(index + 1)
     }
     return newObject;
 }
