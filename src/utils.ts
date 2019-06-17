@@ -1,47 +1,15 @@
-
 const requestify = require('requestify');
-
+const spawn = require("child_process").spawn;
 
 export function doGetRequests(query: any, callback: Function) {
-    const urlGet = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
-    const urlPost = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX='
-    const urlPostParams = '&SS=1&APP=ST&CONSTITUENCY=WBST'
-
-    let postFields = getPostFields(query);
-
-    requestify.get(urlGet).then((response: any) => {
-        console.log('first')
-        let cookies = getCookies(response.headers["set-cookie"]);
-        let session_id = cookies.LASTTOKEN;
-
-        requestify.request(urlGet + session_id, {
-            method: 'GET',
-            cookies: cookies,
-            redirect: true
-        }).then((response: any) => {
-            let cookies = getCookies(response.headers["set-cookie"]);
-            let session_id = cookies.LASTTOKEN;
-            let new_url = urlPost + session_id + urlPostParams
-
-
-            console.log('second')
-            console.log(response.getBody())
-
-            console.log(new_url)
-            console.log(cookies)
-
-            requestify.post(new_url, postFields, {
-                cookies: cookies,
-                redirect: true
-            }).then((response: any) => {
-
-                console.log('third')
-                console.log(response.getBody())
-
-                callback({});
-            }).catch(console.error);
-        }).catch(console.error);
-    }).catch(console.error);
+    let queryStr = JSON.stringify(query);
+    queryStr = queryStr.replace(new RegExp('"', 'g'), '\\"');
+    console.log(queryStr)
+    const pythonProcess = spawn('python', ["path/to/script.py", queryStr]);
+    pythonProcess.stdout.on('data', (data: any) => {
+        console.log(data);
+        callback(data);
+    });
 }
 
 export function getAllCourses(html: HTMLHtmlElement): any {

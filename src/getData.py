@@ -39,13 +39,12 @@ def getData():
     postfields['LISTVAR1_1'] = "CIS"
     postfields['LISTVAR3_1'] = "3761"
 
-    print("getting data")
-    start = time.time()
+    # print("getting data")
+    # start = time.time()
     r = requests.post(postURL, data=postfields, cookies=cookie)
-    end = time.time()
+    # end = time.time()
 
-    print("got data time:", end-start)
-    createFile(r.text)
+    # print("got data time:", end-start)
 
     return r.text
 
@@ -54,5 +53,6 @@ queryStr = sys.argv[1]
 query = json.loads(queryStr)
 
 text = getData()
-# print(text)
-# sys.stdout.flush()
+# createFile(r.text)
+print(text)
+sys.stdout.flush()
