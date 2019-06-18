@@ -96,9 +96,8 @@ export function getAllCourses(html: string): any {
             course.faculty = getCell(cols, 6);
             let space = getCell(cols, 7);
             let slashIndex = space.indexOf('/')
-            course.space_taken = space.substring(0, slashIndex - 1)
-            course.space_total = space.substring(slashIndex + 1)
-            course.space_available = course.space_total - course.space_taken
+            course.space_available = parseInt(space.substring(0, slashIndex - 1))
+            course.space_total = parseInt(space.substring(slashIndex + 2))
             course.credits = getCell(cols, 8);
             course.academic_level = getCell(cols, 10);
             courses.push(course);
@@ -142,6 +141,6 @@ export function getCookies(cookieArray: Array<string>) {
     return newObject;
 }
 
-export function sha256(data:string) {
+export function sha256(data: string) {
     return crypto.createHash("sha256").update(data, "binary").digest("base64");
 }
