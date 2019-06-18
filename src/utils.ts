@@ -1,7 +1,7 @@
 const request = require('request');
-const fs = require('fs');
 var querystring = require('querystring');
 const { JSDOM } = require("jsdom");
+const crypto = require("crypto");
 
 export function doGetRequests(query: any, callback: Function) {
 
@@ -47,14 +47,6 @@ export function doGetRequests(query: any, callback: Function) {
                 }
             }, (err: any, res: any, body: any) => {
                 if (err) { return console.log(err); }
-
-                fs.writeFile("/temp1.log", body, function (err: any) {
-                    if (err) {
-                        return console.log("error" + err);
-                    }
-
-                    console.log("The file was saved!");
-                });
                 console.log('done')
                 let courses = getAllCourses(body)
                 callback(courses);
@@ -64,6 +56,10 @@ export function doGetRequests(query: any, callback: Function) {
 
     });
 
+}
+
+export function contact(cellNumber: string, courses: any) {
+    console.log("contacting: " + cellNumber)
 }
 
 function getCell(columns: any, i: number, selector?: string) {
@@ -98,7 +94,11 @@ export function getAllCourses(html: string): any {
             course.location = getCell(cols, 4);
             course.meetings = getCell(cols, 5);
             course.faculty = getCell(cols, 6);
-            course.space = getCell(cols, 7);
+            let space = getCell(cols, 7);
+            let slashIndex = space.indexOf('/')
+            course.space_taken = space.substring(0, slashIndex - 1)
+            course.space_total = space.substring(slashIndex + 1)
+            course.space_available = course.space_total - course.space_taken
             course.credits = getCell(cols, 8);
             course.academic_level = getCell(cols, 10);
             courses.push(course);
@@ -140,4 +140,8 @@ export function getCookies(cookieArray: Array<string>) {
         newObject[cookie.substring(0, index)] = cookie.substring(index + 1)
     }
     return newObject;
+}
+
+export function sha256(data:string) {
+    return crypto.createHash("sha256").update(data, "binary").digest("base64");
 }
