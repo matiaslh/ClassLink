@@ -11,7 +11,26 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
+/* SAMPLE REQUEST
+POST: http://localhost:8080/notify
+BODY:
+{
+	"cellNumber": "+14164567878",
+	"query": {
+		"semester": "F19",
+		"courses": [
+			{
+                "department": "CIS",
+				"course": "3760"
+            },
+            {
+				"department": "CIS",
+				"course": "3750"
+			}
+		]
+	}
+}
+*/
 app.post('/notify', (req, res, next) => {
     let body = req.body;
     let cellNumber = body.cellNumber;
