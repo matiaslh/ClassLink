@@ -24,14 +24,13 @@ export default class Login extends React.Component {
           </Form>
         </div>
       </React.Fragment>
-    );
+    )
   }
 }
 
-
 const signUpHeader = {
   color: 'white',
-  marginTop:'50px',
+  marginTop: '50px',
   fontSize: '20'
 }
 

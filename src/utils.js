@@ -1,10 +1,12 @@
 const request = require('request');
-var querystring = require('querystring');
+const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
 const crypto = require("crypto");
 const twilio = require('twilio');
+require('dotenv').config();
+let client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
-export function doGetRequests(query: any, callback: Function) {
+export function doGetRequests(query, callback) {
 
     const urlGet = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
     const urlPost = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX='
@@ -15,25 +17,25 @@ export function doGetRequests(query: any, callback: Function) {
     var contentLength = formData.length;
 
 
-    request(urlGet, { json: true }, (err: any, res: any, body: any) => {
+    request(urlGet, { json: true }, (err, res, body) => {
         if (err) { return console.log(err); }
 
         let cookies = getCookies(res.headers['set-cookie']);
         let sessionId = cookies.LASTTOKEN
 
         let jar = request.jar();
-        res.headers['set-cookie'].forEach((elem: any) => {
+        res.headers['set-cookie'].forEach((elem) => {
             jar.setCookie(request.cookie(elem), urlGet + sessionId);
         });
 
-        request({ url: urlGet + sessionId, json: true, jar: jar }, (err: any, res: any, body: any) => {
+        request({ url: urlGet + sessionId, json: true, jar: jar }, (err, res, body) => {
             if (err) { return console.log(err); }
 
             let cookies = getCookies(res.headers['set-cookie']);
             let sessionId = cookies.LASTTOKEN
 
             let jar = request.jar();
-            res.headers['set-cookie'].forEach((elem: any) => {
+            res.headers['set-cookie'].forEach((elem) => {
                 jar.setCookie(request.cookie(elem), urlGet + sessionId);
             });
 
@@ -46,7 +48,7 @@ export function doGetRequests(query: any, callback: Function) {
                     'Content-Length': contentLength,
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
-            }, (err: any, res: any, body: any) => {
+            }, (err, res, body) => {
                 if (err) { return console.log(err); }
                 console.log('done')
                 let courses = getAllCourses(body)
@@ -59,27 +61,22 @@ export function doGetRequests(query: any, callback: Function) {
 
 }
 
-export function contact(cellNumber: string, message: string) {
+export function contact(cellNumber, message) {
     console.log("contacting: " + cellNumber)
-
-    let accountSid = 'ACc5cd01beac06095eb85c62cf42314944';
-    let authToken = '93c81fb183980b69efcbba6dea6e312c';
-
-    let client = new twilio(accountSid, authToken);
 
     client.messages.create({
         body: message,
         to: cellNumber,
-        from: '+16474900363'
-    }).then((message: any) => console.log(message.sid));
+        from: '+16474922393'
+    }).then(console.log).catch(console.log);
 }
 
-function getCell(columns: any, i: number, selector?: string) {
+function getCell(columns, i, selector) {
     let p = columns[i].querySelector(selector ? selector : 'p');
     return p.innerHTML;
 }
 
-export function getAllCourses(html: string): any {
+export function getAllCourses(html) {
 
     let root = new JSDOM(html);
 
@@ -93,13 +90,13 @@ export function getAllCourses(html: string): any {
         return { status: 'error' };
     }
 
-    let courses: any = [];
+    let courses = [];
     let rows = table.querySelectorAll('tr');
 
     for (let i = 0; i < rows.length; i++) {
         let cols = rows[i].querySelectorAll('td');
         if (cols.length > 0) {
-            let course: any = {};
+            let course = {};
             course.term = getCell(cols, 1);
             course.status = getCell(cols, 2);
             course.title = getCell(cols, 3, 'a');
@@ -119,15 +116,15 @@ export function getAllCourses(html: string): any {
     return courses;
 }
 
-export function getPostFields(query: any): any {
+export function getPostFields(query) {
 
-    let postFields: any = {
+    let postFields = {
         "VAR1": "", "VAR10": "Y", "VAR11": "Y", "VAR12": "Y", "VAR13": "Y", "VAR14": "Y", "VAR15": "Y", "VAR16": "Y", "DATE.VAR1": "", "DATE.VAR2": "", "LIST.VAR1_CONTROLLER": "LIST.VAR1", "LIST.VAR1_MEMBERS": "LIST.VAR1*LIST.VAR2*LIST.VAR3*LIST.VAR4", "LIST.VAR1_MAX": "5", "LIST.VAR2_MAX": "5", "LIST.VAR3_MAX": "5", "LIST.VAR4_MAX": "5", "LIST.VAR1_1": "", "LIST.VAR2_1": "", "LIST.VAR3_1": "",
         "LIST.VAR4_1": "", "LIST.VAR1_2": "", "LIST.VAR2_2": "", "LIST.VAR3_2": "", "LIST.VAR4_2": "", "LIST.VAR1_3": "", "LIST.VAR2_3": "", "LIST.VAR3_3": "", "LIST.VAR4_3": "", "LIST.VAR1_4": "", "LIST.VAR2_4": "", "LIST.VAR3_4": "", "LIST.VAR4_4": "", "LIST.VAR1_5": "", "LIST.VAR2_5": "", "LIST.VAR3_5": "", "LIST.VAR4_5": "", "VAR7": "", "VAR8": "", "VAR3": "", "VAR6": "", "VAR21": "", "VAR9": "", "SUBMIT_OPTIONS": ""
     }
     postFields.VAR1 = query.semester;
     let propName = 'LIST.VAR';
-    query.courses.forEach((elem: any, index: number) => {
+    query.courses.forEach((elem, index) => {
         if (elem.department) {
             postFields[propName + '1_' + (index + 1)] = elem.department;
         }
@@ -144,8 +141,8 @@ export function getPostFields(query: any): any {
     return postFields;
 }
 
-export function getCookies(cookieArray: Array<string>) {
-    let newObject: any = {};
+export function getCookies(cookieArray) {
+    let newObject = {};
     for (let cookie of cookieArray) {
         let index = cookie.indexOf('=');
         newObject[cookie.substring(0, index)] = cookie.substring(index + 1)
@@ -153,6 +150,6 @@ export function getCookies(cookieArray: Array<string>) {
     return newObject;
 }
 
-export function sha256(data: string) {
+export function sha256(data) {
     return crypto.createHash("sha256").update(data, "binary").digest("base64");
 }

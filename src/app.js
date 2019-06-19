@@ -1,7 +1,6 @@
-import express from 'express';
-import * as bodyParser from 'body-parser';
-import * as utils from './utils'
-
+const express = require('express')
+const bodyParser = require('body-parser')
+const utils = require('./utils')
 const _ = require('underscore')
 require('dotenv').config()
 
@@ -36,17 +35,24 @@ app.post('/notify', (req, res, next) => {
     let cellNumber = body.cellNumber;
     let seconds = 10;
 
-    res.json({ status: 'success' })
-
-    setInterval(function (this: any) {
-        utils.doGetRequests(body.query, (courses: any) => {
-            let openCourses = _.filter(courses, (elem: any) => {
+    setInterval(function () {
+        utils.doGetRequests(body.query, (courses) => {
+            console.log(courses)
+            if (!res.headersSent) {
+                if (courses.status === 'error') {
+                    res.json(courses)
+                } else if (courses.status === 'success') {
+                    res.json({ status: 'success' })
+                }
+            }
+            let openCourses = _.filter(courses, (elem) => {
                 return elem.space_available > 0
             });
-            console.log(openCourses)
+            let message = "CHECK THIS COURSE NOW: " + JSON.stringify(_.pluck(openCourses, 'title'));
+            console.log(message)
             if (openCourses.length > 0) {
                 clearInterval(this);
-                utils.contact(cellNumber, "CHECK THIS COURSE NOW: " + _.pluck(openCourses, 'title'))
+                utils.contact(cellNumber, message)
             }
         });
     }, seconds * 1000);
@@ -55,7 +61,7 @@ app.post('/notify', (req, res, next) => {
 app.post('/courses', (req, res, next) => {
     let body = req.body;
     console.log(body.query)
-    utils.doGetRequests(body.query, (courses: any) => {
+    utils.doGetRequests(body.query, (courses) => {
         res.json(courses);
     });
 });

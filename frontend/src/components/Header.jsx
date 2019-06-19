@@ -20,7 +20,7 @@ class Header extends React.Component {
             button = <Button color="primary" onClick={this.handleLogin}>Log In</Button>
         } else if (this.props.location.pathname === '/login') {
             button = ''
-        } else if(this.props.location.pathname === '/notify'){
+        } else if (this.props.location.pathname === '/notify') {
             button = <Button color="primary" onClick={this.handleLogout}>Log Out</Button>
         }
 

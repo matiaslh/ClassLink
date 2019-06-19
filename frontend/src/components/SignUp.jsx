@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 export default class SignUp extends React.Component {
@@ -20,6 +21,7 @@ export default class SignUp extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault()
         console.log(this.state)
+        // axios.post('')
     }
 
     render() {

@@ -4,11 +4,7 @@
   "description": "Get into any guelph course as soon as it is open",
   "main": "app.js",
   "scripts": {
-    "start": "node build/app.js",
-    "build": "tsc",
-    "postinstall": "npm run build",
-    "compile": "tsc -w",
-    "dev": "nodemon build/app.js"
+    "start": "nodemon --exec babel-node src/app.js"
   },
   "repository": {
     "type": "git",
@@ -25,11 +21,13 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "jsdom": "^15.1.1",
-    "node-html-parser": "^1.1.15",
-    "nodemailer": "^6.2.1",
     "request": "^2.88.0",
     "twilio": "^3.32.0",
-    "typescript": "^3.5.1",
     "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/preset-env": "^7.4.5"
   }
 }

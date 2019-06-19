@@ -4,7 +4,6 @@ import Header from './Header';
 import SignUp from './SignUp';
 import Login from './Login';
 
-
 export default class Router extends React.Component {
     render() {
         return (
