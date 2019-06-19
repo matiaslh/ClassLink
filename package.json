@@ -26,7 +26,9 @@
     "express": "^4.17.1",
     "jsdom": "^15.1.1",
     "node-html-parser": "^1.1.15",
+    "nodemailer": "^6.2.1",
     "request": "^2.88.0",
+    "twilio": "^3.32.0",
     "typescript": "^3.5.1",
     "underscore": "^1.9.1"
   }

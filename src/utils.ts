@@ -2,6 +2,7 @@ const request = require('request');
 var querystring = require('querystring');
 const { JSDOM } = require("jsdom");
 const crypto = require("crypto");
+const twilio = require('twilio');
 
 export function doGetRequests(query: any, callback: Function) {
 
@@ -58,8 +59,19 @@ export function doGetRequests(query: any, callback: Function) {
 
 }
 
-export function contact(cellNumber: string, courses: any) {
+export function contact(cellNumber: string, message: string) {
     console.log("contacting: " + cellNumber)
+
+    let accountSid = 'ACc5cd01beac06095eb85c62cf42314944';
+    let authToken = '93c81fb183980b69efcbba6dea6e312c';
+
+    let client = new twilio(accountSid, authToken);
+
+    client.messages.create({
+        body: message,
+        to: cellNumber,
+        from: '+16474900363'
+    }).then((message: any) => console.log(message.sid));
 }
 
 function getCell(columns: any, i: number, selector?: string) {

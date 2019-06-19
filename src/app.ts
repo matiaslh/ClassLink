@@ -1,6 +1,7 @@
 import express from 'express';
 import * as bodyParser from 'body-parser';
 import * as utils from './utils'
+
 const _ = require('underscore')
 require('dotenv').config()
 
@@ -10,15 +11,11 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 app.post('/notify', (req, res, next) => {
     let body = req.body;
     let cellNumber = body.cellNumber;
     let seconds = 10;
-
-    if (!body.password || utils.sha256(body.password) !== process.env.PASSWORD_HASH) {
-        res.json({ status: 'error', message: 'Wrong password' })
-        return;
-    }
 
     res.json({ status: 'success' })
 
@@ -30,7 +27,7 @@ app.post('/notify', (req, res, next) => {
             console.log(openCourses)
             if (openCourses.length > 0) {
                 clearInterval(this);
-                utils.contact(cellNumber, courses)
+                utils.contact(cellNumber, "CHECK THIS COURSE NOW: " + _.pluck(openCourses, 'title'))
             }
         });
     }, seconds * 1000);
