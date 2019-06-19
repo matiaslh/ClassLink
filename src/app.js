@@ -37,11 +37,11 @@ app.post('/notify', (req, res, next) => {
 
     setInterval(function () {
         utils.doGetRequests(body.query, (courses) => {
-            console.log(courses)
+            // console.log(courses)
             if (!res.headersSent) {
                 if (courses.status === 'error') {
                     res.json(courses)
-                } else if (courses.status === 'success') {
+                } else {
                     res.json({ status: 'success' })
                 }
             }
