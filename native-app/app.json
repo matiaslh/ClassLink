@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "UoGuelph NotifyMe",
-    "slug": "frontend-app",
+    "slug": "native-app",
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": [
@@ -11,9 +11,9 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
