@@ -7,16 +7,22 @@ export default class UserForms extends React.Component {
     state = {
         username: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     }
 
     passwordsMatch = () => {
-        return this.state.password === this.state.confirmPassword
+        return this.props.type !== 'signUp' || this.state.password === this.state.confirmPassword
+    }
+
+    errorMessage = () => {
+        if (!this.passwordsMatch()) {
+            return "Passwords do not match"
+        }
     }
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <View>
                     <Text style={styles.label}>Username</Text>
                     <TextInput style={styles.input} name="username" onChangeText={(username) => this.setState({ username })} />
@@ -26,7 +32,7 @@ export default class UserForms extends React.Component {
                     {this.props.type === 'signUp' && <TextInput secureTextEntry={true} style={styles.input} name="confirmPassword" onChangeText={(confirmPassword) => this.setState({ confirmPassword })} />}
                 </View>
                 <View>
-                    {!this.passwordsMatch() && <Text style={styles.errorText} >Passwords do not match</Text>}
+                    <Text style={styles.errorText}>{this.errorMessage()}</Text>
                 </View>
                 <View style={styles.submitView}>
                     <Button type='button' color={css.colours.pink} title={this.props.title} disabled={!this.passwordsMatch()} onPress={() => this.props.handleSubmit(this.state)}></Button>
@@ -37,22 +43,26 @@ export default class UserForms extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
     input: {
-        height: 40,
+        height: 30,
         width: 200,
-        borderColor: 'gray',
         backgroundColor: css.colours.white,
-        borderWidth: 1,
-        marginBottom:'5%'
+        marginBottom: '5%',
     },
     label: {
         color: css.colours.white,
         textAlign: 'left'
     },
     submitView: {
-        paddingTop: '10%'
+        width: '50%',
+        paddingTop: '2%'
     },
     errorText: {
         color: css.colours.error
     }
-});
+})

@@ -1,6 +1,8 @@
 import React from 'react'
 import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
 import UserForms from './UserForms'
+import Header from './Header';
+import css from './cssVariables'
 
 export default class SignUp extends React.Component {
 
@@ -10,10 +12,24 @@ export default class SignUp extends React.Component {
 
     render() {
         return (
-            <View>
-                <UserForms type="signUp" title="Sign Up" handleSubmit={this.handleSubmit} />
+            <View style={styles.container}>
+                <View style={styles.headerView}>
+                    <Header pageName="SignUp" />
+                </View>
+                <View style={styles.formView}>
+                    <UserForms type="signUp" title="Submit" handleSubmit={this.handleSubmit} />
+                </View>
             </View>
         )
     }
 }
 
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: css.colours.blue,
+        height: '100%'
+    },
+    formView:{
+        paddingTop:'10%'
+    }
+})
