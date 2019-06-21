@@ -8,6 +8,17 @@ export default class SignUp extends React.Component {
 
     handleSubmit = (state) => {
         console.log(state)
+        // fetch('http://localhost:5000/auth/register', {
+        //     method: 'POST',
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         firstParam: 'yourValue',
+        //         secondParam: 'yourOtherValue',
+        //     }),
+        // });
     }
 
     render() {
@@ -29,7 +40,7 @@ const styles = StyleSheet.create({
         backgroundColor: css.colours.blue,
         height: '100%'
     },
-    formView:{
-        paddingTop:'10%'
+    formView: {
+        paddingTop: '10%'
     }
 })
