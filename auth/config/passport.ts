@@ -1,11 +1,12 @@
 import { Strategy } from 'passport-local';
 import { User } from '../models/User';
-import { userModel, status } from '../models/Interfaces'
+import { userModel } from '../models/Interfaces'
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express'; 
 import { NextFunction } from 'connect';
 import { Strategy as jwtStrategy, ExtractJwt } from 'passport-jwt';
 import passport from 'passport';
+import { sendResponse } from './APIUtils';
 
 export function configurePassport(passport: any) {
     passport.use(
@@ -38,34 +39,14 @@ export function configurePassport(passport: any) {
             });
         })
     );
-
-    passport.serializeUser((user: userModel, done: any) => {
-        done(null, user.id);
-    });
-
-    passport.deserializeUser((id: string, done: any) => {
-        User.findById(id, (err, user)=> {
-            if (err) console.error(err);
-            done(null, user);
-        });
-    });
 }
 
 export function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
-    if (!req.isAuthenticated()) {
-        res.redirect('/auth/invalidSession');
-    } else if (!req.headers.authorization) {
-        res.status(401).json({
-            description: 'You must provide a valid jwt to access this route.',
-            status: status.Failure
-        });
-    } else {
-        passport.authenticate('jwt', {session: false}, (err, user, info) => {
-            if (user && (!err || !info)) return next();
-            res.status(401).json({
-                description: info,
-                status: status.Failure
-            });
-        })(req, res, next);
-    }
+    passport.authenticate('jwt', {session: false}, (err: Error, user: userModel, info: any) => {
+        if (user && (!err || !info)) {
+            req.user = user;
+            return next();
+        }
+        sendResponse(info, 401, res);
+    })(req, res, next);
 }   
