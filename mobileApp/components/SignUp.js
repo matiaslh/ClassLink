@@ -34,7 +34,7 @@ export default class SignUp extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: css.colours.blue,
+        backgroundColor: css.colours.background,
         height: '100%'
     },
     formView: {

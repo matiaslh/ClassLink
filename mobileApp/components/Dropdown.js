@@ -15,11 +15,9 @@ export default class DropDown extends React.Component {
                     selectedValue={this.state.value}
                     style={styles.picker}
                     onValueChange={(value) => this.setState({ displayValue: value })} >
-                    {
-                        this.props.items.map((elem, index) => {
-                            return (<Picker.Item key={index} label={elem.label} value={elem.value} />)
-                        })
-                    }
+                    {this.props.items.map((elem, index) => {
+                        return (<Picker.Item key={index} label={elem.label} value={elem.value} />)
+                    })}
                 </Picker>
             </View>
         )
@@ -28,10 +26,9 @@ export default class DropDown extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: css.colours.white
+        backgroundColor: css.colours.input
     },
     picker: {
         height: 40,
-        width: 60
     }
 })

@@ -31,7 +31,7 @@ export default class Login extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: css.colours.blue,
+        backgroundColor: css.colours.background,
         height: '100%'
     },
     formView:{

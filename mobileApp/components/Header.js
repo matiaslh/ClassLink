@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
         marginTop: '5%'
     },
     textSubHeader: {
-        color: css.colours.white
+        color: css.colours.text
     },
     textHeader: {
-        color: css.colours.white,
+        color: css.colours.text,
         fontSize: 35
     }
 })

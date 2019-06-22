@@ -1,9 +1,10 @@
 
 export default {
     colours: {
-        pink:'#e84eed',
-        blue:'#1b1ed1',
-        white:'white',
+        button:'#e84eed',
+        background:'#1b1ed1',
+        text:'white',
+        input:'white',
         error:'red'
     }
 }

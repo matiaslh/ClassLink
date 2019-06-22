@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: css.colours.blue,
+        backgroundColor: css.colours.background,
         height: '100%'
     },
     textView: {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 15,
-        color: css.colours.white
+        color: css.colours.input
     },
     headerView: {
         flex: 1

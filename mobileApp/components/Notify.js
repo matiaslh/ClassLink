@@ -20,20 +20,17 @@ export default class Notify extends React.Component {
                     <Header pageName="Notify" />
                 </View>
                 <View style={styles.allCriteria}>
-                    {
-                        new Array(this.state.criteriaLength).fill(
-                            <View key="e" style={styles.dropdownView}>
-                                <View style={{flex:2}}>
-                                    <Dropdown style={styles.dropdown} title="Department" items={departments} />
-                                    <Dropdown style={styles.dropdown} title="Department" items={departments} />
-                                </View>
-                                <View style={{flex:1}}>
-                                    <TextInput style={styles.textInput} onChangeText={(course) => this.setState({ course })} value={this.state.course} />
-                                    <TextInput style={styles.textInput} onChangeText={(section) => this.setState({ section })} value={this.state.section} />
-                                </View>
-                            </View>
-                        )
-                    }
+                    {Array.apply(null, { length: this.state.criteriaLength }).map(Number.call, index => {
+                        return (<View key={index} style={styles.criteriaRow}>
+                            <View style={styles.dropdown}><Dropdown title="Department" items={departments} /></View>
+                            <View style={styles.dropdown}><Dropdown title="Department" items={departments} /></View>
+                            <View style={{ flex: 1 }}><TextInput style={styles.textInput} onChangeText={(course) => this.setState({ course })} value={this.state.course} /></View>
+                            <View style={{ flex: 1 }}><TextInput style={styles.textInput} onChangeText={(section) => this.setState({ section })} value={this.state.section} /></View>
+                        </View>)
+                    })}
+                </View>
+                <View style={styles.addCriteria}>
+                    <View><Button title="+" onPress={() => this.setState({ criteriaLength: this.state.criteriaLength + 1 })}></Button></View>
                 </View>
             </View>
         )
@@ -45,7 +42,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: css.colours.blue,
+        backgroundColor: css.colours.background,
         height: '100%',
     },
     headerView: {
@@ -56,19 +53,25 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        backgroundColor: css.colours.blue
     },
-    dropdownView: {
+    criteriaRow: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginRight: 10,
+        marginBottom: 10
     },
     dropdown: {
+        flex: 2,
+        marginLeft: 10
     },
     textInput: {
         height: 40,
-        backgroundColor: css.colours.white,
-        marginLeft: '5%'
+        backgroundColor: css.colours.input,
+        marginLeft: 10
+    },
+    addCriteria: {
+        flex: 1,
     }
 })
 
