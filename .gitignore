@@ -1,6 +1,4 @@
-node_modules
-build
 .vscode
 .env
-frontend-app
 .DS_Store
+node_modules
