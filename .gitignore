@@ -3,3 +3,4 @@ build
 .vscode
 .env
 frontend-app
+.DS_Store
