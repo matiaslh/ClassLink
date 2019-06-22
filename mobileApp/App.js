@@ -2,19 +2,21 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
-import HomeView from './components/HomeView'
+import Home from './components/Home'
 import SignUp from './components/SignUp'
 import Login from './components/Login'
+import Notify from './components/Notify'
 import css from './components/cssVariables'
 
 const RootStack = createStackNavigator(
 	{
-		Home: HomeView,
+		Home: Home,
 		SignUp: SignUp,
-		Login: Login
+		Login: Login,
+		Notify: Notify
 	},
 	{
-		initialRouteName: 'Home',
+		initialRouteName: 'Notify',
 	}
 );
 

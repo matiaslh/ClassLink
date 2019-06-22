@@ -16,6 +16,10 @@ export default class Header extends React.Component {
         Login: {
             main: "U of Guelph NotifyMe",
             sub: "Sign up or login below to get started"
+        },
+        Notify: {
+            main: "U of Guelph NotifyMe",
+            sub: "Sign up or login below to get started"
         }
     }
 

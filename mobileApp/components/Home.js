@@ -3,7 +3,7 @@ import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-na
 import css from './cssVariables'
 import Header from './Header';
 
-export default class HomeView extends React.Component {
+export default class Home extends React.Component {
 
     render() {
         return (
