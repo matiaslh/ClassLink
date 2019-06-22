@@ -5,6 +5,9 @@ import Header from './Header'
 import Dropdown from './Dropdown'
 
 export default class Notify extends React.Component {
+    static navigationOptions = {
+        title: 'Notify'
+    }
 
     state = {
         criteriaLength: 1

@@ -5,6 +5,9 @@ import Header from './Header';
 import css from './cssVariables'
 
 export default class SignUp extends React.Component {
+    static navigationOptions = {
+        title: 'Sign Up'
+    }
 
     handleSubmit = (state) => {
         console.log(state)
@@ -12,17 +15,7 @@ export default class SignUp extends React.Component {
             console.log("Passwords do not match")
             return
         }
-        fetch('http://localhost:5000/auth/register', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                firstParam: 'yourValue',
-                secondParam: 'yourOtherValue',
-            }),
-        });
+        this.props.navigation.navigate('Notify')
     }
 
     render() {

@@ -16,7 +16,7 @@ const RootStack = createStackNavigator(
 		Notify: Notify
 	},
 	{
-		initialRouteName: 'Notify',
+		initialRouteName: 'Home',
 	}
 );
 

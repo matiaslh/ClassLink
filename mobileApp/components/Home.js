@@ -4,6 +4,9 @@ import css from './cssVariables'
 import Header from './Header';
 
 export default class Home extends React.Component {
+    static navigationOptions = {
+        title: 'Home'
+    }
 
     render() {
         return (

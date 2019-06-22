@@ -6,8 +6,13 @@ import css from './cssVariables'
 
 export default class Login extends React.Component {
 
+    static navigationOptions = {
+        title: 'Login'
+    }
+
     handleSubmit = (state) => {
         console.log(state)
+        this.props.navigation.navigate('Notify')
     }
 
     render() {
