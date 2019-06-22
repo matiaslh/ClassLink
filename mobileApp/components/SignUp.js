@@ -8,17 +8,21 @@ export default class SignUp extends React.Component {
 
     handleSubmit = (state) => {
         console.log(state)
-        // fetch('http://localhost:5000/auth/register', {
-        //     method: 'POST',
-        //     headers: {
-        //         Accept: 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         firstParam: 'yourValue',
-        //         secondParam: 'yourOtherValue',
-        //     }),
-        // });
+        if(state.password !== state.confirmPassword){
+            console.log("Passwords do not match")
+            return
+        }
+        fetch('http://localhost:5000/auth/register', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                firstParam: 'yourValue',
+                secondParam: 'yourOtherValue',
+            }),
+        });
     }
 
     render() {
