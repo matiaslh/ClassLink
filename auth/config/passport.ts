@@ -39,28 +39,14 @@ export function configurePassport(passport: any) {
             });
         })
     );
-
-    passport.serializeUser((user: userModel, done: any) => {
-        done(null, user.id);
-    });
-
-    passport.deserializeUser((id: string, done: any) => {
-        User.findById(id, (err, user)=> {
-            if (err) console.error(err);
-            done(null, user);
-        });
-    });
 }
 
 export function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
-    if (!req.isAuthenticated()) {
-        res.redirect('/redirect/invalidSession');
-    } else if (!req.headers.authorization) {
-        sendResponse('You must provide a valid jwt to access this route.', 401, res);
-    } else {
-        passport.authenticate('jwt', {session: false}, (err, user, info) => {
-            if (user && (!err || !info)) return next();
-            sendResponse(info, 401, res);
-        })(req, res, next);
-    }
+    passport.authenticate('jwt', {session: false}, (err: Error, user: userModel, info: any) => {
+        if (user && (!err || !info)) {
+            req.user = user;
+            return next();
+        }
+        sendResponse(info, 401, res);
+    })(req, res, next);
 }   

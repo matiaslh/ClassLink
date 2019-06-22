@@ -5,19 +5,33 @@ import { NextFunction } from 'connect';
 import { ensureAuthenticated } from '../config/passport';
 import { userModel } from '../models/Interfaces';
 import { sendResponse } from '../config/APIUtils';
+import jwt from 'jsonwebtoken';
+
+const getToken = (user: userModel) => {
+  const secret: any = process.env.JWT_SECRET;
+  return jwt.sign({
+    iss: 'auth-server',
+    sub: user.id,
+    iat: new Date().getTime(),
+    exp: new Date().setDate(new Date().getDate() + 1)
+  }, secret);
+}
 
 const router: Router = Router();
 
 router.post('/login', (req: Request, res: Response, next: NextFunction) => {
-  passport.authenticate('local', {
-    successRedirect: '/redirect/loginSuccess',
-    failureRedirect: '/redirect/loginFailure'
+  passport.authenticate('local', {session: false}, (err, user) => {
+    if (err || !user) {
+      console.error(err);
+      return res.redirect('/redirect/loginFailure');
+    }
+    const token = getToken(user);
+    const info = {
+        description: "Successfully logged in.",
+        token: token,
+    };
+    sendResponse(info, 200, res);
   })(req, res, next);
-});
-
-router.post('/logout', ensureAuthenticated, (req: Request, res: Response) => {
-  req.logOut();
-  sendResponse("Successfully logged out.", 200, res);
 });
 
 router.post('/register', async (req: Request, res: Response) => {
