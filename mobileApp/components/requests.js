@@ -66,7 +66,7 @@ loginFn = (credentials, callback, errCallback) => {
         })
     }).then(res => res.json()).then(res => {
         if (res.status === 'Success') {
-            callback(res)
+            getUserFn(callback, errCallback)
         } else {
             errCallback(res)
         }

@@ -10,13 +10,18 @@ export default class DropDown extends React.Component {
         this.state = { value: startValue }
     }
 
+    onChange = (value) => {
+        this.setState({ value })
+        this.props.onChange(value)
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <Picker
                     selectedValue={this.state.value}
                     style={styles.picker}
-                    onValueChange={this.props.onChange} >
+                    onValueChange={this.onChange} >
                     {this.props.items.map((entry, index) => {
                         let value = Object.keys(entry)[0]
                         return (<Picker.Item key={index} label={entry[value]} value={value} />)

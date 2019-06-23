@@ -13,14 +13,45 @@ export default class EditCourse extends React.Component {
     constructor(props) {
         super(props)
         const { navigation } = props
-        this.state = navigation.getParam('criteria', {})
+        this.state = {
+            criteria: navigation.getParam('criteria', []),
+            index: navigation.getParam('index', -1) // adding a new course
+        }
+
+        if (this.state.index === -1) {
+            this.state.newCourse = {}
+        }
     }
 
-    saveUser = () => {
-        console.log(this.state)
-        //save this course to user
-        //navigate back to main screen
-        this.props.navigation.navigate('Notify')
+    getDetails = (type) => {
+        // adding a new course
+        if (this.state.index === -1) {
+            return this.state.newCourse[type]
+        } else {
+            return this.state.criteria[this.state.index][type]
+        }
+    }
+
+    onChange = (type, value) => {
+        let criteria = this.state.criteria
+        // adding a new course
+        if (this.state.index === -1) {
+            let obj = this.state.newCourse
+            obj[type] = value
+            this.setState({ newCourse: obj })
+        } else {
+            criteria[this.state.index][type] = value
+            this.setState({ criteria })
+        }
+    }
+
+    onSubmit = () => {
+        let criteria = this.state.criteria
+        // adding a new course
+        if (this.state.index === -1) {
+            criteria.push(this.state.newCourse)
+        }
+        this.props.navigation.navigate('Notify', { criteria })
     }
 
     render() {
@@ -31,16 +62,16 @@ export default class EditCourse extends React.Component {
                 </View>
                 <View style={styles.allCriteria}>
                     <Text style={styles.label}>Department</Text>
-                    <View style={styles.dropdown}><Dropdown name="department" items={constants.departments} value={this.state.department} onChange={department => this.setState({ department })} /></View>
+                    <View style={styles.dropdown}><Dropdown name="department" items={constants.departments} value={this.getDetails('department')} onChange={value => this.onChange('department', value)} /></View>
                     <Text style={styles.label}>Level</Text>
-                    <View style={styles.dropdown}><Dropdown name="level" items={constants.levels} value={this.state.level} onChange={level => this.setState({ level })} /></View>
+                    <View style={styles.dropdown}><Dropdown name="level" items={constants.levels} value={this.getDetails('level')} onChange={value => this.onChange('level', value)} /></View>
                     <Text style={styles.label}>Course</Text>
-                    <View><TextInput style={styles.textInput} keyboardType='numeric' onChangeText={(course) => this.setState({ course })} value={this.state.course} maxLength={4} /></View>
+                    <View><TextInput style={styles.textInput} keyboardType='numeric' value={this.getDetails('course')} onChangeText={value => this.onChange('course', value)} maxLength={4} /></View>
                     <Text style={styles.label}>Section</Text>
-                    <View><TextInput style={styles.textInput} keyboardType='numeric' onChangeText={(section) => this.setState({ section })} value={this.state.section} maxLength={4} /></View>
+                    <View><TextInput style={styles.textInput} keyboardType='numeric' value={this.getDetails('section')} onChangeText={value => this.onChange('section', value)} maxLength={4} /></View>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button>
+                    <Button title="Submit" color={css.colours.button} onPress={this.onSubmit}></Button>
                 </View>
             </View>
         )

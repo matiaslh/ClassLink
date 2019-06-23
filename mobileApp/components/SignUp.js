@@ -17,7 +17,7 @@ export default class SignUp extends React.Component {
         }
         let { username, password } = state
         let navigate = this.props.navigation.navigate
-        requests.signup({ username, password }, (res) => navigate('Notify'), console.error)
+        requests.signup({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), console.error)
     }
 
     render() {

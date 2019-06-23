@@ -14,11 +14,30 @@ export default class Notify extends React.Component {
 
     constructor(props) {
         super(props)
-        let criteria;
-        requests.getUser(user => {
-            criteria = user.criteria
-        }, console.error)
+        let criteria = props.navigation.getParam('criteria', [])
         this.state = { criteria }
+    }
+
+    saveUser = () => {
+        console.log(this.state)
+    }
+
+    deleteCriteria = (index) => {
+        let criteria = this.state.criteria
+        criteria.splice(index, 1)
+        this.setState({ criteria })
+    }
+
+    getLabel(index, type) {
+        if (type === 'department') {
+            return this.state.criteria[index].department ? labels.departments[this.state.criteria[index].department] : 'Any'
+        } else if (type === 'level') {
+            return this.state.criteria[index].level ? labels.levels[this.state.criteria[index].level] : 'Any'
+        } else if (type === 'course') {
+            return this.state.criteria[index].course ? this.state.criteria[index].course : 'Any'
+        } else if (type === 'section') {
+            return this.state.criteria[index].section ? this.state.criteria[index].section : 'Any'
+        }
     }
 
     render() {
@@ -32,22 +51,22 @@ export default class Notify extends React.Component {
                         return (
                             <View key={index} style={styles.criteriaRow}>
                                 <View style={styles.info}>
-                                    <View style={styles.cellDropdown}><Text style={styles.text}>{labels.departments[this.state.criteria[index].department]}</Text></View>
-                                    <View style={styles.cellDropdown}><Text style={styles.text}>{labels.levels[this.state.criteria[index].level]}</Text></View>
-                                    <View style={styles.cellInput}><Text style={styles.text}>{this.state.criteria[index].course}</Text></View>
-                                    <View style={styles.cellInput}><Text style={styles.text}>{this.state.criteria[index].section}</Text></View>
+                                    <View style={styles.cellDropdown}><Text style={styles.text}>{this.getLabel(index, 'department')}</Text></View>
+                                    <View style={styles.cellDropdown}><Text style={styles.text}>{this.getLabel(index, 'level')}</Text></View>
+                                    <View style={styles.cellInput}><Text style={styles.text}>{this.getLabel(index, 'course')}</Text></View>
+                                    <View style={styles.cellInput}><Text style={styles.text}>{this.getLabel(index, 'section')}</Text></View>
                                 </View>
-                                <View style={styles.buttons}>
-                                    <View style={styles.cellButton}><Icon name='edit' type='material' color={css.colours.button} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria[index] })} /></View>
-                                    <View style={styles.cellButton}><Icon name='clear' type='material' color={css.colours.button} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria[index] })} /></View>
-
+                                <View style={styles.editOrDeleteButtons}>
+                                    <View style={styles.cellButton}><Icon name='edit' type='material' color={css.colours.button} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria, index })} /></View>
+                                    <View style={styles.cellButton}><Icon name='clear' type='material' color={css.colours.button} onPress={() => this.deleteCriteria(index)} /></View>
                                 </View>
                             </View>
                         )
                     })}
                 </View>
-                <View style={styles.addCourseButton}>
-                    <Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse')}></Button>
+                <View style={{ flex: 1 }}>
+                    <View style={styles.buttons}><Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button></View>
+                    <View style={styles.buttons}><Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button></View>
                 </View>
             </View>
         )
@@ -84,18 +103,19 @@ const styles = StyleSheet.create({
     },
     info: {
         flex: 5,
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'flex-start',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'blue'
     },
-    buttons: {
+    editOrDeleteButtons: {
         flex: 1,
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center'
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 5
     },
     cellDropdown: {
         flex: 2,
@@ -109,12 +129,11 @@ const styles = StyleSheet.create({
     },
     cellButton: {
         flex: 1,
-        margin:4,
+        margin: 4,
         alignItems: 'flex-start'
     },
-    addCourseButton: {
-        flex: 1,
-        marginTop:20
+    buttons: {
+        marginTop: 20
     }
 })
 

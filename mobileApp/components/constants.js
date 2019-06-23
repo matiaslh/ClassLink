@@ -14,15 +14,13 @@ const constants = {
 
 export default constants
 
+reduceFn = (result, item, index) => {
+    let value = Object.keys(item)[0]
+    result[value] = item[value]
+    return result
+}
+
 export const labels = {
-    departments: constants.departments.reduce((result, item, index) => {
-        let value = Object.keys(item)[0]
-        result[value] = item[value]
-        return result
-    }, {}),
-    levels: constants.levels.reduce((result, item, index) => {
-        let value = Object.keys(item)[0]
-        result[value] = item[value]
-        return result
-    }, {})
+    departments: constants.departments.reduce(reduceFn, {}),
+    levels: constants.levels.reduce(reduceFn, {})
 }

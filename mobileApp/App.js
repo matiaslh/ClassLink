@@ -18,7 +18,7 @@ const RootStack = createStackNavigator(
 		EditCourse: EditCourse
 	},
 	{
-		initialRouteName: 'Notify',
+		initialRouteName: 'Login',
 	}
 );
 

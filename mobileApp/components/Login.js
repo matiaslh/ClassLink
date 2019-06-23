@@ -14,7 +14,7 @@ export default class Login extends React.Component {
     handleSubmit = (state) => {
         let { username, password } = state
         let navigate = this.props.navigation.navigate
-        requests.login({ username, password }, (res) => navigate('Notify'), console.error)
+        requests.login({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), console.error)
     }
 
     render() {
