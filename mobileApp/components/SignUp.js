@@ -10,12 +10,41 @@ export default class SignUp extends React.Component {
     }
 
     handleSubmit = (state) => {
-        console.log(state)
-        if(state.password !== state.confirmPassword){
+        if (state.password !== state.confirmPassword) {
             console.log("Passwords do not match")
             return
         }
-        this.props.navigation.navigate('Notify')
+        let {username, password} = state
+        fetch('/auth/register', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                email: 'nope',
+                password: password,
+            })
+        }).then(res => {
+            if (res.status === 'Success') {
+                fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                    })
+                }).then(res => {
+                    if (res.status === 'Success') {
+                        this.props.navigation.navigate('Notify')
+                    }
+                }).catch(err => console.log(err))
+            }
+        }).catch(err => console.log(err))
     }
 
     render() {
