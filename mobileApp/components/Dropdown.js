@@ -1,11 +1,12 @@
 import React from 'react'
-import { Picker, View, TextInput, Text, Button, StyleSheet } from 'react-native';
-import css from './cssVariables'
+import { Picker, View, StyleSheet } from 'react-native';
+import css from './css'
 
 export default class DropDown extends React.Component {
 
-    state = {
-        displayValue: 'first'
+    constructor(props) {
+        super(props)
+        this.state = { value: props.value }
     }
 
     render() {
@@ -14,9 +15,9 @@ export default class DropDown extends React.Component {
                 <Picker
                     selectedValue={this.state.value}
                     style={styles.picker}
-                    onValueChange={(value) => this.setState({ displayValue: value })} >
-                    {this.props.items.map((elem, index) => {
-                        return (<Picker.Item key={index} label={elem.label} value={elem.value} />)
+                    onValueChange={this.props.onChange} >
+                    {Object.entries(this.props.items).map((entry, index) => {
+                        return (<Picker.Item key={index} label={entry[1]} value={entry[0]} />)
                     })}
                 </Picker>
             </View>
@@ -30,5 +31,6 @@ const styles = StyleSheet.create({
     },
     picker: {
         height: 40,
+        width: 200
     }
 })

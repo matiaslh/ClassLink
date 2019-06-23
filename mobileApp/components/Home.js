@@ -1,11 +1,19 @@
 import React from 'react'
-import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
-import css from './cssVariables'
+import { View, Text, Button, StyleSheet } from 'react-native';
+import css from './css'
 import Header from './Header';
 
 export default class Home extends React.Component {
-    static navigationOptions = {
-        title: 'Home'
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Home',
+            headerStyle: {
+                backgroundColor: 'white'
+            },
+            headerRight: (
+                <Button onPress={() => navigation.navigate('Home')} title="Home" color="blue" />
+            )
+        }
     }
 
     render() {

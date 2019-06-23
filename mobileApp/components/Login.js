@@ -2,7 +2,7 @@ import React from 'react'
 import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
 import UserForms from './UserForms'
 import Header from './Header';
-import css from './cssVariables'
+import css from './css'
 
 export default class Login extends React.Component {
 
@@ -19,7 +19,7 @@ export default class Login extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.headerView}>
-                    <Header pageName="SignUp" />
+                    <Header pageName="Login" />
                 </View>
                 <View style={styles.formView}>
                     <UserForms type="login" title="Submit" handleSubmit={this.handleSubmit} />

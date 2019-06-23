@@ -2,7 +2,7 @@ import React from 'react'
 import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
 import UserForms from './UserForms'
 import Header from './Header';
-import css from './cssVariables'
+import css from './css'
 
 export default class SignUp extends React.Component {
     static navigationOptions = {

@@ -1,6 +1,6 @@
 import React from 'react'
-import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
-import css from './cssVariables'
+import { View, TextInput, Text, Button, StyleSheet } from 'react-native';
+import css from './css'
 
 export default class UserForms extends React.Component {
 
@@ -35,7 +35,7 @@ export default class UserForms extends React.Component {
                     <Text style={styles.errorText}>{this.errorMessage()}</Text>
                 </View>
                 <View style={styles.submitView}>
-                    <Button type='button' color={css.colours.pink} title={this.props.title} disabled={!this.passwordsMatch()} onPress={() => this.props.handleSubmit(this.state)}></Button>
+                    <Button type='button' color={css.colours.button} title={this.props.title} disabled={!this.passwordsMatch()} onPress={() => this.props.handleSubmit(this.state)}></Button>
                 </View>
             </View>
         )
@@ -51,11 +51,11 @@ const styles = StyleSheet.create({
     input: {
         height: 30,
         width: 200,
-        backgroundColor: css.colours.white,
+        backgroundColor: css.colours.input,
         marginBottom: '5%',
     },
     label: {
-        color: css.colours.white,
+        color: css.colours.text,
         textAlign: 'left'
     },
     submitView: {
