@@ -1,13 +1,11 @@
 
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
-import Home from './components/Home'
-import SignUp from './components/SignUp'
-import Login from './components/Login'
-import Notify from './components/Notify'
-import EditCourse from './components/EditCourse'
-import css from './components/css'
+import Home from './components/screens/Home'
+import SignUp from './components/screens/SignUp'
+import Login from './components/screens/Login'
+import Notify from './components/screens/Notify'
+import EditCourse from './components/screens/EditCourse'
 
 const RootStack = createStackNavigator(
 	{
@@ -18,7 +16,7 @@ const RootStack = createStackNavigator(
 		EditCourse: EditCourse
 	},
 	{
-		initialRouteName: 'Login',
+		initialRouteName: 'Home',
 	}
 );
 
@@ -26,13 +24,7 @@ const AppContainer = createAppContainer(RootStack);
 
 export default class App extends React.Component {
 	render() {
-		return <AppContainer style={styles.container} />;
+		return <AppContainer />;
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-	}
-})
-
 

@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         borderWidth: 1
     },
     picker: {
-        height: 40,
-        width: 200
+        height: css.lengths.dropdownHeight,
+        width: css.lengths.dropdownWidth
     }
 })

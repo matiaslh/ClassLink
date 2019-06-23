@@ -1,25 +1,17 @@
 import React from 'react'
-import { View, Text, Button, StyleSheet } from 'react-native';
-import css from './css'
-import Header from './Header';
+import { View, Text, Button, StyleSheet } from 'react-native'
+import css from '../utils/css'
+import Header from '../utils/Header'
+import getNavigationOptions from '../utils/navigation'
 
 export default class Home extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        return {
-            title: 'Home'
-            // headerStyle: {
-            //     backgroundColor: 'white'
-            // }
-            // headerRight: (
-            //     <Button onPress={() => navigation.navigate('Home')} title="Home" color="blue" />
-            // )
-        }
+    static navigationOptions = () => {
+        return getNavigationOptions({ title: 'Home' })
     }
-
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.headerView}>
+                <View style={{ flex: 1 }}>
                     <Header pageName="HomeView" />
                 </View>
                 <View style={styles.textView}>
@@ -27,10 +19,10 @@ export default class Home extends React.Component {
                 </View>
                 <View style={styles.buttonView}>
                     <View style={styles.button}>
-                        <Button color="#e84eed" title="Sign Up" onPress={() => this.props.navigation.navigate('SignUp')}></Button>
+                        <Button color={css.colours.button} title="Sign Up" onPress={() => this.props.navigation.navigate('SignUp')}></Button>
                     </View>
                     <View style={styles.button}>
-                        <Button color="#e84eed" title="Login" onPress={() => this.props.navigation.navigate('Login')}></Button>
+                        <Button color={css.colours.button} title="Login" onPress={() => this.props.navigation.navigate('Login')}></Button>
                     </View>
                 </View>
             </View>
@@ -51,11 +43,7 @@ const styles = StyleSheet.create({
         flex: 2
     },
     text: {
-        fontSize: 15,
         color: css.colours.text
-    },
-    headerView: {
-        flex: 1
     },
     buttonView: {
         flex: 4,
@@ -63,7 +51,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     button: {
-        marginTop: '5%',
-        width: '50%'
+        marginTop: css.lengths.betweenButtons,
+        width: css.lengths.buttonWidth
     }
 })

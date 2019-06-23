@@ -1,15 +1,15 @@
 import React from 'react'
 import { Icon } from 'react-native-elements'
 import { View, Text, Button, StyleSheet } from 'react-native';
-import Header from './Header'
-import requests from './requests'
-import css from './css'
-import { labels } from './constants';
+import Header from '../utils/Header'
+import requests from '../utils/requests'
+import css from '../utils/css'
+import { labels } from '../utils/constants';
+import getNavigationOptions from '../utils/navigation'
 
 export default class Notify extends React.Component {
-
-    static navigationOptions = {
-        title: 'NotifyMe Courses'
+    static navigationOptions = () => {
+        return getNavigationOptions({ title: 'NotifyMe Courses' })
     }
 
     constructor(props) {
@@ -43,7 +43,7 @@ export default class Notify extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.headerView}>
+                <View style={{ flex: 1 }}>
                     <Header pageName="Notify" />
                 </View>
                 <View style={styles.allCriteria}>
@@ -51,10 +51,10 @@ export default class Notify extends React.Component {
                         return (
                             <View key={index} style={styles.criteriaRow}>
                                 <View style={styles.info}>
-                                    <View style={styles.cellDropdown}><Text style={styles.text}>{this.getLabel(index, 'department')}</Text></View>
-                                    <View style={styles.cellDropdown}><Text style={styles.text}>{this.getLabel(index, 'level')}</Text></View>
-                                    <View style={styles.cellInput}><Text style={styles.text}>{this.getLabel(index, 'course')}</Text></View>
-                                    <View style={styles.cellInput}><Text style={styles.text}>{this.getLabel(index, 'section')}</Text></View>
+                                    <View style={styles.cellDropdown}><Text style={styles.text} numberOfLines={1}>{this.getLabel(index, 'department')}</Text></View>
+                                    <View style={styles.cellDropdown}><Text style={styles.text} numberOfLines={1}>{this.getLabel(index, 'level')}</Text></View>
+                                    <View style={styles.cellInput}><Text style={styles.text} numberOfLines={1}>{this.getLabel(index, 'course')}</Text></View>
+                                    <View style={styles.cellInput}><Text style={styles.text} numberOfLines={1}>{this.getLabel(index, 'section')}</Text></View>
                                 </View>
                                 <View style={styles.editOrDeleteButtons}>
                                     <View style={styles.cellButton}><Icon name='edit' type='material' color={css.colours.button} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria, index })} /></View>
@@ -65,8 +65,8 @@ export default class Notify extends React.Component {
                     })}
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={styles.buttons}><Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button></View>
-                    <View style={styles.buttons}><Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button></View>
+                    <View style={styles.button}><Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button></View>
+                    <View style={styles.button}><Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button></View>
                 </View>
             </View>
         )
@@ -80,9 +80,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: css.colours.background,
         height: '100%',
-    },
-    headerView: {
-        flex: 1
     },
     allCriteria: {
         flex: 2,
@@ -108,7 +105,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'blue'
+        borderColor: css.colours.criteriaBorder
     },
     editOrDeleteButtons: {
         flex: 1,
@@ -132,8 +129,9 @@ const styles = StyleSheet.create({
         margin: 4,
         alignItems: 'flex-start'
     },
-    buttons: {
-        marginTop: 20
+    button: {
+        marginTop: css.lengths.betweenButtons,
+        width: css.lengths.buttonWidth
     }
 })
 

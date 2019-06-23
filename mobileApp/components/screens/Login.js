@@ -1,14 +1,14 @@
 import React from 'react'
-import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
-import UserForms from './UserForms'
-import requests from './requests'
-import Header from './Header';
-import css from './css'
+import { View, StyleSheet } from 'react-native';
+import UserForms from '../utils/UserForms'
+import requests from '../utils/requests'
+import Header from '../utils/Header';
+import css from '../utils/css'
+import getNavigationOptions from '../utils/navigation'
 
 export default class Login extends React.Component {
-
-    static navigationOptions = {
-        title: 'Login'
+    static navigationOptions = () => {
+        return getNavigationOptions({ title: 'Login' })
     }
 
     handleSubmit = (state) => {
@@ -20,7 +20,7 @@ export default class Login extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.headerView}>
+                <View>
                     <Header pageName="Login" />
                 </View>
                 <View style={styles.formView}>

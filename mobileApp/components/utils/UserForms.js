@@ -34,8 +34,8 @@ export default class UserForms extends React.Component {
                 <View>
                     <Text style={styles.errorText}>{this.errorMessage()}</Text>
                 </View>
-                <View style={styles.submitView}>
-                    <Button type='button' color={css.colours.button} title={this.props.title} disabled={!this.passwordsMatch()} onPress={() => this.props.handleSubmit(this.state)}></Button>
+                <View style={styles.button}>
+                    <Button color={css.colours.button} title={this.props.title} disabled={!this.passwordsMatch()} onPress={() => this.props.handleSubmit(this.state)}></Button>
                 </View>
             </View>
         )
@@ -49,20 +49,20 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     input: {
-        height: 30,
-        width: 200,
+        height: css.lengths.inputHeight,
+        width: css.lengths.inputWidth,
         backgroundColor: css.colours.input,
         borderColor: css.colours.inputBorder,
         borderWidth: 1,
-        marginBottom: '5%',
+        marginBottom: css.lengths.betweenInputs,
     },
     label: {
         color: css.colours.text,
         textAlign: 'left'
     },
-    submitView: {
-        width: '50%',
-        paddingTop: '2%'
+    button: {
+        width: css.lengths.buttonWidth,
+        marginTop: css.lengths.betweenButtons
     },
     errorText: {
         color: css.colours.error

@@ -1,13 +1,14 @@
 import React from 'react'
 import { View, TextInput, Text, Button, StyleSheet } from 'react-native';
-import css from './css'
-import constants from './constants'
-import Header from './Header'
-import Dropdown from './Dropdown'
+import css from '../utils/css'
+import constants from '../utils/constants'
+import Header from '../utils/Header'
+import Dropdown from '../utils/Dropdown'
+import getNavigationOptions from '../utils/navigation'
 
 export default class EditCourse extends React.Component {
-    static navigationOptions = {
-        title: 'Edit Course'
+    static navigationOptions = () => {
+        return getNavigationOptions({ title: 'Edit Course' })
     }
 
     constructor(props) {
@@ -57,7 +58,7 @@ export default class EditCourse extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.headerView}>
+                <View style={{ flex: 1 }}>
                     <Header pageName="EditCourse" />
                 </View>
                 <View style={styles.allCriteria}>
@@ -70,7 +71,7 @@ export default class EditCourse extends React.Component {
                     <Text style={styles.label}>Section</Text>
                     <View><TextInput style={styles.textInput} keyboardType='numeric' value={this.getDetails('section')} onChangeText={value => this.onChange('section', value)} maxLength={4} /></View>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={styles.button}>
                     <Button title="Submit" color={css.colours.button} onPress={this.onSubmit}></Button>
                 </View>
             </View>
@@ -86,9 +87,6 @@ const styles = StyleSheet.create({
         backgroundColor: css.colours.background,
         height: '100%'
     },
-    headerView: {
-        flex: 1
-    },
     allCriteria: {
         flex: 3,
         display: 'flex',
@@ -96,19 +94,24 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
     dropdown: {
-        marginBottom: 12
+        marginBottom: css.lengths.betweenInputs
     },
     textInput: {
-        height: 40,
-        width: 200,
+        height: css.lengths.inputHeight,
+        width: css.lengths.inputWidth,
         backgroundColor: css.colours.input,
         borderColor: css.colours.inputBorder,
         borderWidth: 1,
-        marginBottom: 12,
+        marginBottom: css.lengths.betweenInputs,
         paddingLeft: 10
     },
     label: {
         color: css.colours.text,
         textAlign: 'left'
+    },
+    button: {
+        flex: 1,
+        width: css.lengths.buttonWidth
+
     }
 })
