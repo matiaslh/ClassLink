@@ -16,6 +16,13 @@ export default class EditCourse extends React.Component {
         this.state = navigation.getParam('criteria', {})
     }
 
+    saveUser = () => {
+        console.log(this.state)
+        //save this course to user
+        //navigate back to main screen
+        this.props.navigation.navigate('Notify')
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -33,7 +40,7 @@ export default class EditCourse extends React.Component {
                     <View><TextInput style={styles.textInput} keyboardType='numeric' onChangeText={(section) => this.setState({ section })} value={this.state.section} maxLength={4} /></View>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <Button title="Submit" color={css.colours.button} onPress={() => this.props.navigation.navigate('Notify')}></Button>
+                    <Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button>
                 </View>
             </View>
         )
@@ -64,7 +71,10 @@ const styles = StyleSheet.create({
         height: 40,
         width: 200,
         backgroundColor: css.colours.input,
-        marginBottom: 12
+        borderColor: css.colours.inputBorder,
+        borderWidth: 1,
+        marginBottom: 12,
+        paddingLeft: 10
     },
     label: {
         color: css.colours.text,

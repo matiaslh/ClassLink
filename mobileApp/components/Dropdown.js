@@ -6,7 +6,8 @@ export default class DropDown extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { value: props.value }
+        let startValue = props.value ? props.value : 'any'
+        this.state = { value: startValue }
     }
 
     render() {
@@ -16,8 +17,9 @@ export default class DropDown extends React.Component {
                     selectedValue={this.state.value}
                     style={styles.picker}
                     onValueChange={this.props.onChange} >
-                    {Object.entries(this.props.items).map((entry, index) => {
-                        return (<Picker.Item key={index} label={entry[1]} value={entry[0]} />)
+                    {this.props.items.map((entry, index) => {
+                        let value = Object.keys(entry)[0]
+                        return (<Picker.Item key={index} label={entry[value]} value={value} />)
                     })}
                 </Picker>
             </View>
@@ -27,7 +29,9 @@ export default class DropDown extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: css.colours.input
+        backgroundColor: css.colours.input,
+        borderColor: css.colours.inputBorder,
+        borderWidth: 1
     },
     picker: {
         height: 40,

@@ -1,6 +1,7 @@
 import React from 'react'
 import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
 import UserForms from './UserForms'
+import requests from './requests'
 import Header from './Header';
 import css from './css'
 
@@ -11,8 +12,9 @@ export default class Login extends React.Component {
     }
 
     handleSubmit = (state) => {
-        console.log(state)
-        this.props.navigation.navigate('Notify')
+        let { username, password } = state
+        let navigate = this.props.navigation.navigate
+        requests.login({ username, password }, (res) => navigate('Notify'), console.error)
     }
 
     render() {
@@ -34,8 +36,8 @@ const styles = StyleSheet.create({
         backgroundColor: css.colours.background,
         height: '100%'
     },
-    formView:{
-        paddingTop:'10%'
+    formView: {
+        paddingTop: '10%'
     }
 })
 

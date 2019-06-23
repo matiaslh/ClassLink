@@ -6,13 +6,13 @@ import Header from './Header';
 export default class Home extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Home',
-            headerStyle: {
-                backgroundColor: 'white'
-            },
-            headerRight: (
-                <Button onPress={() => navigation.navigate('Home')} title="Home" color="blue" />
-            )
+            title: 'Home'
+            // headerStyle: {
+            //     backgroundColor: 'white'
+            // }
+            // headerRight: (
+            //     <Button onPress={() => navigation.navigate('Home')} title="Home" color="blue" />
+            // )
         }
     }
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 15,
-        color: css.colours.input
+        color: css.colours.text
     },
     headerView: {
         flex: 1

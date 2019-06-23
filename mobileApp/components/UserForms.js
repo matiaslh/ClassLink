@@ -52,6 +52,8 @@ const styles = StyleSheet.create({
         height: 30,
         width: 200,
         backgroundColor: css.colours.input,
+        borderColor: css.colours.inputBorder,
+        borderWidth: 1,
         marginBottom: '5%',
     },
     label: {

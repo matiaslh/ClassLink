@@ -1,7 +1,8 @@
 import React from 'react'
-import { AppRegistry, View, TextInput, Text, Button, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import UserForms from './UserForms'
 import Header from './Header';
+import requests from './requests'
 import css from './css'
 
 export default class SignUp extends React.Component {
@@ -14,37 +15,9 @@ export default class SignUp extends React.Component {
             console.log("Passwords do not match")
             return
         }
-        let {username, password} = state
-        fetch('/auth/register', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                email: 'nope',
-                password: password,
-            })
-        }).then(res => {
-            if (res.status === 'Success') {
-                fetch('/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password,
-                    })
-                }).then(res => {
-                    if (res.status === 'Success') {
-                        this.props.navigation.navigate('Notify')
-                    }
-                }).catch(err => console.log(err))
-            }
-        }).catch(err => console.log(err))
+        let { username, password } = state
+        let navigate = this.props.navigation.navigate
+        requests.signup({ username, password }, (res) => navigate('Notify'), console.error)
     }
 
     render() {
