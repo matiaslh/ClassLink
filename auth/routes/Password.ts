@@ -40,7 +40,7 @@ router.post('/resetPassword/:token', async (req: Request, res: Response) => {
             if (err) { 
                 sendResponse(err, 500, res);
             } else {
-                sendResponse(`${user.username} - password was successfully updated.`, 200, res);
+                sendResponse(`Password was successfully updated.`, 200, res);
             }
         });
     } catch (err) {
