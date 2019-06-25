@@ -31,6 +31,11 @@ export default class NavMenu extends React.PureComponent {
         this.props.navigation.navigate('Premium')
     }
 
+    aboutUsPage = () => {
+        this.hideMenu()
+        this.props.navigation.navigate('AboutUs')
+    }
+
     hideMenu = () => {
         this._menu.hide()
     }
@@ -48,6 +53,7 @@ export default class NavMenu extends React.PureComponent {
                 >
                     <MenuItem onPress={this.profilePage}>Profile</MenuItem>
                     <MenuItem onPress={this.premiumPage}>Premium</MenuItem>
+                    <MenuItem onPress={this.aboutUsPage}>About Us</MenuItem>
                     <MenuDivider />
                     <MenuItem onPress={this.logout}>Logout</MenuItem>
                 </Menu>

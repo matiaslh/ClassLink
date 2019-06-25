@@ -10,17 +10,6 @@ export default class Home extends React.Component {
         return getNavigationOptions(navigation, { title: 'Home' })
     }
 
-    constructor(props) {
-        super(props)
-        AsyncStorage.getItem('session_token').then(session_token => {
-            if (session_token) {
-                requests.getUser((user) => {
-                    props.navigation.navigate('Notify', { user })
-                }, (err) => { }) // do nothing
-            }
-        })
-    }
-
     render() {
         return (
             <View style={styles.container}>

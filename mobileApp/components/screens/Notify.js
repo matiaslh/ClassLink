@@ -20,6 +20,7 @@ export default class Notify extends React.Component {
     constructor(props) {
         super(props)
         let user = props.navigation.getParam('user', {})
+        // if user is empty, load it manually!!!
         let criteria = user.data ? user.data.criteria : []
         this.state = { criteria: criteria }
     }
