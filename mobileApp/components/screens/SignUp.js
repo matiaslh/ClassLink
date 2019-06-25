@@ -7,12 +7,12 @@ import Header from '../utils/Header'
 import getNavigationOptions from '../utils/navigation'
 
 export default class SignUp extends React.Component {
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = ({ navigation }) => {
         return getNavigationOptions(navigation, { title: 'Sign Up' })
     }
 
     state = {
-        username: '',
+        email: '',
         password: '',
         confirmPassword: '',
         errorMessage: undefined
@@ -30,13 +30,13 @@ export default class SignUp extends React.Component {
     }
 
     handleSubmit = () => {
-        let { username, password, confirmPassword } = this.state
+        let { email, password, confirmPassword } = this.state
         if (password !== confirmPassword) {
             console.log("Passwords do not match")
             return
         }
         let navigate = this.props.navigation.navigate
-        requests.signup({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), console.log)
+        requests.signup({ email, password }, (user) => navigate('Notify', { user }), console.log)
     }
 
     render() {

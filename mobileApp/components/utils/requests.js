@@ -2,14 +2,31 @@
 import { AsyncStorage } from 'react-native';
 
 // import { HOST } from '/vars.js';
-HOST = ''
+HOST = '10.0.75.1'
 const URL = {
     register: `http://${HOST}:5000/auth/register`,
     login: `http://${HOST}:5000/auth/login`,
     user: `http://${HOST}:5000/auth/user`
 }
 
-// saveUserFn = (callback, errCallback)
+saveUserFn = (data, callback, errCallback) => {
+    AsyncStorage.getItem('session_token').then(session_token => {
+        fetch(URL.user, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': session_token
+            },
+            body: JSON.stringify({ data })
+        }).then(res => res.json()).then(res => {
+            if (res.status == 'Success') {
+                callback(res.info)
+            } else {
+                errCallback(res)
+            }
+        }).catch(errCallback)
+    })
+}
 
 getUserFn = (callback, errCallback) => {
     AsyncStorage.getItem('session_token').then(session_token => {
@@ -21,37 +38,8 @@ getUserFn = (callback, errCallback) => {
             }
         }).then(res => res.json()).then(res => {
             if (res.status === 'Success') {
-                // callback(res.info.data)
                 console.log(res)
-                callback({
-                    user:res.info,
-                    criteria: [
-                        {
-                            department: 'ENGG',
-                            level: '200',
-                            course: '1000',
-                            section: '2000'
-                        },
-                        {
-                            department: 'CIS',
-                            level: '200',
-                            course: '1010',
-                            section: '2030'
-                        },
-                        {
-                            department: 'CIS',
-                            level: '200',
-                            course: '1010',
-                            section: '2030'
-                        },
-                        {
-                            department: 'CIS',
-                            level: '200',
-                            course: '1010',
-                            section: '2030'
-                        }
-                    ]
-                })
+                callback(res.info)
             } else {
                 errCallback(res)
             }
@@ -60,14 +48,14 @@ getUserFn = (callback, errCallback) => {
 }
 
 loginFn = (credentials, callback, errCallback) => {
-    console.log(HOST); 
+    console.log(HOST);
     fetch(URL.login, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: credentials.username,
+            email: credentials.email,
             password: credentials.password,
         })
     }).then(res => res.json()).then(res => {
@@ -86,9 +74,8 @@ signUpFn = (credentials, callback, errCallback) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: credentials.username,
-            email: 'nope',
-            password: credentials.password,
+            email: credentials.email,
+            password: credentials.password
         })
     }).then(res => res.json()).then(res => {
         if (res.status === 'Success') {
@@ -100,6 +87,7 @@ signUpFn = (credentials, callback, errCallback) => {
 }
 
 export default {
+    saveUser: saveUserFn,
     getUser: getUserFn,
     login: loginFn,
     signup: signUpFn

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from 'react-native-elements'
-import { View, Text, Button, StyleSheet, AsyncStorage} from 'react-native';
+import { View, Text, Button, StyleSheet, AsyncStorage } from 'react-native';
 import Header from '../utils/Header'
 import requests from '../utils/requests'
 import css from '../utils/css'
@@ -8,18 +8,20 @@ import { labels } from '../utils/constants';
 import getNavigationOptions from '../utils/navigation'
 
 export default class Notify extends React.Component {
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = ({ navigation }) => {
         return getNavigationOptions(navigation, { title: 'NotifyMe Courses' })
     }
 
     constructor(props) {
         super(props)
-        let criteria = props.navigation.getParam('criteria', [])
-        this.state = { criteria }
+        let user = props.navigation.getParam('user', {})
+        let criteria = user.data ? user.data.criteria : []
+        this.state = { criteria: criteria }
     }
 
     saveUser = () => {
-        console.log(this.state)
+        let data = { criteria: this.state.criteria }
+        requests.saveUser(data, console.log, console.log)
     }
 
     deleteCriteria = (index) => {

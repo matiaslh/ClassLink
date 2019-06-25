@@ -7,12 +7,12 @@ import css from '../utils/css'
 import getNavigationOptions from '../utils/navigation'
 
 export default class Login extends React.Component {
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = ({ navigation }) => {
         return getNavigationOptions(navigation, { title: 'Login' })
     }
 
     state = {
-        username: '',
+        email: '',
         password: '',
         errorMessage: undefined
     }
@@ -23,9 +23,9 @@ export default class Login extends React.Component {
     }
 
     handleSubmit = () => {
-        let { username, password } = this.state
+        let { email, password } = this.state
         let navigate = this.props.navigation.navigate
-        requests.login({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), (err) => {
+        requests.login({ email, password }, (user) => navigate('Notify', { user }), (err) => {
             this.setState({ errorMessage: err.info })
         })
     }

@@ -14,8 +14,8 @@ export default class Home extends React.Component {
         super(props)
         AsyncStorage.getItem('session_token').then(session_token => {
             if (session_token) {
-                requests.getUser((res) => {
-                    props.navigation.navigate('Notify', { criteria: res.criteria })
+                requests.getUser((user) => {
+                    props.navigation.navigate('Notify', { user })
                 }, (err) => { }) // do nothing
             }
         })

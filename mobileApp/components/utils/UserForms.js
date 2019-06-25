@@ -8,8 +8,8 @@ export default class UserForms extends React.Component {
         return (
             <View style={styles.container}>
                 <View>
-                    <Text style={styles.label}>Username</Text>
-                    <TextInput style={styles.input} name="username" onChangeText={(username) => this.props.onChange({ username })} />
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput style={styles.input} name="email" onChangeText={(email) => this.props.onChange({ email })} />
                     <Text style={styles.label}>Password</Text>
                     <TextInput secureTextEntry={true} style={styles.input} name="password" onChangeText={(password) => this.props.onChange({ password })} />
                     {this.props.type === 'signUp' && <Text style={styles.label}>Confirm Password</Text>}
