@@ -1,13 +1,26 @@
 import React from 'react'
-import { View, Text, Button, StyleSheet } from 'react-native'
+import { View, Text, Button, StyleSheet, AsyncStorage } from 'react-native'
 import css from '../utils/css'
 import Header from '../utils/Header'
 import getNavigationOptions from '../utils/navigation'
+import requests from '../utils/requests'
 
 export default class Home extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'Home' })
+    static navigationOptions = ({ navigation }) => {
+        return getNavigationOptions(navigation, { title: 'Home' })
     }
+
+    constructor(props) {
+        super(props)
+        AsyncStorage.getItem('session_token').then(session_token => {
+            if (session_token) {
+                requests.getUser((res) => {
+                    props.navigation.navigate('Notify', { criteria: res.criteria })
+                }, (err) => { }) // do nothing
+            }
+        })
+    }
+
     render() {
         return (
             <View style={styles.container}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from 'react-native-elements'
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, AsyncStorage} from 'react-native';
 import Header from '../utils/Header'
 import requests from '../utils/requests'
 import css from '../utils/css'
@@ -8,8 +8,8 @@ import { labels } from '../utils/constants';
 import getNavigationOptions from '../utils/navigation'
 
 export default class Notify extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'NotifyMe Courses' })
+    static navigationOptions = ({navigation}) => {
+        return getNavigationOptions(navigation, { title: 'NotifyMe Courses' })
     }
 
     constructor(props) {
@@ -41,6 +41,7 @@ export default class Notify extends React.Component {
     }
 
     render() {
+        AsyncStorage.getItem('session_token').then(console.log).catch(console.log)
         return (
             <View style={styles.container}>
                 <View style={{ flex: 1 }}>
@@ -64,9 +65,13 @@ export default class Notify extends React.Component {
                         )
                     })}
                 </View>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.button}><Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button></View>
-                    <View style={styles.button}><Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button></View>
+                <View style={styles.buttonView}>
+                    <View style={styles.button}>
+                        <Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button>
+                    </View>
+                    <View style={styles.button}>
+                        <Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button>
+                    </View>
                 </View>
             </View>
         )
@@ -77,9 +82,8 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
         backgroundColor: css.colours.background,
-        height: '100%',
+        height: '100%'
     },
     allCriteria: {
         flex: 2,
@@ -128,6 +132,11 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 4,
         alignItems: 'flex-start'
+    },
+    buttonView: {
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center'
     },
     button: {
         marginTop: css.lengths.betweenButtons,

@@ -7,14 +7,27 @@ import css from '../utils/css'
 import getNavigationOptions from '../utils/navigation'
 
 export default class Login extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'Login' })
+    static navigationOptions = ({navigation}) => {
+        return getNavigationOptions(navigation, { title: 'Login' })
     }
 
-    handleSubmit = (state) => {
-        let { username, password } = state
+    state = {
+        username: '',
+        password: '',
+        errorMessage: undefined
+    }
+
+    onChange = (obj) => {
+        obj.errorMessage = undefined
+        this.setState(obj)
+    }
+
+    handleSubmit = () => {
+        let { username, password } = this.state
         let navigate = this.props.navigation.navigate
-        requests.login({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), console.error)
+        requests.login({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), (err) => {
+            this.setState({ errorMessage: err.info })
+        })
     }
 
     render() {
@@ -24,7 +37,7 @@ export default class Login extends React.Component {
                     <Header pageName="Login" />
                 </View>
                 <View style={styles.formView}>
-                    <UserForms type="login" title="Submit" handleSubmit={this.handleSubmit} />
+                    <UserForms type="login" title="Submit" errorMessage={this.state.errorMessage} onChange={this.onChange} handleSubmit={this.handleSubmit} />
                 </View>
             </View>
         )

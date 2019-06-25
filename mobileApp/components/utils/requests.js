@@ -1,58 +1,62 @@
+
+import { AsyncStorage } from 'react-native';
+
 // import { HOST } from '/vars.js';
 HOST = ''
 const URL = {
     register: `http://${HOST}:5000/auth/register`,
     login: `http://${HOST}:5000/auth/login`,
-    getUser: `http://${HOST}:5000/auth/user`
+    user: `http://${HOST}:5000/auth/user`
 }
 
+// saveUserFn = (callback, errCallback)
+
 getUserFn = (callback, errCallback) => {
-
-    callback({
-        criteria: [
-            {
-                department: 'ENGG',
-                level: '200',
-                course: '1000',
-                section: '2000'
-            },
-            {
-                department: 'CIS',
-                level: '200',
-                course: '1010',
-                section: '2030'
-            },
-            {
-                department: 'CIS',
-                level: '200',
-                course: '1010',
-                section: '2030'
-            },
-            {
-                department: 'CIS',
-                level: '200',
-                course: '1010',
-                section: '2030'
+    AsyncStorage.getItem('session_token').then(session_token => {
+        fetch(URL.user, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': session_token
             }
-        ]
+        }).then(res => res.json()).then(res => {
+            if (res.status === 'Success') {
+                // callback(res.info.data)
+                console.log(res)
+                callback({
+                    user:res.info,
+                    criteria: [
+                        {
+                            department: 'ENGG',
+                            level: '200',
+                            course: '1000',
+                            section: '2000'
+                        },
+                        {
+                            department: 'CIS',
+                            level: '200',
+                            course: '1010',
+                            section: '2030'
+                        },
+                        {
+                            department: 'CIS',
+                            level: '200',
+                            course: '1010',
+                            section: '2030'
+                        },
+                        {
+                            department: 'CIS',
+                            level: '200',
+                            course: '1010',
+                            section: '2030'
+                        }
+                    ]
+                })
+            } else {
+                errCallback(res)
+            }
+        }).catch(errCallback)
     })
-
-    // fetch(URL.getUser, {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         username: credentials.username,
-    //         password: credentials.password,
-    //     })
-    // }).then(res => res.json()).then(res => {
-    //     if (res.status === 'Success') {
-    //         callback(res)
-    //     } else {
-    //         errCallback(res)
-    //     }
-    // }).catch(errCallback)
 }
 
 loginFn = (credentials, callback, errCallback) => {
@@ -68,7 +72,7 @@ loginFn = (credentials, callback, errCallback) => {
         })
     }).then(res => res.json()).then(res => {
         if (res.status === 'Success') {
-            getUserFn(callback, errCallback)
+            AsyncStorage.setItem('session_token', res.info.token).then(getUserFn(callback, errCallback)).catch(errCallback)
         } else {
             errCallback(res)
         }
