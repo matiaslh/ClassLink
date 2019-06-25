@@ -9,7 +9,23 @@ const URL = {
     user: `http://${HOST}:5000/auth/user`
 }
 
-saveUserFn = (data, callback, errCallback) => {
+logoutFn = (callback) => {
+    AsyncStorage.removeItem('session_token').then(()=>{
+        if(callback){
+            callback()
+        }
+    })
+}
+
+saveUserFn = (body, callback, errCallback) => {
+
+    if (!callback) {
+        callback = () => { }
+    }
+    if (!errCallback) {
+        errCallback = () => { }
+    }
+
     AsyncStorage.getItem('session_token').then(session_token => {
         fetch(URL.user, {
             method: 'PUT',
@@ -17,7 +33,7 @@ saveUserFn = (data, callback, errCallback) => {
                 'Content-Type': 'application/json',
                 'Authorization': session_token
             },
-            body: JSON.stringify({ data })
+            body: JSON.stringify(body)
         }).then(res => res.json()).then(res => {
             if (res.status == 'Success') {
                 callback(res.info)
@@ -90,5 +106,6 @@ export default {
     saveUser: saveUserFn,
     getUser: getUserFn,
     login: loginFn,
+    logout: logoutFn,
     signup: signUpFn
 }

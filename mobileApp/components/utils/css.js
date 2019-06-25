@@ -2,7 +2,7 @@
 export default {
     colours: {
         button: '#48beff',
-        upgradeButton:'blue',
+        headerButton:'blue',
         background: 'white',
         headerBackground: '#48beff',
         headerText: 'white',

@@ -9,7 +9,12 @@ import getNavigationOptions from '../utils/navigation'
 
 export default class Notify extends React.Component {
     static navigationOptions = ({ navigation }) => {
-        return getNavigationOptions(navigation, { title: 'NotifyMe Courses' })
+        logout = () => {
+            navigation.navigate('Home')
+        }
+        return getNavigationOptions(navigation, {
+            title: 'NotifyMe Courses', headerLeft: null
+        })
     }
 
     constructor(props) {
@@ -20,8 +25,8 @@ export default class Notify extends React.Component {
     }
 
     saveUser = () => {
-        let data = { criteria: this.state.criteria }
-        requests.saveUser(data, console.log, console.log)
+        let body = { data: { criteria: this.state.criteria } }
+        requests.saveUser(body)
     }
 
     deleteCriteria = (index) => {
@@ -88,18 +93,17 @@ const styles = StyleSheet.create({
         height: '100%'
     },
     allCriteria: {
-        flex: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginLeft: 20,
-        marginRight: 10
+        flex: 3,
+        paddingLeft: 20,
+        paddingRight: 10,
+        paddingBottom:100,
+        paddingTop:50
     },
     criteriaRow: {
-        flex: 1,
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop:css.lengths.betweenInputs
     },
     text: {
         color: css.colours.text,
@@ -136,7 +140,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
     buttonView: {
-        flex: 1,
+        flex: 2,
         display: 'flex',
         alignItems: 'center'
     },

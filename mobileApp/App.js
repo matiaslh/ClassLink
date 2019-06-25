@@ -6,6 +6,8 @@ import SignUp from './components/screens/SignUp'
 import Login from './components/screens/Login'
 import Notify from './components/screens/Notify'
 import EditCourse from './components/screens/EditCourse'
+import Profile from './components/screens/Profile'
+import Premium from './components/screens/Premium'
 
 const rootStack = createStackNavigator(
 	{
@@ -13,7 +15,9 @@ const rootStack = createStackNavigator(
 		SignUp: SignUp,
 		Login: Login,
 		Notify: Notify,
-		EditCourse: EditCourse
+		EditCourse: EditCourse,
+		Profile: Profile,
+		Premium: Premium
 	},
 	{
 		initialRouteName: 'Home',
