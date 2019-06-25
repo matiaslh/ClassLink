@@ -1,8 +1,9 @@
-
+// import { HOST } from '/vars.js';
+HOST = ''
 const URL = {
-    register: 'http://10.19.2.104:5000/auth/register',
-    login: 'http://10.19.2.104:5000/auth/login',
-    getUser: 'http://10.19.2.104:5000/auth/user'
+    register: `http://${HOST}:5000/auth/register`,
+    login: `http://${HOST}:5000/auth/login`,
+    getUser: `http://${HOST}:5000/auth/user`
 }
 
 getUserFn = (callback, errCallback) => {
@@ -55,6 +56,7 @@ getUserFn = (callback, errCallback) => {
 }
 
 loginFn = (credentials, callback, errCallback) => {
+    console.log(HOST); 
     fetch(URL.login, {
         method: 'POST',
         headers: {
