@@ -2,11 +2,11 @@
   "name": "mobileApp",
   "version": "0.0.1",
   "private": true,
-  "proxy":"http://10.19.2.104:5000",
+  "proxy": "http://10.19.2.104:5000",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android && react-native log-android",
-    "clean": "./android/gradlew.bat clean",
+    "clean": "cd android && gradlew.bat clean",
     "test": "jest"
   },
   "dependencies": {

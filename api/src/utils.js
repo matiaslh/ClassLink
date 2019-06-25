@@ -2,9 +2,9 @@ const request = require('request');
 const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
 const crypto = require("crypto");
-const twilio = require('twilio');
+const FCM = require('fcm-node');
 require('dotenv').config();
-let client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 export function doGetRequests(query, callback) {
 
@@ -61,9 +61,33 @@ export function doGetRequests(query, callback) {
 
 }
 
-export function contact(cellNumber, message) {
+export function contact(message) {
     console.log("contacting: " + cellNumber)
-
+    var serverKey = process.env.FCM_SERVER_KEY
+    var fcm = new FCM(serverKey);
+ 
+    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+        to: 'registration_token', 
+        collapse_key: 'your_collapse_key',
+        
+        notification: {
+            title: 'Title of your push notification', 
+            body: 'Body of your push notification' 
+        },
+        
+        data: {  //you can send only notification or only data(or include both)
+            my_key: 'my value',
+            my_another_key: 'my another value'
+        }
+    };
+    
+    fcm.send(message, function(err, response){
+        if (err) {
+            console.log("Something has gone wrong!");
+        } else {
+            console.log("Successfully sent with response: ", response);
+        }
+    });
     client.messages.create({
         body: message,
         to: cellNumber,
