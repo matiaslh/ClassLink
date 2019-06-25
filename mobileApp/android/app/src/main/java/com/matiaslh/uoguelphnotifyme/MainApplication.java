@@ -1,4 +1,4 @@
-package com.mobileapp;
+package com.matiaslh.uoguelphnotifyme;
 
 import android.app.Application;
 

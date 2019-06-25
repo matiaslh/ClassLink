@@ -1,5 +1,5 @@
 {
-  "name": "mobileApp",
+  "name": "NotifyMe",
   "version": "0.0.1",
   "private": true,
   "proxy": "http://10.19.2.104:5000",
