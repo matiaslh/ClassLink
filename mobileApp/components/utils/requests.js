@@ -10,8 +10,8 @@ const URL = {
 }
 
 logoutFn = (callback) => {
-    AsyncStorage.removeItem('session_token').then(()=>{
-        if(callback){
+    AsyncStorage.removeItem('session_token').then(() => {
+        if (callback) {
             callback()
         }
     })
