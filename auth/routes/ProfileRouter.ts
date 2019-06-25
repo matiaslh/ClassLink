@@ -35,9 +35,9 @@ router.post('/login', (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.post('/register', async (req: Request, res: Response) => {
-  let { username, password, email } = req.body;
-  if (!username || !password) res.redirect('/redirect/missingFieldError');
-  let newUser = new User({ username, password, email });
+  const { email, password } = req.body;
+  if (!email || !password) res.redirect('/redirect/missingFieldError');
+  let newUser = new User({ email, password });
   saveUser(newUser, (err: Error) => {
     if (err) { 
       sendResponse(err, 500, res);
@@ -54,13 +54,13 @@ router.get('/user', ensureAuthenticated, (req: Request, res: Response) => {
 });
 
 router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
-  const { username, email } = req.body;
-  if (!username && !email) return res.redirect('/redirect/missingFieldError');
-  req.user.username = username ? username : req.user.username;
+  const { data, email } = req.body;
+  if (!data && !email) return res.redirect('/redirect/missingFieldError');
+  req.user.data = data ? data : req.user.data;
   req.user.email = email ? email : req.user.email;
   req.user.save()
     .then((user: userModel) => {
-      sendResponse(`Successfully updated user ${user.username}`, 200, res);
+      sendResponse('Successfully updated user.', 200, res);
     })
     .catch((err: Error) => {
       sendResponse(err, 500, res);
@@ -70,7 +70,7 @@ router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
 router.delete('/user', ensureAuthenticated, (req: Request, res: Response) => {
   User.findByIdAndDelete({ _id: req.user.id })
     .then((user: userModel) => {
-      sendResponse(`Successfully deleted user ${user.username}`, 200, res);
+      sendResponse('Successfully deleted user.', 200, res);
     })
     .catch((err: Error) => {
       sendResponse(err, 500, res);

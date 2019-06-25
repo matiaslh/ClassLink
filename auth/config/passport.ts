@@ -10,8 +10,8 @@ import { sendResponse } from './APIUtils';
 
 export function configurePassport(passport: any) {
     passport.use(
-        new Strategy({ usernameField: 'username' }, (username: string, password: string, done: any) => {
-            User.findOne({ username })
+        new Strategy({ usernameField: 'email' }, (email: string, password: string, done: any) => {
+            User.findOne({ email })
             .then((user) => {
                 if (!user) return done(null, false, { message: 'Cannot find user.'});
                 bcrypt.compare(password, user.password, (err: Error, isMatch: boolean) => {

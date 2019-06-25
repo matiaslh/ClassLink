@@ -7,7 +7,7 @@ import Login from './components/screens/Login'
 import Notify from './components/screens/Notify'
 import EditCourse from './components/screens/EditCourse'
 
-const RootStack = createStackNavigator(
+const rootStack = createStackNavigator(
 	{
 		Home: Home,
 		SignUp: SignUp,
@@ -20,7 +20,7 @@ const RootStack = createStackNavigator(
 	}
 );
 
-const AppContainer = createAppContainer(RootStack);
+const AppContainer = createAppContainer(rootStack);
 
 export default class App extends React.Component {
 	render() {

@@ -5,11 +5,11 @@ import { userModel } from './Interfaces'
 
 // User model config
 const UserSchema: mongoose.Schema<any>  = new Schema({ 
-    username: {type: String, required: true, unique: true },
     password: {type: String, required: true },
-    email: {type: String, required: true },
+    email: {type: String, required: true, unique: true },
     resetPasswordToken: {type: String},
-    resetPasswordExpiration: {type: String}
+    resetPasswordExpiration: {type: String},
+    data: {type: Schema.Types.Mixed}
  });
 
 UserSchema.plugin(uniqueValidator);
