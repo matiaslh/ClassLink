@@ -1,62 +1,126 @@
-import { AppLoading } from 'expo';
-import { Asset } from 'expo-asset';
-import * as Font from 'expo-font';
-import React, { useState } from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
-import AppNavigator from './navigation/AppNavigator';
+import React from 'react';
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import AsyncStorage from 'react-native';
+import firebase from 'react-native-firebase'
+import Home from './components/screens/Home'
+import SignUp from './components/screens/SignUp'
+import Login from './components/screens/Login'
+import Notify from './components/screens/Notify'
+import EditCourse from './components/screens/EditCourse'
+import Profile from './components/screens/Profile'
+import Premium from './components/screens/Premium'
+import AboutUs from './components/screens/AboutUs'
 
-export default function App(props) {
-  const [isLoadingComplete, setLoadingComplete] = useState(false);
-
-  if (!isLoadingComplete && !props.skipLoadingScreen) {
-    return (
-      <AppLoading
-        startAsync={loadResourcesAsync}
-        onError={handleLoadingError}
-        onFinish={() => handleFinishLoading(setLoadingComplete)}
-      />
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <AppNavigator />
-      </View>
-    );
-  }
+// persistence is to open the same page even after restarting the app
+const persistenceKey = 'persistenceKey'
+const persistNavigationState = async (navState) => {
+	try {
+		await AsyncStorage.setItem(persistenceKey, JSON.stringify(navState))
+	} catch (err) {
+		console.log(err)
+	}
+}
+const loadNavigationState = async () => {
+	const jsonString = await AsyncStorage.getItem(persistenceKey)
+	return JSON.parse(jsonString)
 }
 
-async function loadResourcesAsync() {
-  await Promise.all([
-    Asset.loadAsync([
-      require('./assets/images/robot-dev.png'),
-      require('./assets/images/robot-prod.png'),
-    ]),
-    Font.loadAsync({
-      // This is the font that we are using for our tab bar
-      ...Ionicons.font,
-      // We include SpaceMono because we use it in HomeScreen.js. Feel free to
-      // remove this if you are not using it in your app
-      'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-    }),
-  ]);
+const rootStack = createStackNavigator(
+	{
+		Home: Home,
+		SignUp: SignUp,
+		Login: Login,
+		Notify: Notify,
+		EditCourse: EditCourse,
+		Profile: Profile,
+		Premium: Premium,
+		AboutUs: AboutUs
+	},
+	{
+		initialRouteName: 'Home',
+	}
+);
+
+const AppContainer = createAppContainer(rootStack);
+
+export default class App extends React.Component {
+
+	// rest of this is to send notifications from nodejs through firebase
+	componentDidMount = async () => {
+		this.checkPermission();
+		this.createNotificationListeners();
+	}
+	componentWillUnmount = () => {
+		this.notificationListener();
+		this.notificationOpenedListener();
+	}
+	checkPermission = async () => {
+		const enabled = await firebase.messaging().hasPermission();
+		if (enabled) {
+			this.getToken();
+		} else {
+			this.requestPermission();
+		}
+	}
+	getToken = async () => {
+		let fcmToken = await AsyncStorage.getItem('fcmToken');
+		if (!fcmToken) {
+			fcmToken = await firebase.messaging().getToken();
+			if (fcmToken) {
+				// user has a device token
+				await AsyncStorage.setItem('fcmToken', fcmToken);
+			}
+		}
+	}
+	requestPermission = async () => {
+		try {
+			await firebase.messaging().requestPermission();
+			this.getToken();
+		} catch (error) {
+		}
+	}
+	createNotificationListeners = async () => {
+		//  Triggered when a particular notification has been received in foreground
+		this.notificationListener = firebase.notifications().onNotification((notification) => {
+			const { title, body } = notification;
+			this.showAlert(title, body);
+		});
+
+		//  If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+		this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+			const { title, body } = notificationOpen.notification;
+			this.showAlert(title, body);
+		});
+
+
+		//  If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+		const notificationOpen = await firebase.notifications().getInitialNotification();
+		if (notificationOpen) {
+			const { title, body } = notificationOpen.notification;
+			this.showAlert(title, body);
+		}
+
+		//  Triggered for data only payload in foreground
+		this.messageListener = firebase.messaging().onMessage((message) => {
+			//process data message
+			console.log(JSON.stringify(message));
+		});
+	}
+
+	showAlert = (title, body) => {
+		console.log(title, body)
+		// Alert.alert(
+		// 	title, body,
+		// 	[
+		// 		{ text: 'OK', onPress: () => console.log('OK Pressed') },
+		// 	],
+		// 	{ cancelable: false },
+		// );
+	}
+
+	render() {
+		return <AppContainer persistNavigationState={persistNavigationState} loadNavigationState={loadNavigationState} />;
+	}
 }
 
-function handleLoadingError(error: Error) {
-  // In this case, you might want to report the error to your error reporting
-  // service, for example Sentry
-  console.warn(error);
-}
-
-function handleFinishLoading(setLoadingComplete) {
-  setLoadingComplete(true);
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
