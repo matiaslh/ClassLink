@@ -3,11 +3,13 @@ import { View, Text, Button, StyleSheet } from 'react-native'
 import css from '../utils/css'
 import Header from '../utils/Header'
 import getNavigationOptions from '../utils/navigation'
+import requests from '../utils/requests'
 
 export default class Home extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'Home' })
+    static navigationOptions = ({ navigation }) => {
+        return getNavigationOptions(navigation, { title: 'Home' })
     }
+
     render() {
         return (
             <View style={styles.container}>

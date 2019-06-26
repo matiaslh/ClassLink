@@ -7,8 +7,8 @@ import Dropdown from '../utils/Dropdown'
 import getNavigationOptions from '../utils/navigation'
 
 export default class EditCourse extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'Edit Course' })
+    static navigationOptions = ({navigation}) => {
+        return getNavigationOptions(navigation, { title: 'Edit Course' })
     }
 
     constructor(props) {

@@ -7,18 +7,36 @@ import Header from '../utils/Header'
 import getNavigationOptions from '../utils/navigation'
 
 export default class SignUp extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'Sign Up' })
+    static navigationOptions = ({ navigation }) => {
+        return getNavigationOptions(navigation, { title: 'Sign Up' })
     }
 
-    handleSubmit = (state) => {
-        if (state.password !== state.confirmPassword) {
+    state = {
+        email: '',
+        password: '',
+        confirmPassword: '',
+        errorMessage: undefined
+    }
+
+    onChange = (obj) => {
+        obj.errorMessage = undefined
+        this.setState(obj, () => {
+            if (this.state.password !== this.state.confirmPassword) {
+                this.setState({ errorMessage: 'Passwords do not match' })
+            } else {
+                this.setState({ errorMessage: undefined })
+            }
+        })
+    }
+
+    handleSubmit = () => {
+        let { email, password, confirmPassword } = this.state
+        if (password !== confirmPassword) {
             console.log("Passwords do not match")
             return
         }
-        let { username, password } = state
         let navigate = this.props.navigation.navigate
-        requests.signup({ username, password }, (user) => navigate('Notify', { criteria: user.criteria }), console.error)
+        requests.signup({ email, password }, (user) => navigate('Notify', { user }), console.log)
     }
 
     render() {
@@ -28,7 +46,7 @@ export default class SignUp extends React.Component {
                     <Header pageName="SignUp" />
                 </View>
                 <View style={styles.formView}>
-                    <UserForms type="signUp" title="Submit" handleSubmit={this.handleSubmit} />
+                    <UserForms type="signUp" title="Submit" errorMessage={this.state.errorMessage} onChange={this.onChange} handleSubmit={this.handleSubmit} />
                 </View>
             </View>
         )

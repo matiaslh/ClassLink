@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon } from 'react-native-elements'
 import { View, Text, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../utils/Header'
 import requests from '../utils/requests'
 import css from '../utils/css'
@@ -8,18 +9,26 @@ import { labels } from '../utils/constants';
 import getNavigationOptions from '../utils/navigation'
 
 export default class Notify extends React.Component {
-    static navigationOptions = () => {
-        return getNavigationOptions({ title: 'NotifyMe Courses' })
+    static navigationOptions = ({ navigation }) => {
+        logout = () => {
+            navigation.navigate('Home')
+        }
+        return getNavigationOptions(navigation, {
+            title: 'NotifyMe Courses', headerLeft: null
+        })
     }
 
     constructor(props) {
         super(props)
-        let criteria = props.navigation.getParam('criteria', [])
-        this.state = { criteria }
+        let user = props.navigation.getParam('user', {})
+        // if user is empty, load it manually!!!
+        let criteria = user.data ? user.data.criteria : []
+        this.state = { criteria: criteria }
     }
 
     saveUser = () => {
-        console.log(this.state)
+        let body = { data: { criteria: this.state.criteria } }
+        requests.saveUser(body)
     }
 
     deleteCriteria = (index) => {
@@ -41,6 +50,7 @@ export default class Notify extends React.Component {
     }
 
     render() {
+        AsyncStorage.getItem('session_token').then(console.log).catch(console.log)
         return (
             <View style={styles.container}>
                 <View style={{ flex: 1 }}>
@@ -64,9 +74,13 @@ export default class Notify extends React.Component {
                         )
                     })}
                 </View>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.button}><Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button></View>
-                    <View style={styles.button}><Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button></View>
+                <View style={styles.buttonView}>
+                    <View style={styles.button}>
+                        <Button title="Add Course" color={css.colours.button} disabled={this.state.criteria.length >= 5} onPress={() => this.props.navigation.navigate('EditCourse', { criteria: this.state.criteria })}></Button>
+                    </View>
+                    <View style={styles.button}>
+                        <Button title="Save" color={css.colours.button} onPress={this.saveUser}></Button>
+                    </View>
                 </View>
             </View>
         )
@@ -77,23 +91,21 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
         backgroundColor: css.colours.background,
-        height: '100%',
+        height: '100%'
     },
     allCriteria: {
-        flex: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginLeft: 20,
-        marginRight: 10
+        flex: 3,
+        paddingLeft: 20,
+        paddingRight: 10,
+        paddingBottom:100,
+        paddingTop:50
     },
     criteriaRow: {
-        flex: 1,
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop:css.lengths.betweenInputs
     },
     text: {
         color: css.colours.text,
@@ -128,6 +140,11 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 4,
         alignItems: 'flex-start'
+    },
+    buttonView: {
+        flex: 2,
+        display: 'flex',
+        alignItems: 'center'
     },
     button: {
         marginTop: css.lengths.betweenButtons,

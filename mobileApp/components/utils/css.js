@@ -2,6 +2,7 @@
 export default {
     colours: {
         button: '#48beff',
+        headerButton:'blue',
         background: 'white',
         headerBackground: '#48beff',
         headerText: 'white',

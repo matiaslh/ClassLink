@@ -2,9 +2,18 @@ const request = require('request');
 const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
 const crypto = require("crypto");
-const twilio = require('twilio');
+const firebase = require('firebase-admin');
 require('dotenv').config();
-let client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// setting up firebase with service account
+var serviceAccount = require("../serviceAccount.json");
+if (!serviceAccount) {
+    console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT IN THE .ENV')
+}
+firebase.initializeApp({
+    credential: firebase.credential.cert(serviceAccount),
+    databaseURL: "https://guelph-notifyme.firebaseio.com"
+})
 
 export function doGetRequests(query, callback) {
 
@@ -58,17 +67,24 @@ export function doGetRequests(query, callback) {
         });
 
     });
-
 }
 
-export function contact(cellNumber, message) {
-    console.log("contacting: " + cellNumber)
+export function contact() {
+    var registrationToken = 'ef4zAM_FSSw:APA91bF1A3wJxDcuDVhWeph28CwMmKlAs6ZiTxRY04GuiIyyoN4nx_ZbiRxX_MexgMpXeWGDthr0WOXOOQnM5t6vw76lXzP2_2uWVc6xBo55mblQHrJuQ7TMf5ulTSNoH_uSQ4mCslie'
+    var message = {
+        notification: {
+            title: 'NotifyMe Courses Available',
+            body: 'Courses that you are subscribed to are now available!\nRegister Quick!'
+        },
+        token: registrationToken
+    }
+    firebase.messaging().send(message).then((response) => {
+        // Response is a message ID string.
+        console.log('Successfully sent message:', response);
+    }).catch((error) => {
+        console.log('Error sending message:', error);
+    })
 
-    client.messages.create({
-        body: message,
-        to: cellNumber,
-        from: '+16474922393'
-    }).then(console.log).catch(console.log);
 }
 
 function getCell(columns, i, selector) {
@@ -121,7 +137,7 @@ export function getPostFields(query) {
     let postFields = {
         "VAR1": "", "DATE.VAR1": "", "DATE.VAR2": "", "LIST.VAR1_CONTROLLER": "LIST.VAR1", "LIST.VAR1_MEMBERS": "LIST.VAR1*LIST.VAR2*LIST.VAR3*LIST.VAR4", "LIST.VAR1_MAX": "5", "LIST.VAR2_MAX": "5", "LIST.VAR3_MAX": "5", "LIST.VAR4_MAX": "5", "LIST.VAR1_1": "", "LIST.VAR2_1": "", "LIST.VAR3_1": "",
         "LIST.VAR4_1": "", "LIST.VAR1_2": "", "LIST.VAR2_2": "", "LIST.VAR3_2": "", "LIST.VAR4_2": "", "LIST.VAR1_3": "", "LIST.VAR2_3": "", "LIST.VAR3_3": "", "LIST.VAR4_3": "", "LIST.VAR1_4": "", "LIST.VAR2_4": "", "LIST.VAR3_4": "", "LIST.VAR4_4": "", "LIST.VAR1_5": "", "LIST.VAR2_5": "", "LIST.VAR3_5": "", "LIST.VAR4_5": "", "VAR7": "", "VAR8": "", "VAR3": "", "VAR6": "", "VAR21": "", "VAR9": "", "SUBMIT_OPTIONS": ""
-    }   
+    }
     postFields.VAR1 = query.semester;
     let propName = 'LIST.VAR';
     query.courses.forEach((elem, index) => {

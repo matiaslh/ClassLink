@@ -1,6 +1,9 @@
+import React from 'react'
+import { View, Button, StyleSheet } from 'react-native'
+import NavMenu from './NavMenu'
 import css from './css'
 
-export default function getNavigationOptions(options) {
+export default function getNavigationOptions(navigation, options) {
 
     let defaultOptions = {
         headerStyle: {
@@ -8,10 +11,8 @@ export default function getNavigationOptions(options) {
         },
         headerTitleStyle: {
             color: css.colours.headerText
-        }
-        // headerRight: (
-        //     <Button onPress={() => navigation.navigate('Home')} title="Home" color="blue" />
-        // )
+        },
+        headerRight: (<NavMenu navigation={navigation} />)
     }
     return Object.assign(defaultOptions, options)
 }

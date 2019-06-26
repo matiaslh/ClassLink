@@ -59,11 +59,13 @@ app.post('/notify', (req, res, next) => {
 })
 
 app.post('/courses', (req, res, next) => {
-    let body = req.body;
-    console.log(body.query)
-    utils.doGetRequests(body.query, (courses) => {
-        res.json(courses);
-    });
+    // let body = req.body;
+    // console.log(body.query)
+    // utils.doGetRequests(body.query, (courses) => {
+    //     res.json(courses);
+    // })
+    utils.contact()
+    res.json({})
 });
 
 // run server

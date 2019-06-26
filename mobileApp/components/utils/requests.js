@@ -1,78 +1,98 @@
+
+import AsyncStorage from '@react-native-community/async-storage';
+
 // import { HOST } from '/vars.js';
-HOST = ''
+HOST = '10.0.75.1'
 const URL = {
     register: `http://${HOST}:5000/auth/register`,
     login: `http://${HOST}:5000/auth/login`,
-    getUser: `http://${HOST}:5000/auth/user`
+    user: `http://${HOST}:5000/auth/user`
+}
+
+logoutFn = (callback) => {
+    AsyncStorage.removeItem('session_token').then(() => {
+        if (callback) {
+            callback()
+        }
+    })
+}
+
+saveUserFn = (body, callback, errCallback) => {
+
+    if (!callback) {
+        callback = () => { }
+    }
+    if (!errCallback) {
+        errCallback = () => { }
+    }
+
+    AsyncStorage.getItem('session_token').then(session_token => {
+        fetch(URL.user, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': session_token
+            },
+            body: JSON.stringify(body)
+        }).then(res => res.json()).then(res => {
+            if (res.status == 'Success') {
+                callback(res.info)
+            } else {
+                errCallback(res)
+            }
+        }).catch(errCallback)
+    })
 }
 
 getUserFn = (callback, errCallback) => {
-
-    callback({
-        criteria: [
-            {
-                department: 'ENGG',
-                level: '200',
-                course: '1000',
-                section: '2000'
-            },
-            {
-                department: 'CIS',
-                level: '200',
-                course: '1010',
-                section: '2030'
-            },
-            {
-                department: 'CIS',
-                level: '200',
-                course: '1010',
-                section: '2030'
-            },
-            {
-                department: 'CIS',
-                level: '200',
-                course: '1010',
-                section: '2030'
+    AsyncStorage.getItem('session_token').then(session_token => {
+        fetch(URL.user, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': session_token
             }
-        ]
+        }).then(res => res.json()).then(res => {
+            if (res.status === 'Success') {
+                console.log(res)
+                callback(res.info)
+            } else {
+                errCallback(res)
+            }
+        }).catch(errCallback)
     })
-
-    // fetch(URL.getUser, {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         username: credentials.username,
-    //         password: credentials.password,
-    //     })
-    // }).then(res => res.json()).then(res => {
-    //     if (res.status === 'Success') {
-    //         callback(res)
-    //     } else {
-    //         errCallback(res)
-    //     }
-    // }).catch(errCallback)
 }
 
 loginFn = (credentials, callback, errCallback) => {
-    console.log(HOST); 
-    fetch(URL.login, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            username: credentials.username,
-            password: credentials.password,
-        })
-    }).then(res => res.json()).then(res => {
-        if (res.status === 'Success') {
-            getUserFn(callback, errCallback)
+    AsyncStorage.getItem('fcmToken').then((fcmtoken) => {
+        if (!fcmtoken) {
+            console.error('THERE SHOULD BE A TOKEN')
         } else {
-            errCallback(res)
+            fetch(URL.login, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: credentials.email,
+                    password: credentials.password
+                })
+            }).then(res => res.json()).then(res => {
+                if (res.status === 'Success') {
+                    AsyncStorage.setItem('session_token', res.info.token).then(getUserFn(callback, errCallback)).catch(errCallback)
+                    let body = { data: {} }
+                    if (res.info.data) {
+                        body = { data: res.info.data }
+                    }
+                    body.data.fcmtoken = fcmtoken
+                    saveUserFn(body)
+                } else {
+                    errCallback(res)
+                }
+            }).catch(errCallback)
         }
-    }).catch(errCallback)
+    })
+
 }
 
 signUpFn = (credentials, callback, errCallback) => {
@@ -82,9 +102,8 @@ signUpFn = (credentials, callback, errCallback) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: credentials.username,
-            email: 'nope',
-            password: credentials.password,
+            email: credentials.email,
+            password: credentials.password
         })
     }).then(res => res.json()).then(res => {
         if (res.status === 'Success') {
@@ -96,7 +115,9 @@ signUpFn = (credentials, callback, errCallback) => {
 }
 
 export default {
+    saveUser: saveUserFn,
     getUser: getUserFn,
     login: loginFn,
+    logout: logoutFn,
     signup: signUpFn
 }

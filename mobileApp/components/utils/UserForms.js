@@ -4,38 +4,22 @@ import css from './css'
 
 export default class UserForms extends React.Component {
 
-    state = {
-        username: '',
-        password: '',
-        confirmPassword: '',
-    }
-
-    passwordsMatch = () => {
-        return this.props.type !== 'signUp' || this.state.password === this.state.confirmPassword
-    }
-
-    errorMessage = () => {
-        if (!this.passwordsMatch()) {
-            return "Passwords do not match"
-        }
-    }
-
     render() {
         return (
             <View style={styles.container}>
                 <View>
-                    <Text style={styles.label}>Username</Text>
-                    <TextInput style={styles.input} name="username" onChangeText={(username) => this.setState({ username })} />
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput style={styles.input} name="email" onChangeText={(email) => this.props.onChange({ email })} />
                     <Text style={styles.label}>Password</Text>
-                    <TextInput secureTextEntry={true} style={styles.input} name="password" onChangeText={(password) => this.setState({ password })} />
+                    <TextInput secureTextEntry={true} style={styles.input} name="password" onChangeText={(password) => this.props.onChange({ password })} />
                     {this.props.type === 'signUp' && <Text style={styles.label}>Confirm Password</Text>}
-                    {this.props.type === 'signUp' && <TextInput secureTextEntry={true} style={styles.input} name="confirmPassword" onChangeText={(confirmPassword) => this.setState({ confirmPassword })} />}
+                    {this.props.type === 'signUp' && <TextInput secureTextEntry={true} style={styles.input} name="confirmPassword" onChangeText={(confirmPassword) => this.props.onChange({ confirmPassword })} />}
                 </View>
                 <View>
-                    <Text style={styles.errorText}>{this.errorMessage()}</Text>
+                    <Text style={styles.errorText}>{this.props.errorMessage}</Text>
                 </View>
                 <View style={styles.button}>
-                    <Button color={css.colours.button} title={this.props.title} disabled={!this.passwordsMatch()} onPress={() => this.props.handleSubmit(this.state)}></Button>
+                    <Button color={css.colours.button} title={this.props.title} disabled={this.props.errorMessage !== undefined} onPress={this.props.handleSubmit}></Button>
                 </View>
             </View>
         )
