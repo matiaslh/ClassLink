@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon } from 'react-native-elements'
-import { View, Text, Button, StyleSheet, AsyncStorage } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../utils/Header'
 import requests from '../utils/requests'
 import css from '../utils/css'

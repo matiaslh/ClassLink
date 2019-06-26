@@ -1,5 +1,5 @@
 
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 // import { HOST } from '/vars.js';
 HOST = '10.0.75.1'
@@ -64,23 +64,35 @@ getUserFn = (callback, errCallback) => {
 }
 
 loginFn = (credentials, callback, errCallback) => {
-    console.log(HOST);
-    fetch(URL.login, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: credentials.email,
-            password: credentials.password,
-        })
-    }).then(res => res.json()).then(res => {
-        if (res.status === 'Success') {
-            AsyncStorage.setItem('session_token', res.info.token).then(getUserFn(callback, errCallback)).catch(errCallback)
+    AsyncStorage.getItem('fcmToken').then((fcmtoken) => {
+        if (!fcmtoken) {
+            console.error('THERE SHOULD BE A TOKEN')
         } else {
-            errCallback(res)
+            fetch(URL.login, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: credentials.email,
+                    password: credentials.password
+                })
+            }).then(res => res.json()).then(res => {
+                if (res.status === 'Success') {
+                    AsyncStorage.setItem('session_token', res.info.token).then(getUserFn(callback, errCallback)).catch(errCallback)
+                    let body = { data: {} }
+                    if (res.info.data) {
+                        body = { data: res.info.data }
+                    }
+                    body.data.fcmtoken = fcmtoken
+                    saveUserFn(body)
+                } else {
+                    errCallback(res)
+                }
+            }).catch(errCallback)
         }
-    }).catch(errCallback)
+    })
+
 }
 
 signUpFn = (credentials, callback, errCallback) => {

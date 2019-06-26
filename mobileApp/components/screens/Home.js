@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Button, StyleSheet, AsyncStorage } from 'react-native'
+import { View, Text, Button, StyleSheet } from 'react-native'
 import css from '../utils/css'
 import Header from '../utils/Header'
 import getNavigationOptions from '../utils/navigation'
