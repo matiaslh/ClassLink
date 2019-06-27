@@ -45,6 +45,10 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
 
 function callRequests(user) {
 
+    if (!user.data || !user.data.criteria || !user.data.fcm_token || user.data.fcm_token.length <= 0) {
+        return
+    }
+
     let fcm_tokens = user.data.fcm_token
     let query = {
         courses: user.data.criteria,
@@ -54,12 +58,15 @@ function callRequests(user) {
     doGetRequests(query, (courses) => {
         let openCourses = _.filter(courses, (elem) => {
             return elem.space_available > 0
-        });
-        let message = "CHECK THIS COURSE NOW: " + JSON.stringify(_.pluck(openCourses, 'title'));
-        console.log(message)
+        })
         if (openCourses.length > 0) {
-            clearInterval(this);
+            let message = "CHECK THIS COURSE NOW: " + JSON.stringify(_.pluck(openCourses, 'title'));
+            console.log(message)
             contact(message, fcm_tokens)
+
+            //remove criteria from user
+            delete user.data.criteria
+            user.save()
         }
     })
 }
