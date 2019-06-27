@@ -50,7 +50,7 @@ function callRequests(user) {
         return
     }
 
-    let fcm_tokens = user.data.fcm_token
+    let fcm_tokens = user.data.fcm_tokens
     let query = {
         courses: user.data.criteria,
         semester: 'F19'
