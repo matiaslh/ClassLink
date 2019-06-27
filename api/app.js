@@ -31,18 +31,25 @@ const dbConnection = 'mongodb://localhost:27017/auth'
 console.log(dbConnection)
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
-    console.log("Succesfully connected to MongoDB.")
-    User.find({}).then((users) => {
-        users.forEach(callRequests)
-    })
+    console.log("Successfully connected to MongoDB.")
+    let seconds = 20
+    setInterval(() => {
+        User.find({}).then((users) => {
+            users.forEach(callRequests)
+        })
+    }, seconds * 1000)
+
 }).catch((err) => console.error(err));
 
 
 
 function callRequests(user) {
 
-    let fcm_tokens = user.data.fcm_tokens
-    let query = user.data.criteria
+    let fcm_tokens = user.data.fcm_token
+    let query = {
+        courses: user.data.criteria,
+        semester: 'F19'
+    }
 
     doGetRequests(query, (courses) => {
         let openCourses = _.filter(courses, (elem) => {
