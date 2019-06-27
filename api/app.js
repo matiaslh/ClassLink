@@ -32,7 +32,7 @@ console.log(dbConnection)
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 20
+    let seconds = 10
     setInterval(() => {
         User.find({}).then((users) => {
             users.forEach(callRequests)
@@ -45,7 +45,7 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
 
 function callRequests(user) {
 
-    if (!user.data || !user.data.criteria || !user.data.fcm_token || user.data.fcm_token.length <= 0) {
+    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0 || !user.data.fcm_token || user.data.fcm_token.length <= 0) {
         return
     }
 
@@ -55,18 +55,20 @@ function callRequests(user) {
         semester: 'F19'
     }
 
-    doGetRequests(query, (courses) => {
+    doGetRequests(query, async (courses) => {
         let openCourses = _.filter(courses, (elem) => {
             return elem.space_available > 0
         })
         if (openCourses.length > 0) {
             let message = "CHECK THIS COURSE NOW: " + JSON.stringify(_.pluck(openCourses, 'title'));
-            console.log(message)
             contact(message, fcm_tokens)
 
             //remove criteria from user
-            delete user.data.criteria
-            user.save()
+            user.data = {
+                fcm_token:fcm_tokens,
+                criteria: []
+            }
+            await user.save()
         }
     })
 }

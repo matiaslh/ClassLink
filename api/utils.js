@@ -47,7 +47,7 @@ module.exports = function doGetRequests(query, callback) {
                 if (err) { return console.log(err); }
                 console.log('done')
                 let courses = getAllCourses(body)
-                console.log(courses)
+                // console.log(courses)
                 callback(courses);
             });
 
@@ -80,7 +80,6 @@ function getAllCourses(html) {
 
     for (let i = 0; i < rows.length; i++) {
         let cols = rows[i].querySelectorAll('td');
-        console.log(cols.length)
         if (cols.length > 0) {
             let course = {};
             course.term = getCell(cols, 1);
