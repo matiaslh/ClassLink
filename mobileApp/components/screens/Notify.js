@@ -20,15 +20,31 @@ export default class Notify extends React.Component {
 
     constructor(props) {
         super(props)
-        let user = props.navigation.getParam('user', {})
+        let currUser = props.navigation.getParam('user', undefined)
+
         // if user is empty, load it manually!!!
-        let criteria = user.data ? user.data.criteria : []
-        this.state = { criteria: criteria }
+        if (!currUser) {
+            requests.getUser((user) => {
+                currUser = user
+                let criteria = (currUser.data && currUser.data.criteria) ? currUser.data.criteria : []
+                this.state = { criteria: criteria }
+            }, console.error)
+        } else {
+            let criteria = (currUser.data && currUser.data.criteria) ? currUser.data.criteria : []
+            this.state = { criteria: criteria }
+        }
+
     }
 
     saveUser = () => {
-        let body = { data: { criteria: this.state.criteria } }
-        requests.saveUser(body)
+        let criteria = this.state.criteria
+        requests.getUser(user => {
+            let body = { data: { fcm_tokens: [] } }
+            body.data.fcm_tokens = user.data.fcm_tokens
+            body.data.criteria = criteria
+            console.log(body)
+            requests.saveUser(body)
+        }, console.error)
     }
 
     deleteCriteria = (index) => {
@@ -98,14 +114,14 @@ const styles = StyleSheet.create({
         flex: 3,
         paddingLeft: 20,
         paddingRight: 10,
-        paddingBottom:100,
-        paddingTop:50
+        paddingBottom: 100,
+        paddingTop: 50
     },
     criteriaRow: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop:css.lengths.betweenInputs
+        marginTop: css.lengths.betweenInputs
     },
     text: {
         color: css.colours.text,

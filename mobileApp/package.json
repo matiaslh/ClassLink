@@ -7,7 +7,7 @@
     "start": "react-native start --port=8088",
     "android": "react-native run-android && react-native log-android",
     "clean": "cd android && gradlew.bat clean",
-    "build-android": "react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "build-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "test": "jest"
   },
   "dependencies": {

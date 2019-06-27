@@ -45,9 +45,9 @@ const rootStack = createStackNavigator(
 const AppContainer = createAppContainer(rootStack);
 
 export default class App extends React.Component {
-
 	// rest of this is to send notifications from nodejs through firebase
 	componentDidMount = async () => {
+		await AsyncStorage.clear()
 		this.checkPermission();
 		this.createNotificationListeners();
 	}
@@ -64,12 +64,14 @@ export default class App extends React.Component {
 		}
 	}
 	getToken = async () => {
-		let fcmToken = await AsyncStorage.getItem('fcmToken');
-		if (!fcmToken) {
-			fcmToken = await firebase.messaging().getToken();
-			if (fcmToken) {
+		let fcm_tokens = await AsyncStorage.getItem('fcm_tokens');
+		if (!fcm_tokens) {
+			console.log('GETTING FCM TOKEN')
+			fcm_tokens = await firebase.messaging().getToken();
+			if (fcm_tokens) {
+				console.log('SETTING FCM TOKEN', fcm_tokens)
 				// user has a device token
-				await AsyncStorage.setItem('fcmToken', fcmToken);
+				await AsyncStorage.setItem('fcm_tokens', fcm_tokens);
 			}
 		}
 	}

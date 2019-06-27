@@ -1,21 +1,9 @@
 const request = require('request');
 const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
-const crypto = require("crypto");
-const firebase = require('firebase-admin');
 require('dotenv').config();
 
-// setting up firebase with service account
-var serviceAccount = require("../serviceAccount.json");
-if (!serviceAccount) {
-    console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT IN THE .ENV')
-}
-firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
-    databaseURL: "https://guelph-notifyme.firebaseio.com"
-})
-
-export function doGetRequests(query, callback) {
+module.exports = function doGetRequests(query, callback) {
 
     const urlGet = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
     const urlPost = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX='
@@ -69,30 +57,12 @@ export function doGetRequests(query, callback) {
     });
 }
 
-export function contact() {
-    var registrationToken = 'ef4zAM_FSSw:APA91bF1A3wJxDcuDVhWeph28CwMmKlAs6ZiTxRY04GuiIyyoN4nx_ZbiRxX_MexgMpXeWGDthr0WOXOOQnM5t6vw76lXzP2_2uWVc6xBo55mblQHrJuQ7TMf5ulTSNoH_uSQ4mCslie'
-    var message = {
-        notification: {
-            title: 'NotifyMe Courses Available',
-            body: 'Courses that you are subscribed to are now available!\nRegister Quick!'
-        },
-        token: registrationToken
-    }
-    firebase.messaging().send(message).then((response) => {
-        // Response is a message ID string.
-        console.log('Successfully sent message:', response);
-    }).catch((error) => {
-        console.log('Error sending message:', error);
-    })
-
-}
-
 function getCell(columns, i, selector) {
     let p = columns[i].querySelector(selector ? selector : 'p');
     return p.innerHTML;
 }
 
-export function getAllCourses(html) {
+function getAllCourses(html) {
 
     let root = new JSDOM(html);
 
@@ -132,7 +102,7 @@ export function getAllCourses(html) {
     return courses;
 }
 
-export function getPostFields(query) {
+function getPostFields(query) {
 
     let postFields = {
         "VAR1": "", "DATE.VAR1": "", "DATE.VAR2": "", "LIST.VAR1_CONTROLLER": "LIST.VAR1", "LIST.VAR1_MEMBERS": "LIST.VAR1*LIST.VAR2*LIST.VAR3*LIST.VAR4", "LIST.VAR1_MAX": "5", "LIST.VAR2_MAX": "5", "LIST.VAR3_MAX": "5", "LIST.VAR4_MAX": "5", "LIST.VAR1_1": "", "LIST.VAR2_1": "", "LIST.VAR3_1": "",
@@ -157,15 +127,11 @@ export function getPostFields(query) {
     return postFields;
 }
 
-export function getCookies(cookieArray) {
+function getCookies(cookieArray) {
     let newObject = {};
     for (let cookie of cookieArray) {
         let index = cookie.indexOf('=');
         newObject[cookie.substring(0, index)] = cookie.substring(index + 1)
     }
     return newObject;
-}
-
-export function sha256(data) {
-    return crypto.createHash("sha256").update(data, "binary").digest("base64");
 }

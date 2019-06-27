@@ -2,7 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
 // import { HOST } from '/vars.js';
-HOST = '10.0.75.1'
+HOST = '68.183.197.232'
 const URL = {
     register: `http://${HOST}:5000/auth/register`,
     login: `http://${HOST}:5000/auth/login`,
@@ -44,8 +44,11 @@ saveUserFn = (body, callback, errCallback) => {
     })
 }
 
-getUserFn = (callback, errCallback) => {
-    AsyncStorage.getItem('session_token').then(session_token => {
+getUserFn = (callback, errCallback, saveFcmToken) => {
+    AsyncStorage.multiGet(['session_token', 'fcm_tokens']).then(values => {
+        let session_token = values[0][1]
+        let fcm_tokens = values[1][1]
+
         fetch(URL.user, {
             method: 'GET',
             headers: {
@@ -54,8 +57,21 @@ getUserFn = (callback, errCallback) => {
             }
         }).then(res => res.json()).then(res => {
             if (res.status === 'Success') {
-                console.log(res)
                 callback(res.info)
+                if (saveFcmToken) {
+                    if (!fcm_tokens) {
+                        console.error("THIS SHOULD HAVE A TOKEN")
+                    } else {
+                        let body = { data: { fcm_tokens: [] } }
+                        if (res.info.data) {
+                            body = { data: res.info.data }
+                        }
+                        if (body.data.fcm_tokens.indexOf(fcm_tokens) == -1) {
+                            body.data.fcm_tokens.push(fcm_tokens)
+                        }
+                        saveUserFn(body)
+                    }
+                }
             } else {
                 errCallback(res)
             }
@@ -64,35 +80,22 @@ getUserFn = (callback, errCallback) => {
 }
 
 loginFn = (credentials, callback, errCallback) => {
-    AsyncStorage.getItem('fcmToken').then((fcmtoken) => {
-        if (!fcmtoken) {
-            console.error('THERE SHOULD BE A TOKEN')
+    fetch(URL.login, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password
+        })
+    }).then(res => res.json()).then(res => {
+        if (res.status === 'Success') {
+            AsyncStorage.setItem('session_token', res.info.token).then(getUserFn(callback, errCallback, true)).catch(errCallback)
         } else {
-            fetch(URL.login, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: credentials.email,
-                    password: credentials.password
-                })
-            }).then(res => res.json()).then(res => {
-                if (res.status === 'Success') {
-                    AsyncStorage.setItem('session_token', res.info.token).then(getUserFn(callback, errCallback)).catch(errCallback)
-                    let body = { data: {} }
-                    if (res.info.data) {
-                        body = { data: res.info.data }
-                    }
-                    body.data.fcmtoken = fcmtoken
-                    saveUserFn(body)
-                } else {
-                    errCallback(res)
-                }
-            }).catch(errCallback)
+            errCallback(res)
         }
-    })
-
+    }).catch(errCallback)
 }
 
 signUpFn = (credentials, callback, errCallback) => {
