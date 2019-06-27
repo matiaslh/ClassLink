@@ -1,7 +1,6 @@
 const request = require('request');
 const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
-require('dotenv').config();
 
 module.exports = function doGetRequests(query, callback) {
 

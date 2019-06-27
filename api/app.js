@@ -3,12 +3,11 @@ const _ = require('underscore')
 const mongoose = require('mongoose').set('debug', true)
 const uniqueValidator = require('mongoose-unique-validator')
 const firebase = require('firebase-admin');
-require('dotenv').config({ path: __dirname + '../.env' })
 
 // setting up firebase with service account
-let serviceAccount = require("../serviceAccount.json");
+let serviceAccount = require("./serviceAccount.json");
 if (!serviceAccount) {
-    console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT IN THE .ENV')
+    console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT THERE')
 }
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
@@ -28,7 +27,7 @@ UserSchema.plugin(uniqueValidator);
 
 User = mongoose.model("User", UserSchema);
 
-const dbConnection = process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27017/auth';
+const dbConnection = 'mongodb://localhost:27017/auth'
 console.log(dbConnection)
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {

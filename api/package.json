@@ -23,10 +23,5 @@
     "mongoose-unique-validator": "^2.0.3",
     "request": "^2.88.0",
     "underscore": "^1.9.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/node": "^7.4.5",
-    "@babel/preset-env": "^7.4.5"
   }
 }
