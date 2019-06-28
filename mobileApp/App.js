@@ -3,6 +3,7 @@ import React from 'react';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase'
+import { Alert } from 'react-native'
 import Home from './components/screens/Home'
 import SignUp from './components/screens/SignUp'
 import Login from './components/screens/Login'
@@ -10,6 +11,7 @@ import Notify from './components/screens/Notify'
 import EditCourse from './components/screens/EditCourse'
 import Settings from './components/screens/Settings'
 import Premium from './components/screens/Premium'
+
 
 // persistence is to open the same page even after restarting the app
 const persistenceKey = 'persistenceKey'
@@ -81,22 +83,19 @@ export default class App extends React.Component {
 	createNotificationListeners = async () => {
 		//  Triggered when a particular notification has been received in foreground
 		this.notificationListener = firebase.notifications().onNotification((notification) => {
-			const { title, body } = notification;
-			this.showAlert(title, body);
+			this.showAlert(notification);
 		});
 
 		//  If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
 		this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-			const { title, body } = notificationOpen.notification;
-			this.showAlert(title, body);
+			this.showAlert(notificationOpen.notification);
 		});
 
 
 		//  If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
 		const notificationOpen = await firebase.notifications().getInitialNotification();
 		if (notificationOpen) {
-			const { title, body } = notificationOpen.notification;
-			this.showAlert(title, body);
+			this.showAlert(notificationOpen.notification);
 		}
 
 		//  Triggered for data only payload in foreground
@@ -106,15 +105,16 @@ export default class App extends React.Component {
 		});
 	}
 
-	showAlert = (title, body) => {
-		console.log(title, body)
-		// Alert.alert(
-		// 	title, body,
-		// 	[
-		// 		{ text: 'OK', onPress: () => console.log('OK Pressed') },
-		// 	],
-		// 	{ cancelable: false },
-		// );
+	showAlert = (notification) => {
+		let courses = JSON.parse(notification._data.courses)
+		Alert.alert(
+			"NotifyMe U of G Courses Available", //title
+			courses.join("\n"), // body
+			[
+				{ text: 'OK' },
+			],
+			{ cancelable: false },
+		);
 	}
 
 	render() {

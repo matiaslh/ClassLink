@@ -59,9 +59,11 @@ function callRequests(user) {
             return elem.space_available > 0
         })
         if (openCourses.length > 0) {
-            let data = _.pluck(openCourses, 'title')
-            let message = "These are the courses that are now available: " + data.join(', ')
-            contact(fcm_tokens, message, data)
+            let courses = _.pluck(openCourses, 'title').map(title => {
+                let index = title.indexOf(' (')
+                return (index != -1) ? title.substring(0, index) : title
+            })
+            contact(fcm_tokens, courses)
 
             //remove criteria from user
             user.data = {
@@ -73,10 +75,11 @@ function callRequests(user) {
     })
 }
 
-function contact(fcm_tokens, message, data) {
+function contact(fcm_tokens, courses) {
+    let message = courses.join('\n')
     let notif = {
         notification: {
-            title: 'NotifyMe Courses Available',
+            title: 'NotifyMe U of G Courses Available',
             body: message
         },
         android: {
@@ -91,7 +94,7 @@ function contact(fcm_tokens, message, data) {
                 }
             }
         },
-        data,
+        data: { courses: JSON.stringify(courses) },
         tokens: fcm_tokens
     }
     firebase.messaging().sendMulticast(notif).then((response) => {

@@ -70,7 +70,15 @@ function getAllCourses(html) {
         return { status: 'error', message: errorText.innerHTML }
     }
 
-    let table = root.window.document.querySelector('table.mainTable table table');
+    let table = root.window.document.querySelector('table.mainTable');
+    if (table.length == 0) {
+        return { status: 'error' };
+    }
+    table = table.window.document.querySelector('table')
+    if (table.length == 0) {
+        return { status: 'error' };
+    }
+    table = table.window.document.querySelector('table')
     if (table.length == 0) {
         return { status: 'error' };
     }
