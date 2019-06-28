@@ -42,11 +42,9 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
 
 }).catch((err) => console.error(err));
 
-
-
 function callRequests(user) {
 
-    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0 || !user.data.fcm_token || user.data.fcm_token.length <= 0) {
+    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0 || !user.data.fcm_tokens || user.data.fcm_tokens.length <= 0) {
         return
     }
 
@@ -61,12 +59,13 @@ function callRequests(user) {
             return elem.space_available > 0
         })
         if (openCourses.length > 0) {
-            let message = "CHECK THIS COURSE NOW: " + JSON.stringify(_.pluck(openCourses, 'title'));
-            contact(message, fcm_tokens)
+            let data = _.pluck(openCourses, 'title')
+            let message = "These are the courses that are now available: " + data.join(', ')
+            contact(fcm_tokens, message, data)
 
             //remove criteria from user
             user.data = {
-                fcm_token:fcm_tokens,
+                fcm_tokens: fcm_tokens,
                 criteria: []
             }
             await user.save()
@@ -74,12 +73,14 @@ function callRequests(user) {
     })
 }
 
-function contact(message, fcm_tokens) {
+function contact(fcm_tokens, message, data) {
     let notif = {
         notification: {
             title: 'NotifyMe Courses Available',
-            body: message
+            body: message,
+            sound: 'default'
         },
+        data,
         tokens: fcm_tokens
     }
     firebase.messaging().sendMulticast(notif).then((response) => {

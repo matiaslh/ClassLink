@@ -32,11 +32,23 @@ export default class SignUp extends React.Component {
     handleSubmit = () => {
         let { email, password, confirmPassword } = this.state
         if (password !== confirmPassword) {
-            console.log("Passwords do not match")
+            console.error("Passwords do not match")
             return
         }
         let navigate = this.props.navigation.navigate
-        requests.signup({ email, password }, (user) => navigate('Notify', { user }), console.log)
+        requests.signup({ email, password }, (user) => navigate('Notify', { user }), (err) => {
+            let message = ''
+            if(err){
+                if(err.info && typeof(err.info) === 'string'){
+                    message = err.info
+                }else if(err.info && err.info.message){
+                    message = err.info.message
+                }else{
+                    message = "Invalid fields"
+                }
+            }
+            this.setState({ errorMessage: message })
+        })
     }
 
     render() {

@@ -2,11 +2,11 @@
 export default {
     colours: {
         button: '#48beff',
-        headerButton:'blue',
+        headerButton: '#2F33BC',
         background: 'white',
         headerBackground: '#48beff',
         headerText: 'white',
-        text: 'blue',
+        text: '#2F33BC',
         input: 'white',
         inputBorder: 'gray',
         criteriaBorder: '#43beff',

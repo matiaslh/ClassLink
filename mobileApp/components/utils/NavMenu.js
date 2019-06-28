@@ -15,25 +15,22 @@ export default class NavMenu extends React.PureComponent {
 
     logout = () => {
         let navigate = this.props.navigation.navigate
+        console.log()
+
         this.hideMenu()
         requests.logout(() => {
             navigate('Home')
         })
     }
 
-    profilePage = () => {
+    settingsPage = () => {
         this.hideMenu()
-        this.props.navigation.navigate('Profile')
+        this.props.navigation.navigate('Settings')
     }
 
     premiumPage = () => {
         this.hideMenu()
         this.props.navigation.navigate('Premium')
-    }
-
-    aboutUsPage = () => {
-        this.hideMenu()
-        this.props.navigation.navigate('AboutUs')
     }
 
     hideMenu = () => {
@@ -44,18 +41,20 @@ export default class NavMenu extends React.PureComponent {
         this._menu.show()
     }
 
+    // TODO PREMIUM IS DISABLED
+
     render() {
+        let loggedIn = requests.checkLoggedIn()
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Menu
                     ref={this.setMenuRef}
                     button={<View style={{ margin: 10 }}><Icon onPress={this.showMenu} name='menu' color={css.colours.headerButton} /></View>}
                 >
-                    <MenuItem onPress={this.profilePage}>Profile</MenuItem>
-                    <MenuItem onPress={this.premiumPage}>Premium</MenuItem>
-                    <MenuItem onPress={this.aboutUsPage}>About Us</MenuItem>
+                    {loggedIn && <MenuItem onPress={this.settingsPage}>Settings</MenuItem>}
+                    {false && <MenuItem onPress={this.premiumPage}>Premium</MenuItem>}
                     <MenuDivider />
-                    <MenuItem onPress={this.logout}>Logout</MenuItem>
+                    {loggedIn && <MenuItem onPress={this.logout}>Logout</MenuItem>}
                 </Menu>
             </View>
         )

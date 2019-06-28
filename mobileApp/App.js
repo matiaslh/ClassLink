@@ -8,9 +8,8 @@ import SignUp from './components/screens/SignUp'
 import Login from './components/screens/Login'
 import Notify from './components/screens/Notify'
 import EditCourse from './components/screens/EditCourse'
-import Profile from './components/screens/Profile'
+import Settings from './components/screens/Settings'
 import Premium from './components/screens/Premium'
-import AboutUs from './components/screens/AboutUs'
 
 // persistence is to open the same page even after restarting the app
 const persistenceKey = 'persistenceKey'
@@ -33,12 +32,11 @@ const rootStack = createStackNavigator(
 		Login: Login,
 		Notify: Notify,
 		EditCourse: EditCourse,
-		Profile: Profile,
-		Premium: Premium,
-		AboutUs: AboutUs
+		Settings: Settings,
+		Premium: Premium
 	},
 	{
-		initialRouteName: 'Home',
+		initialRouteName: 'Home'
 	}
 );
 
@@ -66,10 +64,8 @@ export default class App extends React.Component {
 	getToken = async () => {
 		let fcm_tokens = await AsyncStorage.getItem('fcm_tokens');
 		if (!fcm_tokens) {
-			console.log('GETTING FCM TOKEN')
 			fcm_tokens = await firebase.messaging().getToken();
 			if (fcm_tokens) {
-				console.log('SETTING FCM TOKEN', fcm_tokens)
 				// user has a device token
 				await AsyncStorage.setItem('fcm_tokens', fcm_tokens);
 			}

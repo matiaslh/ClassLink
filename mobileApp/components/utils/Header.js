@@ -24,6 +24,10 @@ export default class Header extends React.Component {
         EditCourse: {
             main: "U of Guelph NotifyMe",
             sub: "Sign up or login below to get started"
+        },
+        Settings : {
+            main: "Settings",
+            sub: "Change your settings below"
         }
     }
 

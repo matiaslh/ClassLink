@@ -99,6 +99,7 @@ loginFn = (credentials, callback, errCallback) => {
 }
 
 signUpFn = (credentials, callback, errCallback) => {
+
     fetch(URL.register, {
         method: 'POST',
         headers: {
@@ -117,10 +118,16 @@ signUpFn = (credentials, callback, errCallback) => {
     }).catch(errCallback)
 }
 
+checkLoggedInFn = async () => {
+    let session_token = AsyncStorage.getItem('session_token')
+    return session_token ? true : false
+}
+
 export default {
     saveUser: saveUserFn,
     getUser: getUserFn,
     login: loginFn,
     logout: logoutFn,
-    signup: signUpFn
+    signup: signUpFn,
+    checkLoggedIn: checkLoggedInFn
 }

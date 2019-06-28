@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         marginTop: css.lengths.betweenButtons
     },
     errorText: {
-        color: css.colours.error
+        color: css.colours.error,
+        padding: 20
     }
 })

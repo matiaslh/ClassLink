@@ -42,7 +42,6 @@ export default class Notify extends React.Component {
             let body = { data: { fcm_tokens: [] } }
             body.data.fcm_tokens = user.data.fcm_tokens
             body.data.criteria = criteria
-            console.log(body)
             requests.saveUser(body)
         }, console.error)
     }
@@ -66,7 +65,6 @@ export default class Notify extends React.Component {
     }
 
     render() {
-        AsyncStorage.getItem('session_token').then(console.log).catch(console.log)
         return (
             <View style={styles.container}>
                 <View style={{ flex: 1 }}>
