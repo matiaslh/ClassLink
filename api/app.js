@@ -77,8 +77,19 @@ function contact(fcm_tokens, message, data) {
     let notif = {
         notification: {
             title: 'NotifyMe Courses Available',
-            body: message,
-            sound: 'default'
+            body: message
+        },
+        android: {
+            notification: {
+                sound: "default"
+            }
+        },
+        apns: {
+            payload: {
+                aps: {
+                    sound: "default"
+                }
+            }
         },
         data,
         tokens: fcm_tokens
