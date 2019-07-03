@@ -28,7 +28,7 @@ export default class Notify extends React.Component {
                 currUser = user
                 let criteria = (currUser.data && currUser.data.criteria) ? currUser.data.criteria : []
                 this.state = { criteria: criteria }
-            }, console.error)
+            }, console.log)
         } else {
             let criteria = (currUser.data && currUser.data.criteria) ? currUser.data.criteria : []
             this.state = { criteria: criteria }
@@ -43,7 +43,7 @@ export default class Notify extends React.Component {
             body.data.fcm_tokens = user.data.fcm_tokens
             body.data.criteria = criteria
             requests.saveUser(body)
-        }, console.error)
+        }, console.log)
     }
 
     deleteCriteria = (index) => {

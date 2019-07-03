@@ -9,12 +9,11 @@ const URL = {
     user: `http://${HOST}:5000/auth/user`
 }
 
-logoutFn = (callback) => {
-    AsyncStorage.removeItem('session_token').then(() => {
-        if (callback) {
-            callback()
-        }
-    })
+logoutFn = async (callback) => {
+    await AsyncStorage.removeItem('session_token')
+    if (callback) {
+        callback()
+    }
 }
 
 saveUserFn = (body, callback, errCallback) => {
@@ -118,9 +117,10 @@ signUpFn = (credentials, callback, errCallback) => {
     }).catch(errCallback)
 }
 
-checkLoggedInFn = async () => {
-    let session_token = AsyncStorage.getItem('session_token')
-    return session_token ? true : false
+isLoggedInFn = async () => {
+    let session_token = await AsyncStorage.getItem('session_token')
+    let loggedIn = (!session_token || session_token == undefined || session_token == null || session_token == '' || session_token=='null') ? false : true
+    return loggedIn
 }
 
 export default {
@@ -129,5 +129,5 @@ export default {
     login: loginFn,
     logout: logoutFn,
     signup: signUpFn,
-    checkLoggedIn: checkLoggedInFn
+    isLoggedIn: isLoggedInFn
 }

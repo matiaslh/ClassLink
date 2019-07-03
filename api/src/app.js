@@ -32,9 +32,9 @@ console.log(dbConnection)
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 10
+    let seconds = 60
     setInterval(() => {
-        console.log('Searching for users...')
+        console.log('Searching for users (seconds:' + seconds + ') ...')
         User.find({}).then((users) => {
             users.forEach(callRequests)
         })

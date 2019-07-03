@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Icon } from 'react-native-elements'
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import css from './css'
 import requests from './requests';
@@ -9,14 +9,16 @@ import requests from './requests';
 export default class NavMenu extends React.PureComponent {
     _menu = null
 
+    state = {
+        isLoggedIn: false
+    }
+
     setMenuRef = ref => {
         this._menu = ref
     }
 
     logout = () => {
         let navigate = this.props.navigation.navigate
-        console.log()
-
         this.hideMenu()
         requests.logout(() => {
             navigate('Home')
@@ -37,24 +39,26 @@ export default class NavMenu extends React.PureComponent {
         this._menu.hide()
     }
 
-    showMenu = () => {
+    showMenu = async () => {
+        let isLoggedIn = await requests.isLoggedIn()
+        this.setState({ isLoggedIn })
         this._menu.show()
     }
 
     // TODO PREMIUM IS DISABLED
 
     render() {
-        let loggedIn = requests.checkLoggedIn()
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Menu
                     ref={this.setMenuRef}
                     button={<View style={{ margin: 10 }}><Icon onPress={this.showMenu} name='menu' color={css.colours.headerButton} /></View>}
                 >
-                    {loggedIn && <MenuItem onPress={this.settingsPage}>Settings</MenuItem>}
-                    {false && <MenuItem onPress={this.premiumPage}>Premium</MenuItem>}
+                    {this.state.isLoggedIn && <MenuItem onPress={this.settingsPage}>Settings</MenuItem>}
+                    {this.state.isLoggedIn && <MenuItem onPress={this.premiumPage}>Premium</MenuItem>}
+                    <MenuItem>About Us</MenuItem>
                     <MenuDivider />
-                    {loggedIn && <MenuItem onPress={this.logout}>Logout</MenuItem>}
+                    {this.state.isLoggedIn && <MenuItem onPress={this.logout}>Logout</MenuItem>}
                 </Menu>
             </View>
         )

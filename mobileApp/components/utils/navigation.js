@@ -1,5 +1,4 @@
 import React from 'react'
-import { View, Button, StyleSheet } from 'react-native'
 import NavMenu from './NavMenu'
 import css from './css'
 

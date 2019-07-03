@@ -4,7 +4,7 @@
   "description": "Get into any guelph course as soon as it is open",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node src/app.js"
   },
   "repository": {
     "type": "git",
