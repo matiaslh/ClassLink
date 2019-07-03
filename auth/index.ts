@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import cors from 'cors';
+var cors = require('cors')
 import * as bodyParser from 'body-parser';
 import { profileRouter } from './routes/ProfileRouter';
 import mongoose from 'mongoose';
