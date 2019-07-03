@@ -67,5 +67,5 @@ const buttonWrapper = {
 
 const appHeader = {
     fontSize: '50',
-    color: 'white'
+    color: css.colours.headerText
 }

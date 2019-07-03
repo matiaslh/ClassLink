@@ -1,9 +1,10 @@
 
 export default {
     colours:{
-        headerBackground:'purple',
-        background:'#282c34',
+        headerBackground:'#02C39A',
+        background:'#00171F',
         text:'white',
+        headerText:'white',
         errorText:'red'
     }
 }

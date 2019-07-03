@@ -1,8 +1,9 @@
 import React from 'react';
 import UserForm from '../utils/UserForm'
-import requests from '../utils/requests';
+import requests from '../utils/requests'
+import { withRouter } from "react-router-dom"
 
-export default class SignUp extends React.Component {
+class SignUp extends React.Component {
 
     state = {
         email: '',
@@ -20,13 +21,14 @@ export default class SignUp extends React.Component {
 
     handleSubmit = () => {
         console.log(this.state)
-        let {username , password, confirmPassword} = this.state
+        let {email, password, confirmPassword} = this.state
         if(password !== confirmPassword){
             console.error('WRONG PASSWORD')
             return
         }
-        requests.signup({username, password}, ()=>{
-
+        let history = this.props.history
+        requests.signup({email, password}, ()=>{
+            history.push('/notify')
         }, console.log)
     }
 
@@ -36,3 +38,5 @@ export default class SignUp extends React.Component {
         )
     }
 }
+
+export default withRouter(SignUp)

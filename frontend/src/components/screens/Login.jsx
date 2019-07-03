@@ -1,7 +1,8 @@
 import React from 'react';
 import UserForm from '../utils/UserForm'
+import { withRouter } from "react-router-dom"
 
-export default class Login extends React.Component {
+class Login extends React.Component {
 
     state = {
         email: '',
@@ -22,3 +23,5 @@ export default class Login extends React.Component {
         )
     }
 }
+
+export default withRouter(Login)
