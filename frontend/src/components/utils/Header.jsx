@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import { withRouter } from "react-router-dom";
+import css from './css';
 
 class Header extends React.Component {
 
@@ -49,7 +50,8 @@ const headerWrapper = {
     flex: '1',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    backgroundColor: css.colours.headerBackground
 }
 
 const flex = {

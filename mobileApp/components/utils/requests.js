@@ -119,7 +119,7 @@ signUpFn = (credentials, callback, errCallback) => {
 
 isLoggedInFn = async () => {
     let session_token = await AsyncStorage.getItem('session_token')
-    let loggedIn = (!session_token || session_token == undefined || session_token == null || session_token == '' || session_token=='null') ? false : true
+    let loggedIn = (!session_token || session_token == undefined || session_token == null || session_token == '' || session_token == 'null') ? false : true
     return loggedIn
 }
 

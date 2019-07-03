@@ -1,8 +1,9 @@
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
-import Header from './Header';
+import Header from '../utils/Header';
 import SignUp from './SignUp';
 import Login from './Login';
+import css from '../utils/css';
 
 export default class Router extends React.Component {
     render() {
@@ -25,5 +26,5 @@ export default class Router extends React.Component {
 const appStyle = {
     textAlign: 'center',
     height: '100%',
-    backgroundColor: '#282c34'
+    backgroundColor: css.colours.background
 }
