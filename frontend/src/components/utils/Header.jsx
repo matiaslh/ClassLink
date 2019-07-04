@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import { withRouter } from "react-router-dom";
 import css from './css';
+import requests from './requests';
 
 class Header extends React.Component {
 
@@ -10,7 +11,9 @@ class Header extends React.Component {
     }
 
     handleLogout = () => {
-        this.props.history.push('/login')
+        requests.logout(() => {
+            this.props.history.push('/login')
+        })
     }
 
     render() {
@@ -30,7 +33,7 @@ class Header extends React.Component {
                 <div style={flex} color="white">
                     Logo
                     </div>
-                <div style={{ flex: '3' }}>
+                <div style={{ flex: 3 }}>
                     <header style={appHeader}>
                         University of Guelph NotifyMe
                         </header>

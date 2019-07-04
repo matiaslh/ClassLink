@@ -21,13 +21,13 @@ class SignUp extends React.Component {
 
     handleSubmit = () => {
         console.log(this.state)
-        let {email, password, confirmPassword} = this.state
-        if(password !== confirmPassword){
+        let { email, password, confirmPassword } = this.state
+        if (password !== confirmPassword) {
             console.error('WRONG PASSWORD')
             return
         }
         let history = this.props.history
-        requests.signup({email, password}, ()=>{
+        requests.signup({ email, password }, () => {
             history.push('/notify')
         }, console.log)
     }

@@ -44,6 +44,7 @@ let saveUserFn = (body, callback, errCallback) => {
 let getUserFn = (callback, errCallback, saveFcmToken) => {
 
     let session_token = sessionStorage.getItem('session_token')
+    let fcm_token = sessionStorage.getItem('fcm_token')
 
     fetch(URL.user, {
         method: 'GET',
@@ -54,20 +55,20 @@ let getUserFn = (callback, errCallback, saveFcmToken) => {
     }).then(res => res.json()).then(res => {
         if (res.status === 'Success') {
             callback(res.info)
-            // if (saveFcmToken) {
-            //     if (!fcm_tokens) {
-            //         console.error("THIS SHOULD HAVE A TOKEN")
-            //     } else {
-            //         let body = { data: { fcm_tokens: [] } }
-            //         if (res.info.data) {
-            //             body = { data: res.info.data }
-            //         }
-            //         if (body.data.fcm_tokens.indexOf(fcm_tokens) === -1) {
-            //             body.data.fcm_tokens.push(fcm_tokens)
-            //         }
-            //         saveUserFn(body)
-            //     }
-            // }
+            if (saveFcmToken) {
+                if (!fcm_token) {
+                    console.error("THIS SHOULD HAVE A TOKEN")
+                } else {
+                    let body = { data: { fcm_tokens: [] } }
+                    if (res.info.data) {
+                        body = { data: res.info.data }
+                    }
+                    if (body.data.fcm_tokens.indexOf(fcm_token) === -1) {
+                        body.data.fcm_tokens.push(fcm_token)
+                    }
+                    saveUserFn(body)
+                }
+            }
         } else {
             errCallback(res)
         }
