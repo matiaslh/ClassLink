@@ -5,7 +5,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 const firebase = require('firebase-admin');
 
 // setting up firebase with service account
-let serviceAccount = require("./serviceAccount.json");
+let serviceAccount = require("../serviceAccount.json");
 if (!serviceAccount) {
     console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT THERE')
 }
