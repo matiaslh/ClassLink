@@ -5,6 +5,8 @@ import Dropdown from '../utils/Dropdown'
 import css from '../utils/css';
 import constants, { labels } from '../utils/constants'
 import requests from '../utils/requests';
+import messaging from '../utils/firebase-messaging-config'
+import Notification from '../utils/Notification'
 
 class Notify extends React.Component {
 
@@ -17,19 +19,27 @@ class Notify extends React.Component {
             userLoaded: false,
             criteria: []
         }
-        requests.getUser((user) => {
+
+        requests.getUser(user => {
             let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
             _this.state.criteria = criteria
             _this.state.userLoaded = true
             _this.forceUpdate()
-            console.log(user, _this.state)
+        })
+    }
+
+    componentDidMount() {
+        let _this = this
+        messaging.onMessage(payload => {
+            _this.setState({ notification: payload, criteria: [] })
         })
     }
 
     handleClose = () => {
-        this.state.showModal = false
-        delete this.state.newCourse
-        this.setState(this.state)
+        let currState = this.state
+        currState.showModal = false
+        delete currState.newCourse
+        this.setState(currState)
     }
 
     handleAddCourse = () => {
@@ -59,14 +69,18 @@ class Notify extends React.Component {
 
     saveChanges = () => {
         let criteria = this.state.criteria
-        console.log(criteria)
         let history = this.props.history
 
         requests.getUser(user => {
             let body = { data: { fcm_tokens: [] } }
             body.data.fcm_tokens = user.data.fcm_tokens
             body.data.criteria = criteria
-            requests.saveUser(body)
+            requests.saveUser(body, (message) => {
+                this.setState({ message })
+                setInterval(() => {
+                    this.setState({ message: undefined })
+                }, 2000)
+            })
         }, () => history.push('/login'))
 
     }
@@ -99,12 +113,12 @@ class Notify extends React.Component {
                         })}
                     </div>
                     <div style={styles.message}>{this.state.message}</div>
-                    <div style={styles.button}><Button color="primary" onClick={this.openModal}>Add Course</Button></div>
-                    <div style={styles.button}><Button color="primary" onClick={this.saveChanges}>Save Changes</Button></div>
+                    <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal}>Add Course</Button></div>
+                    <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.saveChanges}>Save Changes</Button></div>
                 </div>
 
-                <Modal isOpen={this.state.showModal} className={this.props.className}>
-                    <ModalHeader>Modal title</ModalHeader>
+                <Modal isOpen={this.state.showModal}>
+                    <ModalHeader>Add/Edit Course</ModalHeader>
                     <ModalBody>
                         <div style={styles.courseWrapper}>
                             <div style={styles.courseInput}>Department<Dropdown items={constants.departments} type="department" onChange={this.inputOnChange} /></div>
@@ -118,6 +132,9 @@ class Notify extends React.Component {
                         <Button color="primary" onClick={this.handleAddCourse}>Add Course</Button>{' '}
                     </ModalFooter>
                 </Modal>
+
+                <Notification message={this.state.notification} handleClose={() => this.setState({ notification: undefined })} />
+
             </div>
         )
     }
@@ -139,10 +156,15 @@ const styles = {
         marginRight: 'auto',
         paddingTop: '40px',
         marginTop: '20px',
-        border: '1px solid #ccc'
+        backgroundColor: css.colours.background2
     },
     button: {
         padding: 10
+    },
+    buttonColours: {
+        backgroundColor: css.colours.background2,
+        borderColor: css.colours.button,
+        color: css.colours.button
     },
     courseWrapper: {
         display: 'flex',
