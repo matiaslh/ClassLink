@@ -54,6 +54,12 @@ app.use('/auth', profileRouter);
 app.use('/auth/password', passwordRouter);
 app.use('/redirect/', redirectRouter);
 
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+app.get('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+});
+
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log('Listening on port ' + port);
