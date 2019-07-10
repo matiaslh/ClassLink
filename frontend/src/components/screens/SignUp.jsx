@@ -20,7 +20,6 @@ class SignUp extends React.Component {
     }
 
     handleSubmit = () => {
-        console.log(this.state)
         let { email, password, confirmPassword } = this.state
         if (password !== confirmPassword) {
             console.error('WRONG PASSWORD')
