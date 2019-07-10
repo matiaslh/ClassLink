@@ -56,9 +56,9 @@ app.use('/auth/password', passwordRouter);
 app.use('/redirect/', redirectRouter);
 
 // For production
-app.use(express.static(path.join(__dirname, 'build_client')));
+app.use(express.static(path.join(__dirname, '..', 'build_client')));
 app.get('*', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, 'build_client', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'build_client', 'index.html'));
 });
 
 const port = process.env.PORT || 5000;
