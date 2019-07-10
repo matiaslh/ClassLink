@@ -2,9 +2,9 @@
 // import { HOST } from '/vars.js';
 let HOST = 'www.notifymeguelph.xyz'
 const URL = {
-    register: `https://${HOST}:5000/auth/register`,
-    login: `https://${HOST}:5000/auth/login`,
-    user: `https://${HOST}:5000/auth/user`
+    register: `https://${HOST}/auth/register`,
+    login: `https://${HOST}/auth/login`,
+    user: `https://${HOST}/auth/user`
 }
 
 let logoutFn = async (callback) => {
