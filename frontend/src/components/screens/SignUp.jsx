@@ -38,7 +38,11 @@ class SignUp extends React.Component {
         let history = this.props.history
         requests.signup({ email, password }, () => {
             history.push('/notify')
-        }, console.log)
+        }, error=>{
+            if(error.info.errors.email){
+                this.setState({errorMessage:'Email is already taken'})
+            }
+        })
     }
 
     render() {

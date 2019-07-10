@@ -56,9 +56,7 @@ let getUserFn = (callback, errCallback, saveFcmToken) => {
         if (res.status === 'Success') {
             callback(res.info)
             if (saveFcmToken) {
-                if (!fcm_token) {
-                    console.error("THIS SHOULD HAVE A TOKEN")
-                } else {
+                if (fcm_token) {
                     let body = { data: { fcm_tokens: [] } }
                     if (res.info.data) {
                         body = { data: res.info.data }

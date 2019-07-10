@@ -6,15 +6,15 @@ import { withRouter } from "react-router-dom"
 
 class Login extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
-        
+
         requests.isLoggedIn().then(loggedIn => {
             if (loggedIn) {
                 props.history.push('/notify')
             }
         })
-        
+
         this.state = {
             email: '',
             password: ''
@@ -36,7 +36,11 @@ class Login extends React.Component {
         let history = this.props.history
         requests.login({ email, password }, () => {
             history.push('/notify')
-        }, console.log)
+        }, error => {
+            if (error.info) {
+                this.setState({ errorMessage: 'Email or password is incorrect' })
+            }
+        })
     }
 
     render() {
