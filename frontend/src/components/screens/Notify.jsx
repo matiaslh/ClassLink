@@ -144,7 +144,8 @@ export default withRouter(Notify)
 
 const styles = {
     container: {
-        paddingTop: 50
+        width: '80%', 
+        margin: '0px auto'
     },
     header: {
         color: css.colours.text,
