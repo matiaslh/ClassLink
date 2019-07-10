@@ -1,30 +1,40 @@
 import React from 'react';
 import UserForm from '../utils/UserForm'
 import requests from '../utils/requests'
+import constants from '../utils/constants'
 import { withRouter } from "react-router-dom"
 
 class SignUp extends React.Component {
 
-    state = {
-        email: '',
-        password: '',
-        confirmPassword: ''
+    constructor(props) {
+        super(props)
+        requests.isLoggedIn().then(loggedIn => {
+            if (loggedIn) {
+                props.history.push('/notify')
+            }
+        })
+        this.state = {
+            email: '',
+            password: '',
+            confirmPassword: ''
+        }
     }
 
     handleChange = (event) => {
-        this.setState({ [event.target.name]: event.target.value, errorMessage: undefined }, () => {
-            if (this.state.password !== this.state.confirmPassword) {
-                this.setState({ errorMessage: 'Passwords do not match' })
-            }
-        })
+        this.setState({ [event.target.name]: event.target.value, errorMessage: undefined })
     }
 
     handleSubmit = () => {
-        let { email, password, confirmPassword } = this.state
-        if (password !== confirmPassword) {
-            console.error('WRONG PASSWORD')
+
+        if (!constants.emailRegex.test(this.state.email)) {
+            this.setState({ errorMessage: 'Email format is incorrect' })
+            return
+        } else if (this.state.password !== this.state.confirmPassword) {
+            this.setState({ errorMessage: 'Passwords do not match' })
             return
         }
+
+        let { email, password } = this.state
         let history = this.props.history
         requests.signup({ email, password }, () => {
             history.push('/notify')
