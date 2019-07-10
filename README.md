@@ -18,3 +18,4 @@ Get into any guelph course as soon as it is open
 - [x] Move input labels on top and add icons for email and password
 - [ ] Creation timestamp and update timestap to each record in db.
 - [ ] Restart search if application crashes.
+- [ ] Autodeploy to production from git cronjob.
