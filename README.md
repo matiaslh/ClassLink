@@ -13,3 +13,4 @@ Get into any guelph course as soon as it is open
 - [ ] Logo?
 - [ ] Login and signup page write up
 - [ ] More error messages and response messages (e.g. email already in use error, successfully save profile message)
+- [ ] Mobile UI update
