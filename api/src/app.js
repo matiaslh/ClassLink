@@ -27,7 +27,7 @@ UserSchema.plugin(uniqueValidator);
 
 User = mongoose.model("User", UserSchema);
 
-const dbConnection = 'mongodb://68.183.197.232:27017/auth'
+const dbConnection = 'mongodb://mongo:27017/auth'
 console.log(dbConnection)
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
