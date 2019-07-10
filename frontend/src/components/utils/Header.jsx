@@ -13,14 +13,8 @@ class Header extends React.Component {
         };
     }
 
-    handleLogin = () => {
-        this.props.history.push('/login')
-    }
-
     handleLogout = () => {
-        requests.logout(() => {
-            this.props.history.push('/login')
-        })
+        requests.logout()
     }
 
     toggle() {
@@ -36,7 +30,7 @@ class Header extends React.Component {
         } else if (this.props.location.pathname === '/login') {
             button = <NavLink style={styles.font} href='/'>Sign Up</NavLink>
         } else if (this.props.location.pathname === '/notify') {
-            button = <NavLink style={styles.font} href='/notify'>Log Out</NavLink>
+            button = <NavLink style={styles.font} href='/login' onClick={this.handleLogout}>Log Out</NavLink>
         }
 
         return (

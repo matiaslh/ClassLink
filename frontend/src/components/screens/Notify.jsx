@@ -25,7 +25,7 @@ class Notify extends React.Component {
             _this.state.criteria = criteria
             _this.state.userLoaded = true
             _this.forceUpdate()
-        })
+        }, console.log)
     }
 
     componentDidMount() {
