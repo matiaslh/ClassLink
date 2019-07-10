@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage":"https://notifymeguelph.xyz/",
   "dependencies": {
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
