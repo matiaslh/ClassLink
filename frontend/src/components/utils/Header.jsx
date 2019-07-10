@@ -19,7 +19,7 @@ class Header extends React.Component {
 
     toggle() {
         this.setState({
-          isOpen: !this.state.isOpen
+            isOpen: !this.state.isOpen
         });
     }
     render() {
@@ -39,15 +39,12 @@ class Header extends React.Component {
                     <div>
                         <NavbarBrand style={styles.font} href="/">NotifyMe Guelph</NavbarBrand>
                     </div>
-                    <NavbarToggler onClick={this.toggle} />
                     <div>
-                        <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="ml-auto" navbar>
                             <NavItem>
                                 {button}
                             </NavItem>
                         </Nav>
-                        </Collapse>
                     </div>
                 </Navbar>
             </div>

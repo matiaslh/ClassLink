@@ -13,8 +13,7 @@ class Notify extends React.Component {
     constructor(props) {
         super(props)
 
-        let _this = this
-        _this.state = {
+        this.state = {
             showModal: false,
             userLoaded: false,
             criteria: []
@@ -22,16 +21,17 @@ class Notify extends React.Component {
 
         requests.getUser(user => {
             let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
-            _this.state.criteria = criteria
-            _this.state.userLoaded = true
-            _this.forceUpdate()
-        }, console.log)
+            this.state.criteria = criteria
+            this.state.userLoaded = true
+            this.forceUpdate()
+        }, error => {
+            props.history.push('/login')
+        })
     }
 
     componentDidMount() {
-        let _this = this
         messaging.onMessage(payload => {
-            _this.setState({ notification: payload, criteria: [] })
+            this.setState({ notification: payload, criteria: [] })
         })
     }
 
@@ -144,7 +144,7 @@ export default withRouter(Notify)
 
 const styles = {
     container: {
-        width: '80%', 
+        width: '80%',
         margin: '0px auto'
     },
     header: {
