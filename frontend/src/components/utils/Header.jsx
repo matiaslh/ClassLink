@@ -1,10 +1,17 @@
 import React from 'react';
-import { Button } from 'reactstrap';
+import { Button, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { withRouter } from "react-router-dom";
-import css from './css';
 import requests from './requests';
 
 class Header extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.toggle = this.toggle.bind(this);
+        this.state = {
+            isOpen: false
+        };
+    }
 
     handleLogin = () => {
         this.props.history.push('/login')
@@ -16,59 +23,52 @@ class Header extends React.Component {
         })
     }
 
+    toggle() {
+        this.setState({
+          isOpen: !this.state.isOpen
+        });
+    }
     render() {
-
         let button;
 
         if (this.props.location.pathname === '/') {
-            button = <Button color="primary" onClick={this.handleLogin}>Log In</Button>
+            button = <NavLink style={styles.font} href='/login'>Log In</NavLink>
         } else if (this.props.location.pathname === '/login') {
-            button = ''
+            button = <NavLink style={styles.font} href='/'>Sign Up</NavLink>
         } else if (this.props.location.pathname === '/notify') {
-            button = <Button color="primary" onClick={this.handleLogout}>Log Out</Button>
+            button = <NavLink style={styles.font} href='/notify'>Log Out</NavLink>
         }
 
         return (
-            <div style={headerWrapper}>
-                <div style={flex} color="white">
-                    Logo
+            <div>
+                <Navbar style={styles.nav} color="dark" dark expand="md">
+                    <div>
+                        <NavbarBrand style={styles.font} href="/">NotifyMe Guelph</NavbarBrand>
                     </div>
-                <div style={{ flex: 3 }}>
-                    <header style={appHeader}>
-                        University of Guelph NotifyMe
-                        </header>
-                </div>
-                <div style={buttonWrapper}>{button}</div>
+                    <NavbarToggler onClick={this.toggle} />
+                    <div>
+                        <Collapse isOpen={this.state.isOpen} navbar>
+                        <Nav className="ml-auto" navbar>
+                            <NavItem>
+                                {button}
+                            </NavItem>
+                        </Nav>
+                        </Collapse>
+                    </div>
+                </Navbar>
             </div>
-        )
+        );
     }
 }
 
 export default withRouter(Header)
 
-const headerWrapper = {
-    padding: '20px',
-    display: 'flex',
-    flexDirection: 'row',
-    flex: '1',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: css.colours.headerBackground
-}
-
-const flex = {
-    flex: '1'
-}
-
-const buttonWrapper = {
-    display: 'flex',
-    flex: '1',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-}
-
-const appHeader = {
-    fontSize: '50',
-    color: css.colours.headerText
+const styles = {
+    nav: {
+        display: 'flex',
+        justifyContent: 'space-around'
+    },
+    font: {
+        color: 'white'
+    }
 }

@@ -30,5 +30,5 @@ export default class Router extends React.Component {
 const appStyle = {
     textAlign: 'center',
     height: '100%',
-    backgroundColor: css.colours.background
+    // backgroundColor: css.colours.background
 }
