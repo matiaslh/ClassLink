@@ -54,7 +54,7 @@ export default class UserForm extends React.Component {
 const header = {
     color: '#00b3b3',
     marginTop: '50px',
-    fontSize: '30'
+    fontSize: '30px'
 }
 
 const formWrapper = {

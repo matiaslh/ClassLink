@@ -1,4 +1,3 @@
-import path from 'path'
 import express, { Request, Response } from 'express';
 var cors = require('cors')
 import * as bodyParser from 'body-parser';
@@ -54,12 +53,6 @@ app.use(bodyParser.json());
 app.use('/auth', profileRouter);
 app.use('/auth/password', passwordRouter);
 app.use('/redirect/', redirectRouter);
-
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
-app.get('*', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
-});
-
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
