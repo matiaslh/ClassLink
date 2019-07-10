@@ -15,4 +15,5 @@ Get into any guelph course as soon as it is open
 - [ ] More error messages and response messages (e.g. email already in use error, successfully save profile message)
 - [ ] Mobile UI update
 - [ ] History for notify me main page of previous searches
-- [ ] move input labels on top and add icons for email and password
+- [ ] Move input labels on top and add icons for email and password
+- [ ] Creation timestamp and update timestap to each record in db.
