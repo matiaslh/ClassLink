@@ -39,7 +39,7 @@ export default class UserForm extends React.Component {
                                         <div style={errorText}>
                                             {this.props.errorMessage}
                                         </div>
-                                        <Button type='button' color="primary" disabled={this.props.errorMessage !== undefined} onClick={this.props.onSubmit} >Submit</Button>
+                                        <Button type='button' style={button} disabled={this.props.errorMessage !== undefined} onClick={this.props.onSubmit}>Submit</Button>
                                     </Form>
                                 </div>
                             </Col>
@@ -86,4 +86,9 @@ const description = {
 const border = {
     borderRight: '1px solid #00b3b3',
     height: '300px'
+}
+
+const button = {
+    backgroundColor: "#00b3b3",
+    color: "white"
 }

@@ -3,7 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import Header from '../utils/Header';
 import SignUp from './SignUp';
 import Login from './Login';
-import css from '../utils/css';
+import Footer from '../utils/Footer';
 import Notify from './Notify';
 
 export default class Router extends React.Component {
@@ -21,6 +21,7 @@ export default class Router extends React.Component {
                     <Route path="/notify" render={() => (
                         <Notify />
                     )} />
+                    <Footer />
                 </div>
             </BrowserRouter>
         )
