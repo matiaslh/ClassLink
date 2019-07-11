@@ -71,7 +71,7 @@ function callRequests(user) {
 
             // DO NOT CHANGE FROM USER.DATA = OBJECT CUZ MONGOOSE DOESNT WORK OTHERWISE
             user.data = {
-                hisotry: history,
+                history,
                 criteria: []
             }
 
