@@ -3,7 +3,7 @@
 
 // let HOST = 'www.notifymeguelph.xyz'
 let protocol = 'https://'
-let HOST = '68.183.197.232:5000'
+let HOST = '68.183.197.232'
 // let protocol = 'http://'
 const URL = {
     register: `${protocol}${HOST}/auth/register`,
