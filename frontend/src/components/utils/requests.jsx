@@ -1,80 +1,65 @@
 
 // import { HOST } from '/vars.js';
-let HOST = 'www.notifymeguelph.xyz'
+
+// let HOST = 'www.notifymeguelph.xyz'
+// let protocol = 'https://'
+let HOST = '68.183.197.232:5000'
+let protocol = 'http://'
 const URL = {
-    register: `https://${HOST}/auth/register`,
-    login: `https://${HOST}/auth/login`,
-    user: `https://${HOST}/auth/user`
+    register: `${protocol}${HOST}/auth/register`,
+    login: `${protocol}${HOST}/auth/login`,
+    user: `${protocol}${HOST}/auth/user`
 }
 
-let logoutFn = async (callback) => {
+let logoutFn = async () => {
     sessionStorage.removeItem('session_token')
-    if (callback) {
-        callback()
-    }
 }
 
-let saveUserFn = (body, callback, errCallback) => {
-
-    if (!callback) {
-        callback = () => { }
-    }
-    if (!errCallback) {
-        errCallback = () => { }
-    }
+let saveUserFn = async (body) => {
 
     let session_token = sessionStorage.getItem('session_token')
-
-    fetch(URL.user, {
+    let options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': session_token
         },
         body: JSON.stringify(body)
-    }).then(res => res.json()).then(res => {
-        if (res.status === 'Success') {
-            callback(res.info)
-        } else {
-            errCallback(res)
-        }
-    }).catch(errCallback)
+    }
+
+    let response = await fetch(URL.user, options).then(res => res.json())
+    return response
 }
 
-let getUserFn = (callback, errCallback, saveFcmToken) => {
+let getUserFn = async () => {
 
     let session_token = sessionStorage.getItem('session_token')
-    let fcm_token = sessionStorage.getItem('fcm_token')
-
-    fetch(URL.user, {
+    let options = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': session_token
         }
-    }).then(res => res.json()).then(res => {
-        if (res.status === 'Success') {
-            callback(res.info)
-            if (saveFcmToken) {
-                if (fcm_token) {
-                    let body = { data: { fcm_tokens: [] } }
-                    if (res.info.data) {
-                        body = { data: res.info.data }
-                    }
-                    if (body.data.fcm_tokens.indexOf(fcm_token) === -1) {
-                        body.data.fcm_tokens.push(fcm_token)
-                    }
-                    saveUserFn(body)
-                }
-            }
-        } else {
-            errCallback(res)
-        }
-    }).catch(errCallback)
+    }
+
+    let response = await fetch(URL.user, options).then(res => res.json())
+    return response
 }
 
-let loginFn = (credentials, callback, errCallback) => {
-    fetch(URL.login, {
+let saveFcmToken = async () => {
+    let fcm_token = sessionStorage.getItem('fcm_token')
+    let user = await getUserFn()
+    if (user.info.data.fcm_tokens.indexOf(fcm_token) === -1) {
+        user.info.data.fcm_tokens.push(fcm_token)
+    }
+    let response = await saveUserFn(user.info)
+    return response
+}
+
+// returns login endpoint response
+let loginFn = async (credentials) => {
+
+    let options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -83,19 +68,20 @@ let loginFn = (credentials, callback, errCallback) => {
             email: credentials.email,
             password: credentials.password
         })
-    }).then(res => res.json()).then(res => {
-        if (res.status === 'Success') {
-            sessionStorage.setItem('session_token', res.info.token)
-            getUserFn(callback, errCallback, true)
-        } else {
-            errCallback(res)
-        }
-    }).catch(errCallback)
+    }
+
+    let response = await fetch(URL.login, options).then(res => res.json())
+
+    if (response.status === 'Success') {
+        sessionStorage.setItem('session_token', response.info.token)
+        saveFcmToken()
+    }
+    return response
 }
 
-let signUpFn = (credentials, callback, errCallback) => {
+let signUpFn = async (credentials) => {
 
-    fetch(URL.register, {
+    let options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -104,16 +90,18 @@ let signUpFn = (credentials, callback, errCallback) => {
             email: credentials.email,
             password: credentials.password
         })
-    }).then(res => res.json()).then(res => {
-        if (res.status === 'Success') {
-            loginFn(credentials, callback, errCallback)
-        } else {
-            errCallback(res)
-        }
-    }).catch(errCallback)
+    }
+
+    let response = await fetch(URL.register, options).then(res => res.json())
+
+    if (response.status === 'Success') {
+        return await loginFn(credentials)
+    } else {
+        return response
+    }
 }
 
-let isLoggedInFn = async () => {
+let isLoggedInFn = () => {
     let session_token = sessionStorage.getItem('session_token')
     let loggedIn = (!session_token || session_token === undefined || session_token === null || session_token === '' || session_token === 'null') ? false : true
     return loggedIn

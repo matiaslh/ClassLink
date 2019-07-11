@@ -9,11 +9,9 @@ class Login extends React.Component {
     constructor(props) {
         super(props)
 
-        requests.isLoggedIn().then(loggedIn => {
-            if (loggedIn) {
-                props.history.push('/notify')
-            }
-        })
+        if (requests.isLoggedIn()) {
+            props.history.push('/notify')
+        }
 
         this.state = {
             email: '',
@@ -25,22 +23,21 @@ class Login extends React.Component {
         this.setState({ [event.target.name]: event.target.value, errorMessage: undefined })
     }
 
-    handleSubmit = () => {
+    handleSubmit = async () => {
 
-        if (!constants.emailRegex.test(this.state.email)) {
+        if (!this.state.email.match(constants.emailRegex)) {
             this.setState({ errorMessage: 'Email format is incorrect' })
             return
         }
 
         let { email, password } = this.state
         let history = this.props.history
-        requests.login({ email, password }, () => {
+        let response = await requests.login({ email, password })
+        if (response.status === 'Success') {
             history.push('/notify')
-        }, error => {
-            if (error.info) {
-                this.setState({ errorMessage: 'Email or password is incorrect' })
-            }
-        })
+        } else {
+            this.setState({ errorMessage: 'Email or password is incorrect' })
+        }
     }
 
     render() {

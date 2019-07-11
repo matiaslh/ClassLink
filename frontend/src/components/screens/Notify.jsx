@@ -19,14 +19,19 @@ class Notify extends React.Component {
             criteria: [],
         }
 
-        requests.getUser(user => {
-            let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
-            this.state.criteria = criteria
-            this.state.userLoaded = true
-            this.forceUpdate()
-        }, error => {
-            props.history.push('/login')
-        })
+        let fn = async () => {
+            let response = await requests.getUser()
+            if (response.status === 'Success') {
+                let user = response.info
+                let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
+                this.state.criteria = criteria
+                this.state.userLoaded = true
+                this.forceUpdate()
+            } else {
+                props.history.push('/login')
+            }
+        }
+        fn()
     }
 
     componentDidMount() {
@@ -68,21 +73,28 @@ class Notify extends React.Component {
         return labels[type][value]
     }
 
-    saveChanges = () => {
+    saveChanges = async () => {
         let criteria = this.state.criteria
         let history = this.props.history
 
-        requests.getUser(user => {
+        let response = await requests.getUser()
+
+        if (response.status === 'Success') {
+            let user = response.info
+
             let body = { data: { fcm_tokens: [] } }
-            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : null; 
+            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : null;
             body.data.criteria = criteria
-            requests.saveUser(body, (message) => {
-                this.setState({ message })
-                setInterval(() => {
-                    this.setState({ message: undefined })
-                }, 2000)
-            })
-        }, () => history.push('/login'))
+            let message = await requests.saveUser(body)
+            this.setState({ message })
+            setInterval(() => {
+                this.setState({ message: undefined })
+            }, 2000)
+
+        } else {
+            history.push('/login')
+        }
+
     }
 
     render() {
@@ -96,8 +108,8 @@ class Notify extends React.Component {
 
                 <div style={styles.top}>
                     <div>
-                        <h4>Dashboard</h4>
-                    </div>    
+                        <h4 style={{fontSize:'30px'}}>Dashboard</h4>
+                    </div>
                     <div>
                         <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal}>Add Course</Button></div>
                     </div>
@@ -126,23 +138,23 @@ class Notify extends React.Component {
                 <Table responsive>
                     <thead>
                         <tr>
-                        <th>Coure Code</th>
-                        <th>Coure Level</th>
-                        <th>Course #</th>
-                        <th>Section #</th>
-                        <th>Previous Search</th>
+                            <th>Course Code</th>
+                            <th>Course Level</th>
+                            <th>Course #</th>
+                            <th>Section #</th>
+                            <th>Previous Search</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.criteria.length > 0 ?  this.state.criteria.map(obj => (
-                        <tr >
-                            <td>{obj.department}</td>
-                            <td>{obj.level ? obj.level : 'Any'}</td> 
-                            <td>{obj.course ? obj.course : 'Any'}</td>
-                            <td>{obj.section ? obj.section : 'Any'}</td>
-                            <td>{new Date().toLocaleString()}</td>
-                        </tr>
-                        )): null}
+                        {this.state.criteria.length > 0 ? this.state.criteria.map((obj, index) => (
+                            <tr key={index}>
+                                <td>{obj.department}</td>
+                                <td>{obj.level ? obj.level : 'Any'}</td>
+                                <td>{obj.course ? obj.course : 'Any'}</td>
+                                <td>{obj.section ? obj.section : 'Any'}</td>
+                                <td>{new Date().toLocaleString()}</td>
+                            </tr>
+                        )) : null}
                     </tbody>
                 </Table>
 
@@ -151,12 +163,12 @@ class Notify extends React.Component {
                 <Table responsive>
                     <thead>
                         <tr>
-                        <th>Coure Code</th>
-                        <th>Coure Level</th>
-                        <th>Course #</th>
-                        <th>Section #</th>
-                        <th>Status</th>
-                        <th>Completed On</th>
+                            <th>Course Code</th>
+                            <th>Course Level</th>
+                            <th>Course #</th>
+                            <th>Section #</th>
+                            <th>Status</th>
+                            <th>Completed On</th>
                         </tr>
                     </thead>
                     {/* <tbody>
@@ -232,8 +244,8 @@ const styles = {
     top: {
         color: '#00b3b3',
         display: 'flex',
-        justifyContent: 'center',
-        paddingTop: '30px',
+        justifyContent: 'space-between',
+        paddingTop: '60px',
         flexWrap: 'wrap'
     }
 }
