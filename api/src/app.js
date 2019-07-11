@@ -68,8 +68,12 @@ function callRequests(user) {
             // remove criteria and add history
             let history = user.data.history ? user.data.history : []
             history.push(user.data.criteria)
-            user.data.history = history
-            user.data.criteria = []
+
+            // DO NOT CHANGE FROM USER.DATA = OBJECT CUZ MONGOOSE DOESNT WORK OTHERWISE
+            user.data = {
+                hisotry: history,
+                criteria: []
+            }
 
             await user.save()
         }
