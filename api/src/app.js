@@ -72,7 +72,8 @@ function callRequests(user) {
             // DO NOT CHANGE FROM USER.DATA = OBJECT CUZ MONGOOSE DOESNT WORK OTHERWISE
             user.data = {
                 history,
-                criteria: []
+                criteria: [],
+                fcm_tokens
             }
 
             await user.save()
