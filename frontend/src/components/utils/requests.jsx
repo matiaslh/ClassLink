@@ -1,9 +1,9 @@
 
 // import { HOST } from '/vars.js';
 
-// let HOST = 'www.notifymeguelph.xyz'
+let HOST = 'www.notifymeguelph.xyz'
 let protocol = 'https://'
-let HOST = '68.183.197.232'
+// let HOST = '68.183.197.232'
 // let protocol = 'http://'
 const URL = {
     register: `${protocol}${HOST}/auth/register`,
