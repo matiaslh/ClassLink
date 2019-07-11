@@ -7,6 +7,7 @@ import constants, { labels } from '../utils/constants'
 import requests from '../utils/requests';
 import messaging from '../utils/firebase-messaging-config'
 import Notification from '../utils/Notification'
+import { withAlert } from 'react-alert'
 
 class Notify extends React.Component {
 
@@ -86,10 +87,11 @@ class Notify extends React.Component {
             body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : null;
             body.data.criteria = criteria
             let message = await requests.saveUser(body)
-            this.setState({ message })
-            setInterval(() => {
-                this.setState({ message: undefined })
-            }, 2000)
+            if (message.status === 'Success') {
+                this.props.alert.show(message.info)
+            }else{
+                this.props.alert.show(message.error)
+            }
 
         } else {
             history.push('/login')
@@ -104,18 +106,16 @@ class Notify extends React.Component {
         }
 
         return (
-            <div style={styles.container}>
 
+            <div style={styles.container}>
                 <div style={styles.top}>
                     <div>
-                        <h4 style={{fontSize:'30px'}}>Dashboard</h4>
+                        <h4 style={{ fontSize: '30px' }}>Dashboard</h4>
                     </div>
                     <div>
                         <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal}>Add Course</Button></div>
                     </div>
                 </div>
-
-                <div style={styles.message}>{this.state.message}</div>
 
                 <Modal isOpen={this.state.showModal}>
                     <ModalHeader>Add/Edit Course</ModalHeader>
@@ -192,7 +192,7 @@ class Notify extends React.Component {
     }
 }
 
-export default withRouter(Notify)
+export default withAlert()(withRouter(Notify))
 
 const styles = {
     container: {
@@ -231,10 +231,6 @@ const styles = {
     },
     detail: {
         padding: '20px'
-    },
-    message: {
-        color: '#00b3b3',
-        paddingTop: '30px',
     },
     heading: {
         color: '#00b3b3',
