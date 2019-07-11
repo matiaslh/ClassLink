@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
+import { Button, Modal, ModalBody, ModalHeader, ModalFooter, Table } from 'reactstrap'
 import { withRouter } from "react-router-dom"
 import Dropdown from '../utils/Dropdown'
 import css from '../utils/css';
@@ -16,7 +16,7 @@ class Notify extends React.Component {
         this.state = {
             showModal: false,
             userLoaded: false,
-            criteria: []
+            criteria: [],
         }
 
         requests.getUser(user => {
@@ -48,6 +48,7 @@ class Notify extends React.Component {
         criteria.push(newCourse)
         this.setState({ criteria })
         this.handleClose()
+        this.saveChanges()
     }
 
     inputOnChange = (label, value) => {
@@ -73,7 +74,7 @@ class Notify extends React.Component {
 
         requests.getUser(user => {
             let body = { data: { fcm_tokens: [] } }
-            body.data.fcm_tokens = user.data.fcm_tokens
+            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : null; 
             body.data.criteria = criteria
             requests.saveUser(body, (message) => {
                 this.setState({ message })
@@ -82,7 +83,6 @@ class Notify extends React.Component {
                 }, 2000)
             })
         }, () => history.push('/login'))
-
     }
 
     render() {
@@ -93,29 +93,17 @@ class Notify extends React.Component {
 
         return (
             <div style={styles.container}>
-                <div style={styles.header}>
-                    <header>These are the current courses you are watching</header>
-                    <header>Edit them as you please.</header>
+
+                <div style={styles.top}>
+                    <div>
+                        <h4>Dashboard</h4>
+                    </div>    
+                    <div>
+                        <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal}>Add Course</Button></div>
+                    </div>
                 </div>
 
-                <div style={styles.formWrapper}>
-                    <div style={styles.criteriaWrapper}>
-                        {Array.apply(null, { length: this.state.criteria.length }).map(Number.call, index => {
-                            let elem = this.state.criteria[index]
-                            return (
-                                <div key={index} style={styles.singleCriteria}>
-                                    <div style={styles.detail}>{elem.department ? this.getLabel('departments', elem.department) : 'Any'}</div>
-                                    <div style={styles.detail}>{elem.level ? this.getLabel('levels', elem.level) : 'Any'}</div>
-                                    <div style={styles.detail}>{elem.course ? elem.course : 'Any'}</div>
-                                    <div style={styles.detail}>{elem.section ? elem.section : 'Any'}</div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div style={styles.message}>{this.state.message}</div>
-                    <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal}>Add Course</Button></div>
-                    <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.saveChanges}>Save Changes</Button></div>
-                </div>
+                <div style={styles.message}>{this.state.message}</div>
 
                 <Modal isOpen={this.state.showModal}>
                     <ModalHeader>Add/Edit Course</ModalHeader>
@@ -132,6 +120,58 @@ class Notify extends React.Component {
                         <Button color="primary" onClick={this.handleAddCourse}>Add Course</Button>{' '}
                     </ModalFooter>
                 </Modal>
+
+                <h5 style={styles.heading}>In Progress</h5>
+
+                <Table responsive>
+                    <thead>
+                        <tr>
+                        <th>Coure Code</th>
+                        <th>Coure Level</th>
+                        <th>Course #</th>
+                        <th>Section #</th>
+                        <th>Previous Search</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.criteria.length > 0 ?  this.state.criteria.map(obj => (
+                        <tr >
+                            <td>{obj.department}</td>
+                            <td>{obj.level ? obj.level : 'Any'}</td> 
+                            <td>{obj.course ? obj.course : 'Any'}</td>
+                            <td>{obj.section ? obj.section : 'Any'}</td>
+                            <td>{new Date().toLocaleString()}</td>
+                        </tr>
+                        )): null}
+                    </tbody>
+                </Table>
+
+                <h5 style={styles.heading}>Completed</h5>
+
+                <Table responsive>
+                    <thead>
+                        <tr>
+                        <th>Coure Code</th>
+                        <th>Coure Level</th>
+                        <th>Course #</th>
+                        <th>Section #</th>
+                        <th>Status</th>
+                        <th>Completed On</th>
+                        </tr>
+                    </thead>
+                    {/* <tbody>
+                        {this.state.criteria.length > 0 ?  this.state.criteria.map(obj => (
+                        <tr >
+                            <td>{obj.department}</td>
+                            <td>{obj.level ? obj.level : 'Any'}</td> 
+                            <td>{obj.course ? obj.course : 'Any'}</td>
+                            <td>{obj.section ? obj.section : 'Any'}</td>
+                            <td>Searching</td>
+                            <td>{new Date().toString()}</td>
+                        </tr>
+                        )): null}
+                    </tbody> */}
+                </Table>
 
                 <Notification message={this.state.notification} handleClose={() => this.setState({ notification: undefined })} />
 
@@ -151,21 +191,11 @@ const styles = {
         color: css.colours.text,
         fontSize: 20
     },
-    formWrapper: {
-        width: '30%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        paddingTop: '40px',
-        marginTop: '20px',
-        backgroundColor: css.colours.background2
-    },
     button: {
-        padding: 10
+        paddingLeft: '20px'
     },
     buttonColours: {
-        backgroundColor: css.colours.background2,
-        borderColor: css.colours.button,
-        color: css.colours.button
+        backgroundColor: '#00b3b3'
     },
     courseWrapper: {
         display: 'flex',
@@ -191,6 +221,19 @@ const styles = {
         padding: '20px'
     },
     message: {
-        color: css.colours.text
+        color: '#00b3b3',
+        paddingTop: '30px',
+    },
+    heading: {
+        color: '#00b3b3',
+        float: 'left',
+        paddingTop: '30px'
+    },
+    top: {
+        color: '#00b3b3',
+        display: 'flex',
+        justifyContent: 'center',
+        paddingTop: '30px',
+        flexWrap: 'wrap'
     }
 }

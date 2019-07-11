@@ -24,7 +24,7 @@ function FooterPage() {
         <div>
             <div style={phantom} />
             <div style={style}>
-                {new Date().getFullYear()} &copy; NotifyMe
+                {new Date().getFullYear()} &copy; Matias Levy-Hara | Daniel Mil
             </div>
         </div>
     )
