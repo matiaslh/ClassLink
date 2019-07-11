@@ -84,19 +84,18 @@ class Notify extends React.Component {
             let user = response.info
 
             let body = { data: { fcm_tokens: [] } }
-            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : null;
+            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : []];
             body.data.criteria = criteria
             let message = await requests.saveUser(body)
             if (message.status === 'Success') {
                 this.props.alert.show(message.info)
-            }else{
+            } else {
                 this.props.alert.show(message.error)
             }
 
         } else {
             history.push('/login')
         }
-
     }
 
     render() {
@@ -113,7 +112,7 @@ class Notify extends React.Component {
                         <h4 style={{ fontSize: '30px' }}>Dashboard</h4>
                     </div>
                     <div>
-                        <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal}>Add Course</Button></div>
+                        <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={this.openModal} disabled={this.state.criteria.length >= 5}>Add Course</Button></div>
                     </div>
                 </div>
 
