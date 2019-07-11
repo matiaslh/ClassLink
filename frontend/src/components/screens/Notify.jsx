@@ -84,7 +84,7 @@ class Notify extends React.Component {
             let user = response.info
 
             let body = { data: { fcm_tokens: [] } }
-            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : []];
+            body.data.fcm_tokens = user.data.fcm_tokens ? user.data.fcm_tokens : [];
             body.data.criteria = criteria
             let message = await requests.saveUser(body)
             if (message.status === 'Success') {
