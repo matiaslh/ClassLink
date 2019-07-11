@@ -13,8 +13,11 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+let messaging = undefined
+
 if (firebase.messaging.isSupported()) {
-    const messaging = firebase.messaging()
+
+    messaging = firebase.messaging()
 
     function saveFcmToken(fcm_token) {
         sessionStorage.setItem('fcm_token', fcm_token)
@@ -35,8 +38,5 @@ if (firebase.messaging.isSupported()) {
         })
     })
 
-    export default messaging
-
-}else{
-    export default undefined
 }
+export default messaging
