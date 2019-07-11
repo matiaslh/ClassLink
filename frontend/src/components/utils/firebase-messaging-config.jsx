@@ -13,25 +13,30 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-const messaging = firebase.messaging()
+if (firebase.messaging.isSupported()) {
+    const messaging = firebase.messaging()
 
-function saveFcmToken(fcm_token) {
-    sessionStorage.setItem('fcm_token', fcm_token)
+    function saveFcmToken(fcm_token) {
+        sessionStorage.setItem('fcm_token', fcm_token)
+    }
+
+    // Add the public key generated from firebase here.
+    messaging.usePublicVapidKey("BP3FJNT_wp-itoVZJHAdmLXJEpasu_ofj3p-19BUX85l73t9GyZJSX1uiFoPoaGUB7xSZjFxt8Yew7Befba8QOc");
+    messaging.requestPermission().then((permission) => {
+        messaging.getToken().then(saveFcmToken).catch(error => {
+            alert('You have not allowed notifications on your browser, and will be notified only through email.')
+        })
+    })
+
+    // Callback fired if Instance ID token is updated.
+    messaging.onTokenRefresh(() => {
+        messaging.getToken().then(saveFcmToken).catch(error => {
+            alert('There was an error with firebase')
+        })
+    })
+
+    export default messaging
+
+}else{
+    export default undefined
 }
-
-// Add the public key generated from firebase here.
-messaging.usePublicVapidKey("BP3FJNT_wp-itoVZJHAdmLXJEpasu_ofj3p-19BUX85l73t9GyZJSX1uiFoPoaGUB7xSZjFxt8Yew7Befba8QOc");
-messaging.requestPermission().then((permission) => {
-    messaging.getToken().then(saveFcmToken).catch(error => {
-        alert('You have not allowed notifications on your browser, and will be notified only through email.')
-    })
-})
-
-// Callback fired if Instance ID token is updated.
-messaging.onTokenRefresh(() => {
-    messaging.getToken().then(saveFcmToken).catch(error => {
-        alert('There was an error with firebase')
-    })
-})
-
-export default messaging

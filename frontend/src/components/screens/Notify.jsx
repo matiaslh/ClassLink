@@ -36,9 +36,11 @@ class Notify extends React.Component {
     }
 
     componentDidMount() {
-        messaging.onMessage(payload => {
-            this.setState({ notification: payload, criteria: [] })
-        })
+        if (messaging) {
+            messaging.onMessage(payload => {
+                this.setState({ notification: payload, criteria: [] })
+            })
+        }
     }
 
     handleClose = () => {
