@@ -65,11 +65,12 @@ function callRequests(user) {
             })
             contact(fcm_tokens, courses)
 
-            //remove criteria from user
-            user.data = {
-                fcm_tokens: fcm_tokens,
-                criteria: []
-            }
+            // remove criteria and add history
+            let history = user.data.history ? user.data.history : []
+            history.push(user.data.criteria)
+            user.data.history = history
+            user.data.criteria = []
+
             await user.save()
         }
     })

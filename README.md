@@ -19,3 +19,7 @@ Get into any guelph course as soon as it is open
 - [ ] Creation timestamp and update timestap to each record in db.
 - [ ] Restart search if application crashes.
 - [ ] Autodeploy to production from git cronjob.
+- [ ] criteria store status and completed on date
+- [ ] make button for deleting and editing criteria
+- [ ] make app email as well as notify
+- [ ] show last check for last time api searched webadvisor

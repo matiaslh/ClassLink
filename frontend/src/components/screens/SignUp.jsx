@@ -8,11 +8,11 @@ class SignUp extends React.Component {
 
     constructor(props) {
         super(props)
-        requests.isLoggedIn().then(loggedIn => {
-            if (loggedIn) {
-                props.history.push('/notify')
-            }
-        })
+
+        if (requests.isLoggedIn()) {
+            props.history.push('/notify')
+        }
+
         this.state = {
             email: '',
             password: '',
@@ -24,9 +24,9 @@ class SignUp extends React.Component {
         this.setState({ [event.target.name]: event.target.value, errorMessage: undefined })
     }
 
-    handleSubmit = () => {
+    handleSubmit = async () => {
 
-        if (!constants.emailRegex.test(this.state.email)) {
+        if (!this.state.email.match(constants.emailRegex)) {
             this.setState({ errorMessage: 'Email format is incorrect' })
             return
         } else if (this.state.password !== this.state.confirmPassword) {
@@ -36,13 +36,16 @@ class SignUp extends React.Component {
 
         let { email, password } = this.state
         let history = this.props.history
-        requests.signup({ email, password }, () => {
+        let response = await requests.signup({ email, password })
+
+        if (response.status === 'Success') {
             history.push('/notify')
-        }, error=>{
-            if(error.info.errors.email){
-                this.setState({errorMessage:'Email is already taken'})
+        } else {
+            // add other error messages here
+            if (response.info.errors.email) {
+                this.setState({ errorMessage: 'Email is already taken' })
             }
-        })
+        }
     }
 
     render() {
