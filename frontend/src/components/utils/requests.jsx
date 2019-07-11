@@ -17,6 +17,10 @@ let logoutFn = async () => {
 
 let saveUserFn = async (body) => {
 
+    if (body.data.criteria.length > 5) {
+        return { status: 'error', error: 'Too many courses for search' }
+    }
+
     let session_token = sessionStorage.getItem('session_token')
     let options = {
         method: 'PUT',
