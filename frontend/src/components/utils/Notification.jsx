@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import { withRouter } from "react-router-dom"
-import css from '../utils/css';
 
 class Notification extends React.Component {
 
@@ -23,7 +22,3 @@ class Notification extends React.Component {
 }
 
 export default withRouter(Notification)
-
-const styles = {
-
-}

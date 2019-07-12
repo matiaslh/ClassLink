@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown as StrapDropDown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { withRouter } from "react-router-dom"
-import css from '../utils/css';
 
 class Dropdown extends React.Component {
 

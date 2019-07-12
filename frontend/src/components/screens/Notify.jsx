@@ -20,8 +20,7 @@ class Notify extends React.Component {
             criteria: [],
         }
 
-        let fn = async () => {
-            let response = await requests.getUser()
+        requests.getUser().then(response => {
             if (response.status === 'Success') {
                 let user = response.info
                 let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
@@ -31,8 +30,7 @@ class Notify extends React.Component {
             } else {
                 props.history.push('/login')
             }
-        }
-        fn()
+        })
     }
 
     componentDidMount() {
@@ -51,8 +49,16 @@ class Notify extends React.Component {
     }
 
     handleAddCourse = () => {
+
         let criteria = this.state.criteria
         let newCourse = this.state.newCourse
+
+        console.log(this.state)
+        if (!newCourse) {
+            this.setState({ newCourseError: 'You must select at least one value' })
+            return;
+        }
+
         criteria.push(newCourse)
         this.setState({ criteria })
         this.handleClose()
@@ -65,7 +71,7 @@ class Notify extends React.Component {
         if (value === 'any' || value === '') {
             delete newCourse[label]
         }
-        this.setState({ newCourse })
+        this.setState({ newCourse, newCourseError: undefined })
     }
 
     openModal = () => {
@@ -127,6 +133,8 @@ class Notify extends React.Component {
                             <div style={styles.courseInput}>Course #<input type="text" maxLength={4} onChange={(event) => this.inputOnChange('course', event.target.value)}></input></div>
                             <div style={styles.courseInput}>Section #<input type="text" maxLength={4} onChange={(event) => this.inputOnChange('section', event.target.value)}></input></div>
                         </div>
+                        <div  style={{textAlign:'center', color:css.colours.errorText}}>{this.state.newCourseError}</div>
+
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.handleClose}>Cancel</Button>
@@ -149,7 +157,7 @@ class Notify extends React.Component {
                     <tbody>
                         {this.state.criteria.length > 0 ? this.state.criteria.map((obj, index) => (
                             <tr key={index}>
-                                <td>{obj.department}</td>
+                                <td>{obj.department ? obj.department : 'Any'}</td>
                                 <td>{obj.level ? obj.level : 'Any'}</td>
                                 <td>{obj.course ? obj.course : 'Any'}</td>
                                 <td>{obj.section ? obj.section : 'Any'}</td>
