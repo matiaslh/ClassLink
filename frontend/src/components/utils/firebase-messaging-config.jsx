@@ -25,7 +25,7 @@ if (firebase.messaging.isSupported()) {
 
     // Add the public key generated from firebase here.
     messaging.usePublicVapidKey("BP3FJNT_wp-itoVZJHAdmLXJEpasu_ofj3p-19BUX85l73t9GyZJSX1uiFoPoaGUB7xSZjFxt8Yew7Befba8QOc");
-    messaging.requestPermission().then((permission) => {
+    messaging.requestPermission().then(permission => {
         messaging.getToken().then(saveFcmToken).catch(error => {
             alert('You have not allowed notifications on your browser, and will be notified only through email.')
         })
