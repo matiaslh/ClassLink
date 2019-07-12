@@ -20,7 +20,7 @@ app.use((req: Request, res: Response, next: any) => {
 // Set environment variables
 dotenv.config();
 
-if (!process.env.MONGO_URI || !process.env.MONGO_URI_COURSES) {
+if (!process.env.MONGO_URI) {
     console.log('YOU HAVE NO .ENV FILE WITH MONGO URI, YOU ARE AN IDIOT')
     console.log('YOU HAVE NO .ENV FILE WITH MONGO URI, YOU ARE AN IDIOT')
     console.log('YOU HAVE NO .ENV FILE WITH MONGO URI, YOU ARE AN IDIOT')
@@ -33,19 +33,6 @@ const dbConnection: any = process.env.MONGO_URI;
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true })
     .then(() => console.log("Succesfully connected to MongoDB for Auth."))
-    .catch((err: mongoose.Error) => console.error(err));
-
-// Fix mongo deprecation warnings
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-
-
-// courses mongo connection
-const dbConnectionCourses: any = process.env.MONGO_URI_COURSES;
-
-mongoose.connect(dbConnectionCourses, { useNewUrlParser: true })
-    .then(() => console.log("Succesfully connected to MongoDB for Courses."))
     .catch((err: mongoose.Error) => console.error(err));
 
 // Fix mongo deprecation warnings
