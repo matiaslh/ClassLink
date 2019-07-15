@@ -2,28 +2,19 @@ const request = require('request');
 const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
 
-module.exports = function doGetRequests(query, callback) {
+module.exports = function doGetRequests(query) {
 
-    const urlGet = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
-    const urlPost = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX='
-    const urlPostParams = '&SS=1&APP=ST&CONSTITUENCY=WBST'
+    let promise = new Promise(function (resolve, reject) {
 
-    let postFields = getPostFields(query);
-    var formData = querystring.stringify(postFields);
-    var contentLength = formData.length;
+        const urlGet = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?CONSTITUENCY=WBST&type=P&pid=ST-WESTS12A&TOKENIDX=';
+        const urlPost = 'https://webadvisor.uoguelph.ca/WebAdvisor/WebAdvisor?TOKENIDX='
+        const urlPostParams = '&SS=1&APP=ST&CONSTITUENCY=WBST'
 
-    request(urlGet, { json: true }, (err, res, body) => {
-        if (err) { return console.log(err); }
+        let postFields = getPostFields(query);
+        var formData = querystring.stringify(postFields);
+        var contentLength = formData.length;
 
-        let cookies = getCookies(res.headers['set-cookie']);
-        let sessionId = cookies.LASTTOKEN
-
-        let jar = request.jar();
-        res.headers['set-cookie'].forEach((elem) => {
-            jar.setCookie(request.cookie(elem), urlGet + sessionId);
-        });
-
-        request({ url: urlGet + sessionId, json: true, jar: jar }, (err, res, body) => {
+        request(urlGet, { json: true }, (err, res, body) => {
             if (err) { return console.log(err); }
 
             let cookies = getCookies(res.headers['set-cookie']);
@@ -34,26 +25,43 @@ module.exports = function doGetRequests(query, callback) {
                 jar.setCookie(request.cookie(elem), urlGet + sessionId);
             });
 
-            request.post({
-                url: urlPost + sessionId + urlPostParams,
-                body: formData,
-                jar: jar,
-                followAllRedirects: true,
-                headers: {
-                    'Content-Length': contentLength,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }, (err, res, body) => {
+            request({ url: urlGet + sessionId, json: true, jar: jar }, (err, res, body) => {
                 if (err) { return console.log(err); }
-                console.log('done')
-                let courses = getAllCourses(body)
-                // console.log(courses)
-                callback(courses);
+
+                let cookies = getCookies(res.headers['set-cookie']);
+                let sessionId = cookies.LASTTOKEN
+
+                let jar = request.jar();
+                res.headers['set-cookie'].forEach((elem) => {
+                    jar.setCookie(request.cookie(elem), urlGet + sessionId);
+                });
+
+                request.post({
+                    url: urlPost + sessionId + urlPostParams,
+                    body: formData,
+                    jar: jar,
+                    followAllRedirects: true,
+                    headers: {
+                        'Content-Length': contentLength,
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }, (err, res, body) => {
+                    if (err) { return console.log(err); }
+                    let courses = getAllCourses(body)
+                    resolve(courses)
+                });
+
             });
 
         });
 
     });
+    return promise
+
+}
+
+function getPosition(string, subString, index) {
+    return string.split(subString, index).join(subString).length;
 }
 
 function getCell(columns, i, selector) {
@@ -86,14 +94,34 @@ function getAllCourses(html) {
             course.status = getCell(cols, 2);
             course.title = getCell(cols, 3, 'a');
             course.location = getCell(cols, 4);
-            course.meetings = getCell(cols, 5);
+            course.meetingInformation = getCell(cols, 5);
             course.faculty = getCell(cols, 6);
             let space = getCell(cols, 7);
             let slashIndex = space.indexOf('/')
-            course.space_available = parseInt(space.substring(0, slashIndex - 1))
-            course.space_total = parseInt(space.substring(slashIndex + 2))
-            course.credits = getCell(cols, 8);
-            course.academic_level = getCell(cols, 10);
+            let available = parseInt(space.substring(0, slashIndex - 1))
+            if(available === NaN || available === null || available === undefined || !available){
+                available = 0
+            }
+            course.available = available
+            let capacity = parseInt(space.substring(slashIndex + 2))
+            if(capacity === NaN || capacity === null || capacity === undefined || !capacity){
+                capacity = 0
+            }
+            course.capacity = capacity
+            course.credits = parseInt(getCell(cols, 8))
+            course.academicLevel = getCell(cols, 10)
+
+            let firstPositionStar = getPosition(course.title, '*', 1)
+            let secondPositionStar = getPosition(course.title, '*', 2)
+            let firstPositionSpace = getPosition(course.title, ' ', 1)
+
+
+            course.department = course.title.substring(0, firstPositionStar)
+            course.course = course.title.substring(firstPositionStar + 1, secondPositionStar)
+            course.level = course.course.substring(0, 1)
+            course.section = course.title.substring(secondPositionStar + 1, firstPositionSpace)
+
+
             courses.push(course);
         }
     }
