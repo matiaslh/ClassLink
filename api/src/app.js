@@ -45,21 +45,16 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     let seconds = 10
 
     // remove all documents
-    Course.remove({}, () => {
+    while (true) {
+        Course.deleteMany({}, async () => {
 
-        // create file with all courses
-        let courses = await getAllCourses()
-        Course.insertMany(courses).then(console.log).catch(console.error)
+            // create file with all courses
+            let courses = await getAllCourses()
+            Course.insertMany(courses).then(console.log).catch(console.error)
 
-        fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
-
-    })
-
-
-
-    // setInterval(() => {
-
-    // }, seconds * 1000)
+            fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+        })
+    }
 
 }).catch((err) => console.error(err));
 
@@ -106,16 +101,17 @@ async function getAllCourses() {
 
     let courses = []
     // THIS IS MISSING THE LAST DEPARTMENT
-    for (let i = 0; i < departments.length - 5; i += 5) {
+    for (let i = 0; i < departments.length; i += 5) {
         let query = {
             courses: [
-                { department: departments[i] },
-                { department: departments[i + 1] },
-                { department: departments[i + 2] },
-                { department: departments[i + 3] },
-                { department: departments[i + 4] },
+                { department: departments[i] }
             ],
             semester: 'F19'
+        }
+        for (let j = 1; j <= 4; j++) {
+            if (i + j < departments.length) {
+                query.courses.push({ department: departments[i + j] })
+            }
         }
 
         let newCourses = await doGetRequests(query)
@@ -156,15 +152,6 @@ function contact(fcm_tokens, courses) {
 }
 
 
-// example query:
-// let query = {
-//     semester: "F19",
-//     courses: [
-//         {
-//             department: "ENGG"
-//         }
-//     ]
-// }
 let departments = [
     'ACCT',
     'AGBU',
