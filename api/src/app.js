@@ -42,10 +42,10 @@ const Course = mongoose.model("Course", CourseSchema);
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 10
+    let seconds = 60
 
     // remove all documents
-    while (true) {
+    setTimeout(() => {
         Course.deleteMany({}, async () => {
 
             // create file with all courses
@@ -54,7 +54,7 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
 
             fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
         })
-    }
+    }, seconds * 1000)
 
 }).catch((err) => console.error(err));
 
