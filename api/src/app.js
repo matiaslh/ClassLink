@@ -3,6 +3,7 @@ const _ = require('underscore')
 const mongoose = require('mongoose').set('debug', true)
 const Schema = require('mongoose').Schema
 const fs = require('fs').promises
+const uniqueValidator = require('mongoose-unique-validator');
 const firebase = require('firebase-admin');
 
 // setting up firebase with service account
@@ -17,6 +18,20 @@ firebase.initializeApp({
 
 const dbConnection = 'mongodb://68.183.197.232:27017/auth'
 console.log(dbConnection)
+
+
+// User model config
+const UserSchema = new Schema({
+    password: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    resetPasswordToken: { type: String },
+    resetPasswordExpiration: { type: String },
+    data: { type: Schema.Types.Mixed }
+});
+
+UserSchema.plugin(uniqueValidator);
+
+const User = mongoose.model("User", UserSchema);
 
 // Course model config
 const CourseSchema = new Schema({
@@ -42,17 +57,21 @@ const Course = mongoose.model("Course", CourseSchema);
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 60
+    let seconds = 10
 
     // remove all documents
-    setTimeout(async () => {
+    setInterval(async () => {
         // get all courses from webadvisor
-        let courses = await getAllCourses()
+        // let courses = await getAllCourses()
+        // fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
 
-        Course.deleteMany({}, () => {
-            Course.insertMany(courses).then(console.log).catch(console.error)
-            fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
-        })
+        // Course.deleteMany({}, () => {
+        //     Course.insertMany(courses).then(() => {
+                User.find({}).then(users => {
+                    users.forEach(callRequests)
+                }).catch(console.error)
+    //         }).catch(console.error)
+    //     })
     }, seconds * 1000)
 
 }).catch((err) => console.error(err));
@@ -64,36 +83,34 @@ function callRequests(user) {
     }
 
     let fcm_tokens = user.data.fcm_tokens
-    let query = {
-        courses: user.data.criteria,
-        semester: 'F19'
-    }
 
-    doGetRequests(query, async (courses) => {
-        let openCourses = _.filter(courses, (elem) => {
-            return elem.space_available > 0
-        })
-        if (openCourses.length > 0) {
-            let courses = _.pluck(openCourses, 'title').map(title => {
-                let index = title.indexOf(' (')
-                return (index != -1) ? title.substring(0, index) : title
-            })
-            contact(fcm_tokens, courses)
+    Course.find({ $or: user.data.criteria }).then(console.log).catch(console.log)
 
-            // remove criteria and add history
-            let history = user.data.history ? user.data.history : []
-            history.push(user.data.criteria)
+    // doGetRequests(query, async (courses) => {
+    //     let openCourses = _.filter(courses, (elem) => {
+    //         return elem.space_available > 0
+    //     })
+    //     if (openCourses.length > 0) {
+    //         let courses = _.pluck(openCourses, 'title').map(title => {
+    //             let index = title.indexOf(' (')
+    //             return (index != -1) ? title.substring(0, index) : title
+    //         })
+    //         contact(fcm_tokens, courses)
 
-            // DO NOT CHANGE FROM USER.DATA = OBJECT CUZ MONGOOSE DOESNT WORK OTHERWISE
-            user.data = {
-                history,
-                criteria: [],
-                fcm_tokens
-            }
+    //         // remove criteria and add history
+    //         let history = user.data.history ? user.data.history : []
+    //         history.push(user.data.criteria)
 
-            await user.save()
-        }
-    })
+    //         // DO NOT CHANGE FROM USER.DATA = OBJECT CUZ MONGOOSE DOESNT WORK OTHERWISE
+    //         user.data = {
+    //             history,
+    //             criteria: [],
+    //             fcm_tokens
+    //         }
+
+    //         await user.save()
+    //     }
+    // })
 }
 
 async function getAllCourses() {
