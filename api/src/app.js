@@ -45,13 +45,12 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     let seconds = 60
 
     // remove all documents
-    setTimeout(() => {
-        Course.deleteMany({}, async () => {
+    setTimeout(async () => {
+        // get all courses from webadvisor
+        let courses = await getAllCourses()
 
-            // create file with all courses
-            let courses = await getAllCourses()
+        Course.deleteMany({}, () => {
             Course.insertMany(courses).then(console.log).catch(console.error)
-
             fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
         })
     }, seconds * 1000)
