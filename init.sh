@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #build frontend
+cd ~/GuelphCourseReminder
 cd frontend
 npm run build
 

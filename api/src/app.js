@@ -2,7 +2,7 @@ const doGetRequests = require('./utils')
 const _ = require('underscore')
 const mongoose = require('mongoose').set('debug', true)
 const Schema = require('mongoose').Schema
-const fs = require('fs')
+const fs = require('fs').promises
 const firebase = require('firebase-admin');
 
 // setting up firebase with service account
@@ -44,34 +44,17 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     console.log("Successfully connected to MongoDB.")
     let seconds = 10
 
-    // let courses = await getAllCourses()
-    // fs.writeFileSync('./data.json', JSON.stringify(courses) , 'utf-8'); 
+    // remove all documents
+    while (true) {
+        Course.deleteMany({}, async () => {
 
-    fs.readFile('data.json', 'utf8', function (err, contents) {
-        let courses = JSON.parse(contents)
-        let subset = courses.slice(20, 40)
-        // let courseObjects = courses.map(course => {
-        //     return {
-        //         'insertOne': {
-        //             'document': course
-        //         }
-        //     }
-        // })
+            // create file with all courses
+            let courses = await getAllCourses()
+            Course.insertMany(courses).then(console.log).catch(console.error)
 
-        // courses.forEach(async (course, index)=>{
-        //     console.log(course, index)
-        //     let newCourse = new Course(course)
-        //     newCourse.save(console.log)
-        // })
-        // console.log(courses.length / 2)
-        // let subset = courses.slice(courses.length / 2)
-        // console.log(subset)
-        Course.insertMany(subset).then(console.log).catch(console.error)
-    });
-
-    // setInterval(() => {
-
-    // }, seconds * 1000)
+            fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+        })
+    }
 
 }).catch((err) => console.error(err));
 
@@ -118,16 +101,17 @@ async function getAllCourses() {
 
     let courses = []
     // THIS IS MISSING THE LAST DEPARTMENT
-    for (let i = 0; i < departments.length - 5; i += 5) {
+    for (let i = 0; i < departments.length; i += 5) {
         let query = {
             courses: [
-                { department: departments[i] },
-                { department: departments[i + 1] },
-                { department: departments[i + 2] },
-                { department: departments[i + 3] },
-                { department: departments[i + 4] },
+                { department: departments[i] }
             ],
             semester: 'F19'
+        }
+        for (let j = 1; j <= 4; j++) {
+            if (i + j < departments.length) {
+                query.courses.push({ department: departments[i + j] })
+            }
         }
 
         let newCourses = await doGetRequests(query)
@@ -168,15 +152,6 @@ function contact(fcm_tokens, courses) {
 }
 
 
-// example query:
-// let query = {
-//     semester: "F19",
-//     courses: [
-//         {
-//             department: "ENGG"
-//         }
-//     ]
-// }
 let departments = [
     'ACCT',
     'AGBU',
