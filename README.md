@@ -8,7 +8,7 @@ Get into any guelph course as soon as it is open
 - [x] Notify page dashboard with table of what they're currently searching for
 - [ ] Remove fake accounts from prod db
 - [ ] Remove debug traces from code
-- [ ] iOS and Safari fixes
+- [x] iOS and Safari fixes
 - [ ] Responsive design for all pages
 - [ ] Logo?
 - [ ] Login and signup page write up
@@ -20,6 +20,6 @@ Get into any guelph course as soon as it is open
 - [ ] Restart search if application crashes.
 - [ ] Autodeploy to production from git cronjob.
 - [ ] criteria store status and completed on date
-- [ ] make button for deleting and editing criteria
-- [ ] make app email as well as notify
-- [ ] show last check for last time api searched webadvisor
+- [ ] Make button for deleting and editing criteria
+- [ ] Make app email as well as notify
+- [ ] Show last check for last time api searched webadvisor
