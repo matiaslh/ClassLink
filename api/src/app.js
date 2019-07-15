@@ -1,7 +1,8 @@
 const doGetRequests = require('./utils')
 const _ = require('underscore')
 const mongoose = require('mongoose').set('debug', true)
-const uniqueValidator = require('mongoose-unique-validator')
+const Schema = require('mongoose').Schema
+const fs = require('fs')
 const firebase = require('firebase-admin');
 
 // setting up firebase with service account
@@ -14,31 +15,63 @@ firebase.initializeApp({
     databaseURL: "https://guelph-notifyme.firebaseio.com"
 })
 
-// User model config
-const UserSchema = new mongoose.Schema({
-    password: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    resetPasswordToken: { type: String },
-    resetPasswordExpiration: { type: String },
-    data: { type: mongoose.Schema.Types.Mixed }
+const dbConnection = 'mongodb://68.183.197.232:27017/auth'
+console.log(dbConnection)
+
+// Course model config
+const CourseSchema = new Schema({
+    term: { type: String, required: true },
+    status: { type: String, required: true },
+    department: { type: String, required: true },
+    level: { type: String, required: true },
+    course: { type: String, required: true },
+    section: { type: String, required: true },
+    title: { type: String, required: true },
+    faculty: { type: String, required: true },
+    meetingInformation: { type: String, required: true },
+    available: { type: Number, required: true },
+    capacity: { type: Number, required: true },
+    credits: { type: Number, required: true },
+    academicLevel: { type: String, required: true },
+    location: { type: String, required: true }
 });
 
-UserSchema.plugin(uniqueValidator);
+const Course = mongoose.model("Course", CourseSchema);
 
-User = mongoose.model("User", UserSchema);
 
-const dbConnection = 'mongodb://mongo:27017/auth'
-console.log(dbConnection)
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
     let seconds = 10
-    setInterval(() => {
-        console.log('Searching for users (seconds:' + seconds + ') ...')
-        User.find({}).then((users) => {
-            users.forEach(callRequests)
-        })
-    }, seconds * 1000)
+
+    // let courses = await getAllCourses()
+    // fs.writeFileSync('./data.json', JSON.stringify(courses) , 'utf-8'); 
+
+    fs.readFile('data.json', 'utf8', function (err, contents) {
+        let courses = JSON.parse(contents)
+        let subset = courses.slice(20, 40)
+        // let courseObjects = courses.map(course => {
+        //     return {
+        //         'insertOne': {
+        //             'document': course
+        //         }
+        //     }
+        // })
+
+        // courses.forEach(async (course, index)=>{
+        //     console.log(course, index)
+        //     let newCourse = new Course(course)
+        //     newCourse.save(console.log)
+        // })
+        // console.log(courses.length / 2)
+        // let subset = courses.slice(courses.length / 2)
+        // console.log(subset)
+        Course.insertMany(subset).then(console.log).catch(console.error)
+    });
+
+    // setInterval(() => {
+
+    // }, seconds * 1000)
 
 }).catch((err) => console.error(err));
 
@@ -81,6 +114,29 @@ function callRequests(user) {
     })
 }
 
+async function getAllCourses() {
+
+    let courses = []
+    // THIS IS MISSING THE LAST DEPARTMENT
+    for (let i = 0; i < departments.length - 5; i += 5) {
+        let query = {
+            courses: [
+                { department: departments[i] },
+                { department: departments[i + 1] },
+                { department: departments[i + 2] },
+                { department: departments[i + 3] },
+                { department: departments[i + 4] },
+            ],
+            semester: 'F19'
+        }
+
+        let newCourses = await doGetRequests(query)
+        courses = courses.concat(newCourses)
+        console.log(i, courses.length)
+    }
+    return courses
+}
+
 function contact(fcm_tokens, courses) {
     let message = courses.join('\n')
     let notif = {
@@ -121,3 +177,136 @@ function contact(fcm_tokens, courses) {
 //         }
 //     ]
 // }
+let departments = [
+    'ACCT',
+    'AGBU',
+    'AGR',
+    'AHSS',
+    'ANSC',
+    'ANTH',
+    'AQUA',
+    'ARAB',
+    'ARTH',
+    'ASCI',
+    'AVC',
+    'BADM',
+    'BINF',
+    'BIOC',
+    'BIOL',
+    'BIOM',
+    'BIOP',
+    'BIOT',
+    'BOT',
+    'BUS',
+    'CCJP',
+    'CDE',
+    'CHEM',
+    'CHIN',
+    'CIS',
+    'CLAS',
+    'CLIN',
+    'CME',
+    'COOP',
+    'CROP',
+    'CRWR',
+    'DAFL',
+    'DAGR',
+    'DENM',
+    'DEQN',
+    'DFN',
+    'DHRT',
+    'DTM',
+    'DVT',
+    'ECON',
+    'ECS',
+    'EDRD',
+    'ENGG',
+    'ENGL',
+    'ENVB',
+    'ENVM',
+    'ENVS',
+    'EQN',
+    'EURO',
+    'FARE',
+    'FCSS',
+    'FDNT',
+    'FINA',
+    'FOOD',
+    'FRAN',
+    'FREN',
+    'FRHD',
+    'FSQA',
+    'GEOG',
+    'GERM',
+    'GERO',
+    'GREK',
+    'HHNS',
+    'HISP',
+    'HIST',
+    'HK',
+    'HORT',
+    'HROB',
+    'HTM',
+    'HUMN',
+    'IBIO',
+    'IDEV',
+    'IMPR',
+    'INDG',
+    'INT',
+    'IPS',
+    'ISS',
+    'ITAL',
+    'JUST',
+    'KIN',
+    'LACS',
+    'LARC',
+    'LAT',
+    'LEAD',
+    'LING',
+    'LRS',
+    'LTS',
+    'MATH',
+    'MBG',
+    'MCB',
+    'MCM',
+    'MCS',
+    'MDST',
+    'MGMT',
+    'MICR',
+    'MUSC',
+    'NANO',
+    'NEUR',
+    'NRS',
+    'NUTR',
+    'OAGR',
+    'PABI',
+    'PATH',
+    'PBIO',
+    'PHIL',
+    'PHYS',
+    'PLNT',
+    'POLS',
+    'POPM',
+    'PORT',
+    'PSYC',
+    'REAL',
+    'RPD',
+    'RST',
+    'SART',
+    'SCMA',
+    'SOAN',
+    'SOC',
+    'SPAN',
+    'STAT',
+    'THST',
+    'TOX',
+    'TRMH',
+    'UNIV',
+    'VETM',
+    'WAT',
+    'WLU',
+    'WMST',
+    'XSEN',
+    'XSHR',
+    'ZOO'
+]

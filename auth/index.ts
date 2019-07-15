@@ -9,6 +9,7 @@ import passport = require('passport');
 import { configurePassport } from './config/passport';
 import { passwordRouter } from './routes/Password';
 import { redirectRouter } from './routes/Redirect';
+import { Course } from './models/Course';
 
 const app = express();
 
@@ -58,7 +59,7 @@ app.use('/redirect/', redirectRouter);
 // For production
 app.use(express.static(path.join(__dirname, '..', 'build_client')));
 app.get('*', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '..', 'build_client', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'build_client', 'index.html'));
 });
 
 const port = process.env.PORT || 5000;
