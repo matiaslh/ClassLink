@@ -1,7 +1,7 @@
 
 // import { HOST } from '/vars.js';
 
-let HOST = 'www.notifymeguelph.xyz'
+let HOST = 'notifymeguelph.xyz'
 let protocol = 'https://'
 // let HOST = '68.183.197.232'
 // let protocol = 'http://'
