@@ -16,7 +16,7 @@ firebase.initializeApp({
     databaseURL: "https://guelph-notifyme.firebaseio.com"
 })
 
-const dbConnection = 'mongodb://68.183.197.232:27017/auth'
+const dbConnection = 'mongodb://mongo:27017/auth'
 console.log(dbConnection)
 
 
