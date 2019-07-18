@@ -115,6 +115,7 @@ function callRequests(user) {
                 history,
                 criteria: []
             }
+            user.markModified('data')
             user.save()
         }
     }).catch(console.log)
