@@ -5,6 +5,23 @@ const Schema = require('mongoose').Schema
 const fs = require('fs').promises
 const uniqueValidator = require('mongoose-unique-validator');
 const firebase = require('firebase-admin');
+const nodemailer = require('nodemailer')
+
+// Generate test SMTP service account from ethereal.email
+let transporter = null
+
+nodemailer.createTestAccount().then(testAccount => {
+    // create reusable transporter object using the default SMTP transport
+    transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: testAccount.user, // generated ethereal user
+            pass: testAccount.pass // generated ethereal password
+        }
+    })
+})
 
 // setting up firebase with service account
 let serviceAccount = require("../serviceAccount.json");
@@ -64,13 +81,15 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     // interval to refresh DB
     setInterval(async () => {
         //delete all courses from database
-        Course.deleteMany({}, () => {
-            // get all courses from webadvisor
-            let courses = getAllCourses().then(courses => {
-                fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+
+        // get all courses from webadvisor
+        getAllCourses().then(courses => {
+            Course.deleteMany({}, () => {
                 Course.insertMany(courses)
-            })
-        }).catch(console.error)
+            }).catch(console.error)
+            fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+        })
+
     }, refreshDBSeconds * 1000)
 
     // interval to check users
@@ -88,16 +107,60 @@ function callRequests(user) {
         return
     }
 
-    let fcm_tokens = user.data.fcm_tokens
-
     Course.find({ $or: user.data.criteria }).then(courses => {
-        let openCourses = _.filter(courses, course =>course.available > 0)
-        if(openCourses.length > 0){
+        let openCourses = _.filter(courses, course => course.available > 0)
+        if (openCourses.length > 0) {
             let titles = _.pluck(openCourses, 'title')
-            console.log(user.email, user)
-            contact(title, fcm_tokens)
+            contact(titles, user.data.fcm_tokens, user.email)
         }
     }).catch(console.log)
+}
+
+function contact(courses, fcm_tokens, email) {
+    let message = courses.join('\n')
+    let notif = {
+        notification: {
+            title: 'NotifyMe U of G Courses Available',
+            body: message
+        },
+        android: {
+            notification: {
+                sound: "default"
+            }
+        },
+        apns: {
+            payload: {
+                aps: {
+                    sound: "default"
+                }
+            }
+        },
+        data: { courses: JSON.stringify(courses) },
+        tokens: fcm_tokens
+    }
+    
+    firebase.messaging().sendMulticast(notif).then((response) => {
+        // Response is a message ID string.
+        console.log('Successfully sent message:', response);
+    }).catch((error) => {
+        console.log('Error sending message:', error);
+    })
+
+    // send mail with defined transport object
+    transporter.sendMail({
+        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        to: email, // list of receivers
+        subject: "Hello ✔", // Subject line
+        text: message, // plain text body
+        html: "<b>Hello world?</b>" // html body
+    }).then(info => {
+        console.log("Message sent: %s", info.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    })
 }
 
 async function getAllCourses() {
@@ -123,37 +186,6 @@ async function getAllCourses() {
     }
     return courses
 }
-
-function contact(courses, fcm_tokens, email) {
-    let message = courses.join('\n')
-    let notif = {
-        notification: {
-            title: 'NotifyMe U of G Courses Available',
-            body: message
-        },
-        android: {
-            notification: {
-                sound: "default"
-            }
-        },
-        apns: {
-            payload: {
-                aps: {
-                    sound: "default"
-                }
-            }
-        },
-        data: { courses: JSON.stringify(courses) },
-        tokens: fcm_tokens
-    }
-    firebase.messaging().sendMulticast(notif).then((response) => {
-        // Response is a message ID string.
-        console.log('Successfully sent message:', response);
-    }).catch((error) => {
-        console.log('Error sending message:', error);
-    })
-}
-
 
 let departments = [
     'ACCT',
