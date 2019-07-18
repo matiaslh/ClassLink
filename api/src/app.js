@@ -79,7 +79,7 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     while (true) {
         // get all courses from webadvisor
         let courses = await getAllCourses()
-        courses = _.flatten(courses)
+        console.log(courses.length)
 
         fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
@@ -168,7 +168,6 @@ async function getAllCourses() {
 
     console.log('Getting all courses')
 
-    let courses = []
     let promises = []
 
     // THIS IS MISSING THE LAST DEPARTMENT
@@ -186,7 +185,9 @@ async function getAllCourses() {
         }
         promises.push(doGetRequests(query))
     }
-    return Promise.all(promises)
+    let values = await Promise.all(promises)
+    let courses = _.flatten(values)
+    return courses
 }
 
 let departments = [
