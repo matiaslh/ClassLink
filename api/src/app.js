@@ -80,6 +80,10 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
         // get all courses from webadvisor
         let courses = await getAllCourses()
         console.log(courses.length)
+        courses = _.filter(courses, (course)=>{
+            if(!course.title || course.status == 'error') return false
+            return true
+        })
 
         fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
