@@ -6,22 +6,18 @@ const fs = require('fs').promises
 const uniqueValidator = require('mongoose-unique-validator');
 const firebase = require('firebase-admin');
 const nodemailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport');
 
 // Generate test SMTP service account from ethereal.email
-let transporter = null
+var transporter = nodemailer.createTransport(smtpTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    auth: {
+        user: 'notifymeguelph@gmail.com',
+        pass: 'uoguelphnotifyme**'
+    }
+}));
 
-nodemailer.createTestAccount().then(testAccount => {
-    // create reusable transporter object using the default SMTP transport
-    transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: testAccount.user, // generated ethereal user
-            pass: testAccount.pass // generated ethereal password
-        }
-    })
-})
 
 // setting up firebase with service account
 let serviceAccount = require("../serviceAccount.json");
@@ -112,6 +108,14 @@ function callRequests(user) {
         if (openCourses.length > 0) {
             let titles = _.pluck(openCourses, 'title')
             contact(titles, user.data.fcm_tokens, user.email)
+            let history = user.data.history
+            history.push(user.data.criteria)
+            user.data = {
+                fcm_tokens: user.data.fcm_tokens,
+                history,
+                criteria: []
+            }
+            user.save()
         }
     }).catch(console.log)
 }
@@ -138,7 +142,7 @@ function contact(courses, fcm_tokens, email) {
         data: { courses: JSON.stringify(courses) },
         tokens: fcm_tokens
     }
-    
+
     firebase.messaging().sendMulticast(notif).then((response) => {
         // Response is a message ID string.
         console.log('Successfully sent message:', response);
