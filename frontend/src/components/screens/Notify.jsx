@@ -22,20 +22,20 @@ class Notify extends React.Component {
             confirmModal: {
                 show: false
             },
-            userLoaded: true,
+            userLoaded: false,
             criteria: [{ department: 'CIS' }],
         }
-        // requests.getUser().then(response => {
-        //     if (response.status === 'Success') {
-        //         let user = response.info
-        //         let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
-        //         this.state.criteria = criteria
-        //         this.state.userLoaded = true
-        //         this.forceUpdate()
-        //     } else {
-        //         props.history.push('/login')
-        //     }
-        // })
+        requests.getUser().then(response => {
+            if (response.status === 'Success') {
+                let user = response.info
+                let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
+                this.state.criteria = criteria
+                this.state.userLoaded = true
+                this.forceUpdate()
+            } else {
+                props.history.push('/login')
+            }
+        })
     }
 
     componentDidMount() {
