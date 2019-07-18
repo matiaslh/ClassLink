@@ -80,6 +80,10 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
         // get all courses from webadvisor
         let courses = await getAllCourses()
         console.log(courses.length)
+        courses = _.filter(courses, (course) => {
+            if (!course.title || course.status == 'error') return false
+            return true
+        })
 
         fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
@@ -109,11 +113,12 @@ async function callRequests(user) {
     let openCourses = _.filter(courses, course => course.available > 0)
     if (openCourses.length > 0) {
         let titles = _.pluck(openCourses, 'title')
-        contact(titles, user.data.fcm_tokens, user.email)
+        let fcm_tokens = _.without(user.data.fcm_tokens, null, undefined, "")
+        contact(titles, fcm_tokens, user.email)
         let history = user.data.history ? user.data.history : []
         history.push(user.data.criteria)
         user.data = {
-            fcm_tokens: user.data.fcm_tokens,
+            fcm_tokens,
             history,
             criteria: []
         }
