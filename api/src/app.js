@@ -103,6 +103,7 @@ async function callRequests(user) {
     }
 
     let courses = await Course.find({ $or: user.data.criteria })
+    courses = _.flatten(courses)
 
     let openCourses = _.filter(courses, course => course.available > 0)
     if (openCourses.length > 0) {
@@ -167,6 +168,8 @@ async function getAllCourses() {
     console.log('Getting all courses')
 
     let courses = []
+    let promises = []
+
     // THIS IS MISSING THE LAST DEPARTMENT
     for (let i = 0; i < departments.length; i += 5) {
         let query = {
@@ -180,12 +183,9 @@ async function getAllCourses() {
                 query.courses.push({ department: departments[i + j] })
             }
         }
-
-        let newCourses = await doGetRequests(query)
-        courses = courses.concat(newCourses)
-        console.log(i, courses.length)
+        promises.push(doGetRequests(query))
     }
-    return courses
+    return Promise.all(promises)
 }
 
 let departments = [
