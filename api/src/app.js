@@ -103,12 +103,12 @@ function callRequests(user) {
         return
     }
 
-    Course.find({ $or: user.data.criteria }).then(courses => {
+    Course.find({ $or: user.data.criteria }).then(async courses => {
         let openCourses = _.filter(courses, course => course.available > 0)
         if (openCourses.length > 0) {
             let titles = _.pluck(openCourses, 'title')
             contact(titles, user.data.fcm_tokens, user.email)
-            let history = user.data.history
+            let history = user.data.history ? user.data.history : []
             history.push(user.data.criteria)
             user.data = {
                 fcm_tokens: user.data.fcm_tokens,
@@ -116,7 +116,8 @@ function callRequests(user) {
                 criteria: []
             }
             user.markModified('data')
-            user.save()
+            let user = await user.save()
+            console.log(user)
         }
     }).catch(console.log)
 }
