@@ -70,30 +70,26 @@ const Course = mongoose.model("Course", CourseSchema);
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
-    let refreshDBSeconds = 30
-    let checkUsersSeconds = 10
+    let seconds = 10
 
 
-    // interval to refresh DB
+    // interval to refresh DB and check users
     setInterval(async () => {
         //delete all courses from database
 
         // get all courses from webadvisor
         getAllCourses().then(courses => {
             Course.deleteMany({}, () => {
-                Course.insertMany(courses)
+                Course.insertMany(courses).then(() => {
+                    User.find({}).then(users => {
+                        users.forEach(callRequests)
+                    }).catch(console.error)
+                })
             }).catch(console.error)
             fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
         })
 
-    }, refreshDBSeconds * 1000)
-
-    // interval to check users
-    setInterval(() => {
-        User.find({}).then(users => {
-            users.forEach(callRequests)
-        }).catch(console.error)
-    }, checkUsersSeconds * 1000)
+    }, seconds * 1000)
 
 }).catch((err) => console.error(err));
 
@@ -154,18 +150,13 @@ function contact(courses, fcm_tokens, email) {
 
     // send mail with defined transport object
     transporter.sendMail({
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: '"NotifyMe" <notifymeguelph@gmail.com>', // sender address
         to: email, // list of receivers
-        subject: "Hello ✔", // Subject line
+        subject: "U of Guelph Notifyme Courses Available", // Subject line
         text: message, // plain text body
-        html: "<b>Hello world?</b>" // html body
+        html: message // html body
     }).then(info => {
         console.log("Message sent: %s", info.messageId);
-        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-        // Preview only available when sending through an Ethereal account
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
     })
 }
 
