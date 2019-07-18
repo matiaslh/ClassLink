@@ -74,7 +74,7 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     }, refreshDBSeconds * 1000)
 
     // interval to check users
-    setInterval(()=>{
+    setInterval(() => {
         User.find({}).then(users => {
             users.forEach(callRequests)
         }).catch(console.error)
@@ -90,8 +90,13 @@ function callRequests(user) {
 
     let fcm_tokens = user.data.fcm_tokens
 
-    Course.find({ $or: user.data.criteria }).then(courses=>{
-        console.log(courses)
+    Course.find({ $or: user.data.criteria }).then(courses => {
+        let openCourses = _.filter(courses, course =>course.available > 0)
+        if(openCourses.length > 0){
+            let titles = _.pluck(openCourses, 'title')
+            console.log(user.email, user)
+            contact(title, fcm_tokens)
+        }
     }).catch(console.log)
 }
 
@@ -119,7 +124,7 @@ async function getAllCourses() {
     return courses
 }
 
-function contact(fcm_tokens, courses) {
+function contact(courses, fcm_tokens, email) {
     let message = courses.join('\n')
     let notif = {
         notification: {
