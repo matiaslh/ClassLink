@@ -7,6 +7,9 @@ const uniqueValidator = require('mongoose-unique-validator');
 const firebase = require('firebase-admin');
 const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer-smtp-transport');
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
 // Generate test SMTP service account from ethereal.email
 var transporter = nodemailer.createTransport(smtpTransport({
@@ -66,30 +69,29 @@ const CourseSchema = new Schema({
 
 const Course = mongoose.model("Course", CourseSchema);
 
-
 // Mongo config
-mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
+mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(async () => {
     console.log("Successfully connected to MongoDB.")
     let seconds = 10
 
 
-    // interval to refresh DB and check users
-    setInterval(async () => {
-        //delete all courses from database
-
+    // loop to refresh DB and check users
+    while (true) {
         // get all courses from webadvisor
-        getAllCourses().then(courses => {
-            Course.deleteMany({}, () => {
-                Course.insertMany(courses).then(() => {
-                    User.find({}).then(users => {
-                        users.forEach(callRequests)
-                    }).catch(console.error)
-                })
-            }).catch(console.error)
-            fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
-        })
+        let courses = await getAllCourses()
 
-    }, seconds * 1000)
+        //delete all courses from database
+        let promise = Course.deleteMany({}, () => {
+            Course.insertMany(courses).then(() => {
+                User.find({}).then(users => {
+                    users.forEach(callRequests)
+                }).catch(console.error)
+            })
+        }).catch(console.error)
+        console.log(promise)
+        fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+        await sleep(seconds * 1000)
+    }
 
 }).catch((err) => console.error(err));
 
