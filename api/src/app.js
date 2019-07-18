@@ -79,6 +79,8 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     while (true) {
         // get all courses from webadvisor
         let courses = await getAllCourses()
+        courses = _.flatten(courses)
+
         fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
         //delete all courses from database
@@ -103,7 +105,6 @@ async function callRequests(user) {
     }
 
     let courses = await Course.find({ $or: user.data.criteria })
-    courses = _.flatten(courses)
 
     let openCourses = _.filter(courses, course => course.available > 0)
     if (openCourses.length > 0) {
