@@ -4,8 +4,11 @@ import { withRouter } from "react-router-dom"
 
 class Dropdown extends React.Component {
 
-    state = {
-        selected: undefined
+    constructor(props) {
+        super(props)
+        this.state = {
+            selected: props.default ? props.default : undefined
+        }
     }
 
     onSelect = (event) => {
@@ -13,7 +16,7 @@ class Dropdown extends React.Component {
         this.props.onChange(this.props.type, event.currentTarget.value)
     }
 
-    getSelected = ()=>{
+    getSelected = () => {
         return (this.state.selected) ? this.state.selected : this.props.items[0][Object.keys(this.props.items[0])]
     }
 
@@ -47,7 +50,7 @@ const styles = {
         overflowY: 'scroll'
     },
     button: {
-        textOverflow:'ellipsis',
+        textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         width: '100%',
         display: 'block',
