@@ -116,8 +116,8 @@ function callRequests(user) {
                 criteria: []
             }
             user.markModified('data')
-            let user = await user.save()
-            console.log(user)
+            let newUser = await user.save()
+            console.log(newUser)
         }
     }).catch(console.log)
 }
