@@ -57,22 +57,28 @@ const Course = mongoose.model("Course", CourseSchema);
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(() => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 10
+    let refreshDBSeconds = 30
+    let checkUsersSeconds = 10
 
-    // remove all documents
+
+    // interval to refresh DB
     setInterval(async () => {
-        // get all courses from webadvisor
-        // let courses = await getAllCourses()
-        // fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+        //delete all courses from database
+        Course.deleteMany({}, () => {
+            // get all courses from webadvisor
+            let courses = getAllCourses().then(courses => {
+                fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+                Course.insertMany(courses)
+            })
+        }).catch(console.error)
+    }, refreshDBSeconds * 1000)
 
-        // Course.deleteMany({}, () => {
-        //     Course.insertMany(courses).then(() => {
-                User.find({}).then(users => {
-                    users.forEach(callRequests)
-                }).catch(console.error)
-    //         }).catch(console.error)
-    //     })
-    }, seconds * 1000)
+    // interval to check users
+    setInterval(()=>{
+        User.find({}).then(users => {
+            users.forEach(callRequests)
+        }).catch(console.error)
+    }, checkUsersSeconds * 1000)
 
 }).catch((err) => console.error(err));
 
@@ -84,33 +90,9 @@ function callRequests(user) {
 
     let fcm_tokens = user.data.fcm_tokens
 
-    Course.find({ $or: user.data.criteria }).then(console.log).catch(console.log)
-
-    // doGetRequests(query, async (courses) => {
-    //     let openCourses = _.filter(courses, (elem) => {
-    //         return elem.space_available > 0
-    //     })
-    //     if (openCourses.length > 0) {
-    //         let courses = _.pluck(openCourses, 'title').map(title => {
-    //             let index = title.indexOf(' (')
-    //             return (index != -1) ? title.substring(0, index) : title
-    //         })
-    //         contact(fcm_tokens, courses)
-
-    //         // remove criteria and add history
-    //         let history = user.data.history ? user.data.history : []
-    //         history.push(user.data.criteria)
-
-    //         // DO NOT CHANGE FROM USER.DATA = OBJECT CUZ MONGOOSE DOESNT WORK OTHERWISE
-    //         user.data = {
-    //             history,
-    //             criteria: [],
-    //             fcm_tokens
-    //         }
-
-    //         await user.save()
-    //     }
-    // })
+    Course.find({ $or: user.data.criteria }).then(courses=>{
+        console.log(courses)
+    }).catch(console.log)
 }
 
 async function getAllCourses() {
