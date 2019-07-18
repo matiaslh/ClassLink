@@ -79,45 +79,45 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     while (true) {
         // get all courses from webadvisor
         let courses = await getAllCourses()
+        fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
         //delete all courses from database
-        let promise = Course.deleteMany({}, () => {
-            Course.insertMany(courses).then(() => {
-                User.find({}).then(users => {
-                    users.forEach(callRequests)
-                }).catch(console.error)
-            })
-        }).catch(console.error)
-        console.log(promise)
-        fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8');
+        await Course.deleteMany({})
+
+        // insert the refreshed courses
+        await Course.insertMany(courses)
+
+        // get all users and check for courses
+        let users = await User.find({})
+        await users.forEach(callRequests)
+
         await sleep(seconds * 1000)
     }
 
 }).catch((err) => console.error(err));
 
-function callRequests(user) {
+async function callRequests(user) {
 
     if (!user.data || !user.data.criteria || user.data.criteria.length <= 0 || !user.data.fcm_tokens || user.data.fcm_tokens.length <= 0) {
         return
     }
 
-    Course.find({ $or: user.data.criteria }).then(async courses => {
-        let openCourses = _.filter(courses, course => course.available > 0)
-        if (openCourses.length > 0) {
-            let titles = _.pluck(openCourses, 'title')
-            contact(titles, user.data.fcm_tokens, user.email)
-            let history = user.data.history ? user.data.history : []
-            history.push(user.data.criteria)
-            user.data = {
-                fcm_tokens: user.data.fcm_tokens,
-                history,
-                criteria: []
-            }
-            user.markModified('data')
-            let newUser = await user.save()
-            console.log(newUser)
+    let courses = await Course.find({ $or: user.data.criteria })
+
+    let openCourses = _.filter(courses, course => course.available > 0)
+    if (openCourses.length > 0) {
+        let titles = _.pluck(openCourses, 'title')
+        contact(titles, user.data.fcm_tokens, user.email)
+        let history = user.data.history ? user.data.history : []
+        history.push(user.data.criteria)
+        user.data = {
+            fcm_tokens: user.data.fcm_tokens,
+            history,
+            criteria: []
         }
-    }).catch(console.log)
+        user.markModified('data')
+        user.save()
+    }
 }
 
 function contact(courses, fcm_tokens, email) {
@@ -163,6 +163,8 @@ function contact(courses, fcm_tokens, email) {
 }
 
 async function getAllCourses() {
+
+    console.log('Getting all courses')
 
     let courses = []
     // THIS IS MISSING THE LAST DEPARTMENT
