@@ -78,8 +78,9 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     // loop to refresh DB and check users
     while (true) {
         // get all courses from webadvisor
+        let courses = null
         try {
-            let courses = await getAllCourses()
+            courses = await getAllCourses()
         } catch (err) {
             continue
         }
