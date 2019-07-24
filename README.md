@@ -1,7 +1,7 @@
 # GuelphCourseReminder
 Get into any guelph course as soon as it is open
 
-Sign up ![here](https://notifymeguelph.xyz/)
+Sign up [here](https://notifymeguelph.xyz/)
 
 ### TODO
 - [x] Fix login button
