@@ -100,7 +100,12 @@ function getAllCourses(html) {
             if (meetings) {
                 times = meetings.split('\n')
                 times = times.map(time => {
-                    return time.substring(getPosition(time, ' ', 2) + 1, time.indexOf(','))
+                    let rawStr = time.substring(getPosition(time, ' ', 2) + 1, time.indexOf(','))
+                    return {
+                        day: rawStr.substring(0, rawStr.indexOf(' ')),
+                        startTime: rawStr.substring(rawStr.indexOf(' ') + 1, getPosition(rawStr, ' - ')),
+                        endTime: rawStr.substring(rawStr.indexOf(' - ') + 3)
+                    }
                 })
             }
 
