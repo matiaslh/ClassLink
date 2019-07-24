@@ -15,7 +15,7 @@ module.exports = function doGetRequests(query) {
         var contentLength = formData.length;
 
         request(urlGet, { json: true }, (err, res, body) => {
-            if (err) { return console.log(err); }
+            if (err) { reject(err) }
 
             let cookies = getCookies(res.headers['set-cookie']);
             let sessionId = cookies.LASTTOKEN
@@ -26,7 +26,7 @@ module.exports = function doGetRequests(query) {
             });
 
             request({ url: urlGet + sessionId, json: true, jar: jar }, (err, res, body) => {
-                if (err) { return console.log(err); }
+                if (err) { reject(err) }
 
                 let cookies = getCookies(res.headers['set-cookie']);
                 let sessionId = cookies.LASTTOKEN
@@ -46,7 +46,7 @@ module.exports = function doGetRequests(query) {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }, (err, res, body) => {
-                    if (err) { return console.log(err); }
+                    if (err) { reject(err) }
                     let courses = getAllCourses(body)
                     resolve(courses)
                 });
@@ -94,17 +94,27 @@ function getAllCourses(html) {
             course.status = getCell(cols, 2);
             course.title = getCell(cols, 3, 'a');
             course.location = getCell(cols, 4);
-            course.meetingInformation = getCell(cols, 5);
+
+            let meetings = getCell(cols, 5);
+            let times = []
+            if (meetings) {
+                times = meetings.split('\n')
+                times = times.map(time => {
+                    return time.substring(getPosition(time, ' ', 2) + 1, time.indexOf(','))
+                })
+            }
+
+            course.meetingInformation = { details: meetings, times }
             course.faculty = getCell(cols, 6);
             let space = getCell(cols, 7);
             let slashIndex = space.indexOf('/')
             let available = parseInt(space.substring(0, slashIndex - 1))
-            if(available === NaN || available === null || available === undefined || !available){
+            if (available === NaN || available === null || available === undefined || !available) {
                 available = 0
             }
             course.available = available
             let capacity = parseInt(space.substring(slashIndex + 2))
-            if(capacity === NaN || capacity === null || capacity === undefined || !capacity){
+            if (capacity === NaN || capacity === null || capacity === undefined || !capacity) {
                 capacity = 0
             }
             course.capacity = capacity
