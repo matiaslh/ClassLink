@@ -24,3 +24,4 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Make button for deleting and editing criteria
 - [x] Make app email as well as notify
 - [ ] Show last check for last time api searched webadvisor
+- [ ] Make login the default page instead of sign up?
