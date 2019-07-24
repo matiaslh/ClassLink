@@ -10,7 +10,7 @@ const CourseSchema: mongoose.Schema<any> = new Schema({
     section: { type: String, required: true },
     title: { type: String, required: true },
     faculty: { type: String, required: true },
-    meetingInformation: { type: String, required: true },
+    meetingInformation: { type: Schema.Types.Mixed, required: true },
     available: { type: Number, required: true },
     capacity: { type: Number, required: true },
     credits: { type: Number, required: true },

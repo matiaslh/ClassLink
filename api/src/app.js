@@ -49,7 +49,7 @@ UserSchema.plugin(uniqueValidator);
 
 const User = mongoose.model("User", UserSchema);
 
-// Course model config
+// User model config
 const CourseSchema = new Schema({
     term: { type: String, required: true },
     status: { type: String, required: true },
@@ -59,7 +59,7 @@ const CourseSchema = new Schema({
     section: { type: String, required: true },
     title: { type: String, required: true },
     faculty: { type: String, required: true },
-    meetingInformation: { type: String, required: true },
+    meetingInformation: { type: Schema.Types.Mixed, required: true },
     available: { type: Number, required: true },
     capacity: { type: Number, required: true },
     credits: { type: Number, required: true },
@@ -89,6 +89,7 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
             if (!course.title || course.status == 'error') return false
             return true
         })
+        console.log(courses.length)
 
         fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
