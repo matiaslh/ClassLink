@@ -103,7 +103,7 @@ function getAllCourses(html) {
                     let rawStr = time.substring(getPosition(time, ' ', 2) + 1, time.indexOf(','))
                     return {
                         day: rawStr.substring(0, rawStr.indexOf(' ')),
-                        startTime: rawStr.substring(rawStr.indexOf(' ') + 1, getPosition(rawStr, ' - ')),
+                        startTime: rawStr.substring(rawStr.indexOf(' ') + 1, rawStr.indexOf(' - ')),
                         endTime: rawStr.substring(rawStr.indexOf(' - ') + 3)
                     }
                 })
