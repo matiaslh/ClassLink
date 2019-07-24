@@ -1,6 +1,7 @@
 # GuelphCourseReminder
 Get into any guelph course as soon as it is open
 
+Sign up [here](https://notifymeguelph.xyz/)
 
 ### TODO
 - [x] Fix login button
@@ -23,3 +24,4 @@ Get into any guelph course as soon as it is open
 - [ ] Make button for deleting and editing criteria
 - [x] Make app email as well as notify
 - [ ] Show last check for last time api searched webadvisor
+- [ ] Make login the default page instead of sign up?
