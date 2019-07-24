@@ -5,6 +5,7 @@ import SignUp from './SignUp';
 import Login from './Login';
 import Footer from '../utils/Footer';
 import Notify from './Notify';
+import Scheduler from './Scheduler'
 
 export default class Router extends React.Component {
     render() {
@@ -21,6 +22,9 @@ export default class Router extends React.Component {
                     <Route path="/notify" render={() => (
                         <Notify />
                     )} />
+                    <Route path="/scheduler" render={() => (
+                        <Scheduler />
+                    )} />
                     <Footer />
                 </div>
             </BrowserRouter>
@@ -31,5 +35,5 @@ export default class Router extends React.Component {
 const appStyle = {
     textAlign: 'center',
     height: '100%',
-    backgroundColor:'#fafafa'
+    backgroundColor: '#fafafa'
 }

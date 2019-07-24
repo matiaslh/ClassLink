@@ -72,7 +72,7 @@ const Course = mongoose.model("Course", CourseSchema);
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(async () => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 10
+    let seconds = 20
 
 
     // loop to refresh DB and check users
