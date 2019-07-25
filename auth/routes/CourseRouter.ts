@@ -19,7 +19,7 @@ router.post('/schedule', async (req: Request, res: Response) => {
     let coursesGrouped = []
     for (let i = 0; i < courses.length; i++) {
         let possibleCourses = await Course.find(courses[i])
-        possibleCourses = _.filter(possibleCourses, (course: any) => course.available > 0)
+        // possibleCourses = _.filter(possibleCourses, (course: any) => course.available > 0)
         if (possibleCourses.length === 0) {
             res.json({ status: 'impossible' })
         }
@@ -29,3 +29,5 @@ router.post('/schedule', async (req: Request, res: Response) => {
     console.log(coursesGrouped)
 
 })
+
+export const courseRouter: Router = router

@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 var cors = require('cors')
 import * as bodyParser from 'body-parser';
 import { profileRouter } from './routes/ProfileRouter';
+import { courseRouter } from './routes/CourseRouter'
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import passport = require('passport');
@@ -55,6 +56,7 @@ app.use(bodyParser.json());
 app.use('/auth', profileRouter);
 app.use('/auth/password', passwordRouter);
 app.use('/redirect/', redirectRouter);
+app.use('/schedule', courseRouter)
 
 // For production
 app.use(express.static(path.join(__dirname, '..', 'build_client')));
