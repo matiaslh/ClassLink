@@ -18,7 +18,7 @@ class Scheduler extends React.Component {
     }
 }
 
-export default withRouter(Notify)
+export default withRouter(Scheduler)
 
 const styles = {
 
