@@ -15,11 +15,11 @@ services:
       - auth_data:/data/db
     ports:
       - "27017:27017"
-  # api:
-  #   container_name: api-notifications
-  #   restart: always
-  #   build: ./api
-  #   ports:
-  #     - "8000:8000"
+  api:
+    container_name: api-notifications
+    restart: always
+    build: ./api
+    ports:
+      - "8000:8000"
 volumes:
   auth_data:
