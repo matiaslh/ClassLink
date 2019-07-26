@@ -14,11 +14,11 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [x] Move input labels on top and add icons for email and password
 - [x] Restart search if application crashes.
 - [x] Make button for deleting and editing criteria
+- [x] Scheduler usable without login
+- [x] Possibly compute client side
+- [x] Mongo DB Update course rows instead of delete all
+- [x] Fix database bug of not gettings all courses
 
-- [ ] Mongo DB Update course rows instead of delete all
-- [ ] Fix database bug of not gettings all courses
-- [ ] Scheduler usable without login
-- [ ] Possibly compute client side
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
 

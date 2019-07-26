@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router-dom"
-import requests from '../utils/requests'
+import getAllSchedules from '../utils/scheduleHandler'
 
 class Scheduler extends React.Component {
 
@@ -10,7 +10,6 @@ class Scheduler extends React.Component {
 
     getNewSchedules = async () => {
         console.log(this.state)
-        let schedules = this.state.schedules
 
         //{ "department": "CIS", "course": "1300" }
         //{ "department": "CIS", "course": "2750" }
@@ -18,11 +17,11 @@ class Scheduler extends React.Component {
         //{ "department": "MATH", "course": "1160" }
         //{ "department": "CIS", "course": "1910" }
 
-
+        let schedules = this.state.schedules
         let newCourse = JSON.parse(this.state.newCourse)
-        let response = await requests.scheduleSearch(schedules, newCourse)
-        console.log(response.schedules)
-        this.setState({ schedules: response.schedules })
+        let newSchedules = await getAllSchedules(schedules, newCourse)
+        console.log(schedules)
+        this.setState({ schedules: newSchedules })
     }
 
     render() {

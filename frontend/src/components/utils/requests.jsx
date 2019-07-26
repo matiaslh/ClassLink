@@ -9,14 +9,13 @@ const URL = {
     register: `${protocol}${HOST}/auth/register`,
     login: `${protocol}${HOST}/auth/login`,
     user: `${protocol}${HOST}/auth/user`,
-    scheduleSearch: `${protocol}${HOST}/schedule/search`
+    sectionSearch: `${protocol}${HOST}/schedule/search`
 }
 
-let scheduleSearchFn = async (schedules, newCourse) => {
+let getSectionsFn = async (course) => {
 
     let body = {
-        schedules,
-        newCourse
+        course
     }
 
     let options = {
@@ -26,7 +25,7 @@ let scheduleSearchFn = async (schedules, newCourse) => {
         },
         body: JSON.stringify(body)
     }
-    let response = await fetch(URL.scheduleSearch, options).then(res => res.json())
+    let response = await fetch(URL.sectionSearch, options).then(res => res.json())
     return response
 }
 
@@ -36,7 +35,7 @@ let logoutFn = async () => {
 
 let saveUserFn = async (body) => {
 
-    if (body.data.criteria.length > 5) {
+    if (body.data.criteria && body.data.criteria.length > 5) {
         return { status: 'error', error: 'Too many courses for search' }
     }
 
@@ -72,10 +71,14 @@ let getUserFn = async () => {
 let saveFcmToken = async () => {
     let fcm_token = sessionStorage.getItem('fcm_token')
     let user = await getUserFn()
-    console.log(user)
-    if (user.info.data.fcm_tokens.indexOf(fcm_token) === -1) {
-        user.info.data.fcm_tokens.push(fcm_token)
+    let fcm_tokens = (user.info.data && user.info.data.fcm_tokens) ? user.info.data.fcm_tokens : []
+    if (fcm_tokens.indexOf(fcm_token) === -1) {
+        fcm_tokens.push(fcm_token)
     }
+    if (!user.info.data) {
+        user.info.data = {}
+    }
+    user.info.data.fcm_tokens = fcm_tokens
     let response = await saveUserFn(user.info)
     return response
 }
@@ -138,5 +141,5 @@ export default {
     logout: logoutFn,
     signup: signUpFn,
     isLoggedIn: isLoggedInFn,
-    scheduleSearch: scheduleSearchFn
+    getSections: getSectionsFn
 }
