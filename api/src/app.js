@@ -11,6 +11,8 @@ const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+mongoose.set('debug', false);
+
 // Generate test SMTP service account from ethereal.email
 var transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
@@ -72,7 +74,7 @@ const Course = mongoose.model("Course", CourseSchema);
 // Mongo config
 mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }).then(async () => {
     console.log("Successfully connected to MongoDB.")
-    let seconds = 20
+    let seconds = 120
 
 
     // loop to refresh DB and check users

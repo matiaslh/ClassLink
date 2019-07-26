@@ -134,7 +134,7 @@ function getAllCourses(html) {
                         }
                     } else {
                         // THESE ARE ALL DATES THAT ARE TBA
-                        console.log({ title: course.title, meetings })
+                        // console.log({ title: course.title, meetings })
                     }
                 }
             }
