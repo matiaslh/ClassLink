@@ -1,7 +1,23 @@
 import requests from "./requests";
 import _ from 'underscore'
 
-export default async function getAllSchedules(schedules, newCourse) {
+const scheduleKey = 'schedules'
+
+export function clearSchedules() {
+    storeSchedules([])
+}
+
+export function getStoredSchedules() {
+    let schedules = getSchedules()
+    if (!schedules) {
+        storeSchedules([])
+        return []
+    } else {
+        return schedules
+    }
+}
+
+export async function getAllSchedules(schedules, newCourse) {
 
     let response = await requests.getSections(newCourse)
     let allSections = response.sections
@@ -16,6 +32,7 @@ export default async function getAllSchedules(schedules, newCourse) {
             let schedule = createSchedule(allSections[i])
             schedules.push(schedule)
         }
+        storeSchedules(schedules)
         return schedules
     }
 
@@ -30,6 +47,7 @@ export default async function getAllSchedules(schedules, newCourse) {
             }
         }
     }
+    storeSchedules(newSchedules)
     return newSchedules
 }
 
@@ -68,4 +86,14 @@ let pushSectionToSchedule = (schedule, section, currTime) => {
         schedule[currTime.day] = []
     }
     schedule[currTime.day].push(newTime)
+}
+
+let getSchedules = () => {
+    let scheduleStr = localStorage.getItem(scheduleKey)
+    return JSON.parse(scheduleStr)
+}
+
+let storeSchedules = (schedules) => {
+    let scheduleStr = JSON.stringify(schedules)
+    localStorage.setItem(scheduleKey, scheduleStr)
 }
