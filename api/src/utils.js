@@ -60,6 +60,15 @@ module.exports = function doGetRequests(query) {
 
 }
 
+function getTime(str) {
+    let colonIndex = str.indexOf(':')
+    let hrs = str.substring(0, colonIndex)
+    let mins = str.substring(colonIndex + 1, colonIndex + 3)
+    let AmPm = str.substring(colonIndex + 3)
+    let result = parseInt(hrs + mins)
+    return (AmPm === 'AM') ? result : result + 1200
+}
+
 function getPosition(string, subString, index) {
     return string.split(subString, index).join(subString).length;
 }
@@ -98,15 +107,36 @@ function getAllCourses(html) {
             let meetings = getCell(cols, 5);
             let times = []
             if (meetings) {
-                times = meetings.split('\n')
-                times = times.map(time => {
-                    let rawStr = time.substring(getPosition(time, ' ', 2) + 1, time.indexOf(','))
-                    return {
-                        day: rawStr.substring(0, rawStr.indexOf(' ')),
-                        startTime: rawStr.substring(rawStr.indexOf(' ') + 1, rawStr.indexOf(' - ')),
-                        endTime: rawStr.substring(rawStr.indexOf(' - ') + 3)
+                let raw = meetings.split('\n')
+                for (let i = 0; i < raw.length; i++) {
+                    let currStr = raw[i]
+                    let dates = currStr.substring(0, currStr.indexOf(' '))
+                    currStr = currStr.substring(currStr.indexOf(' ') + 1)
+                    let type = currStr.substring(0, currStr.indexOf(' '))
+                    currStr = currStr.substring(currStr.indexOf(' ') + 1)
+                    let colonIndex = currStr.indexOf(':')
+                    let days = null, start = null, end = null, room = null
+                    if (colonIndex !== -1) {
+                        days = currStr.substring(0, colonIndex - 3)
+                        days = days.split(', ')
+                        currStr = currStr.substring(colonIndex - 2)
+                        let dashIndex = currStr.indexOf(' - ')
+                        start = getTime(currStr.substring(0, dashIndex))
+                        currStr = currStr.substring(dashIndex + 3)
+                        let commaIndex = currStr.indexOf(', ')
+                        end = getTime(currStr.substring(0, commaIndex))
+                        currStr = currStr.substring(commaIndex + 2)
+                        room = currStr
                     }
-                })
+                    if (days != null) {
+                        for (let j = 0; j < days.length; j++) {
+                            times.push({ dates, day: days[j], type, start, end, room })
+                        }
+                    } else {
+                        // THESE ARE ALL DATES THAT ARE TBA
+                        console.log({ title: course.title, meetings })
+                    }
+                }
             }
 
             course.meetingInformation = { details: meetings, times }
