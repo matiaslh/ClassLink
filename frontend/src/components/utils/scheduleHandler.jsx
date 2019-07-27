@@ -1,38 +1,43 @@
 import requests from "./requests";
 import _ from 'underscore'
 
-const scheduleKey = 'schedules'
+const coursesKey = 'courses'
 
-export function clearSchedules() {
-    storeSchedules([])
+export function clearCourses() {
+    storeCourses([])
 }
 
-export function getStoredSchedules() {
-    let schedules = getSchedules()
-    if (!schedules) {
-        storeSchedules([])
-        return []
-    } else {
-        return schedules
+export async function getInitialSchedules() {
+    let courses = getCourses()
+    console.log(courses)
+    let schedules = []
+    for (let i = 0; i < courses.length; i++) {
+        schedules = await getAllSchedules(schedules, courses[i], true)
     }
+    return schedules
 }
 
-export async function getAllSchedules(schedules, newCourse) {
+export async function getAllSchedules(schedules, newCourse, newCourseFlag) {
 
+    let courses = getCourses()
     let response = await requests.getSections(newCourse)
     let allSections = response.sections
+
+    if (!newCourseFlag) {
+        courses.push(newCourse)
+    }
+    storeCourses(courses)
 
     allSections = _.filter(allSections, (course) => course.available > 0) // might add preference for this
     if (allSections.length === 0) {
         return []
     }
 
-    if (schedules.length === 0) {
+    if (courses.length === 1) {
         for (let i = 0; i < allSections.length; i++) {
             let schedule = createSchedule(allSections[i])
             schedules.push(schedule)
         }
-        storeSchedules(schedules)
         return schedules
     }
 
@@ -47,7 +52,6 @@ export async function getAllSchedules(schedules, newCourse) {
             }
         }
     }
-    storeSchedules(newSchedules)
     return newSchedules
 }
 
@@ -88,12 +92,15 @@ let pushSectionToSchedule = (schedule, section, currTime) => {
     schedule[currTime.day].push(newTime)
 }
 
-let getSchedules = () => {
-    let scheduleStr = localStorage.getItem(scheduleKey)
-    return JSON.parse(scheduleStr)
+let getCourses = () => {
+    let coursesStr = localStorage.getItem(coursesKey)
+    if (!coursesStr) {
+        return []
+    }
+    return JSON.parse(coursesStr)
 }
 
-let storeSchedules = (schedules) => {
-    let scheduleStr = JSON.stringify(schedules)
-    localStorage.setItem(scheduleKey, scheduleStr)
+let storeCourses = (courses) => {
+    let coursesStr = JSON.stringify(courses)
+    localStorage.setItem(coursesKey, coursesStr)
 }
