@@ -1,14 +1,32 @@
 
 // import { HOST } from '/vars.js';
 
-let HOST = 'notifymeguelph.xyz'
-let protocol = 'https://'
-// let HOST = '68.183.197.232'
-// let protocol = 'http://'
+// let HOST = 'notifymeguelph.xyz'
+// let protocol = 'https://'
+let HOST = 'localhost:5000'
+let protocol = 'http://'
 const URL = {
     register: `${protocol}${HOST}/auth/register`,
     login: `${protocol}${HOST}/auth/login`,
-    user: `${protocol}${HOST}/auth/user`
+    user: `${protocol}${HOST}/auth/user`,
+    sectionSearch: `${protocol}${HOST}/schedule/search`
+}
+
+let getSectionsFn = async (course) => {
+
+    let body = {
+        course
+    }
+
+    let options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }
+    let response = await fetch(URL.sectionSearch, options).then(res => res.json())
+    return response
 }
 
 let logoutFn = async () => {
@@ -17,7 +35,7 @@ let logoutFn = async () => {
 
 let saveUserFn = async (body) => {
 
-    if (body.data.criteria.length > 5) {
+    if (body.data.criteria && body.data.criteria.length > 5) {
         return { status: 'error', error: 'Too many courses for search' }
     }
 
@@ -53,9 +71,14 @@ let getUserFn = async () => {
 let saveFcmToken = async () => {
     let fcm_token = sessionStorage.getItem('fcm_token')
     let user = await getUserFn()
-    if (user.info.data.fcm_tokens.indexOf(fcm_token) === -1) {
-        user.info.data.fcm_tokens.push(fcm_token)
+    let fcm_tokens = (user.info.data && user.info.data.fcm_tokens) ? user.info.data.fcm_tokens : []
+    if (fcm_tokens.indexOf(fcm_token) === -1) {
+        fcm_tokens.push(fcm_token)
     }
+    if (!user.info.data) {
+        user.info.data = {}
+    }
+    user.info.data.fcm_tokens = fcm_tokens
     let response = await saveUserFn(user.info)
     return response
 }
@@ -117,5 +140,6 @@ export default {
     login: loginFn,
     logout: logoutFn,
     signup: signUpFn,
-    isLoggedIn: isLoggedInFn
+    isLoggedIn: isLoggedInFn,
+    getSections: getSectionsFn
 }

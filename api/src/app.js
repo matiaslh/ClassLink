@@ -11,6 +11,8 @@ const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+mongoose.set('debug', false);
+
 // Generate test SMTP service account from ethereal.email
 var transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
@@ -80,24 +82,35 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
         // get all courses from webadvisor
         let courses = null
         try {
+            console.log('Getting all courses')
             courses = await getAllCourses()
         } catch (err) {
             continue
         }
-        console.log(courses.length)
+        console.log({ allCoursesFound: courses.length })
         courses = _.filter(courses, (course) => {
             if (!course.title || course.status == 'error') return false
             return true
         })
-        console.log(courses.length)
+        console.log({ coursesFoundWithoutErrors: courses.length })
 
         fs.writeFile('./data.json', JSON.stringify(courses), 'utf-8')
 
-        //delete all courses from database
-        await Course.deleteMany({})
+        let coursesToAdd = []
+        for (let i = 0; i < courses.length; i++) {
+            let { department, level, course, section } = courses[i]
+            let updated = await Course.updateOne({ department, level, course, section }, courses[i])
+            if (updated.n === 0) {
+                coursesToAdd.push(courses[i])
+            }
+        }
 
-        // insert the refreshed courses
-        await Course.insertMany(courses)
+        console.log({ newCourses: coursesToAdd.length })
+
+        // insert the courses that werent in DB
+        if (coursesToAdd.length > 0) {
+            await Course.insertMany(coursesToAdd)
+        }
 
         // get all users and check for courses
         let users = await User.find({})
@@ -176,8 +189,6 @@ function contact(courses, fcm_tokens, email) {
 }
 
 async function getAllCourses() {
-
-    console.log('Getting all courses')
 
     let promises = []
 

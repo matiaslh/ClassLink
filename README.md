@@ -8,20 +8,28 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [x] Fix logout button and home button shouldn't log user out. (Might want to redirect user's to the notify page if they're in session like on the mobile app).
 - [x] Notify page dashboard with table of what they're currently searching for
 - [x] Remove fake accounts from prod db
-- [ ] Remove debug traces from code
 - [x] iOS and Safari fixes
+- [x] Make app email as well as notify
+- [x] More error messages and response messages (e.g. successfully save profile message)
+- [x] Move input labels on top and add icons for email and password
+- [x] Restart search if application crashes.
+- [x] Make button for deleting and editing criteria
+- [x] Scheduler usable without login
+- [x] Possibly compute client side
+- [x] Mongo DB Update course rows instead of delete all
+- [x] Fix database bug of not gettings all courses
+
+- [ ] Scheduler frontend
+- [ ] Save favourite schedules
+
 - [ ] Responsive design for all pages
 - [ ] Logo?
 - [ ] Login and signup page write up
-- [x] More error messages and response messages (e.g. successfully save profile message)
-- [ ] Mobile UI update
 - [ ] History for notify me main page of previous searches
-- [x] Move input labels on top and add icons for email and password
-- [ ] Creation timestamp and update timestap to each record in db.
-- [x] Restart search if application crashes.
-- [ ] Autodeploy to production from git cronjob.
-- [ ] criteria store status and completed on date
-- [ ] Make button for deleting and editing criteria
-- [x] Make app email as well as notify
+- [ ] Creation timestamp and status finished and update timestap to each record in db.
 - [ ] Show last check for last time api searched webadvisor
 - [ ] Make login the default page instead of sign up?
+- [ ] Account page in frontend to change password/email/prefs
+- [ ] Forgot password feature
+- [ ] Mobile UI update
+- [ ] Remove debug traces from code
