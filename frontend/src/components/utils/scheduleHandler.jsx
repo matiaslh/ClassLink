@@ -9,7 +9,6 @@ export function clearCourses() {
 
 export async function getInitialSchedules() {
     let courses = getCourses()
-    console.log(courses)
     let schedules = []
     for (let i = 0; i < courses.length; i++) {
         schedules = await getAllSchedules(schedules, courses[i], true)
@@ -60,9 +59,9 @@ let addToSchedule = (schedule, section) => {
     let times = section.meetingInformation.times
     for (let i = 0; i < times.length; i++) {
         let currTime = times[i]
-        if (schedule[currTime.day]) {
-            for (let j = 0; j < schedule[currTime.day].length; j++) {
-                let scheduleTime = schedule[currTime.day][j]
+        if (schedule.days[currTime.day]) {
+            for (let j = 0; j < schedule.days[currTime.day].length; j++) {
+                let scheduleTime = schedule.days[currTime.day][j]
                 if (!(scheduleTime.start > currTime.end || scheduleTime.end < currTime.start)) {
                     return null
                 }
@@ -74,7 +73,7 @@ let addToSchedule = (schedule, section) => {
 }
 
 let createSchedule = (section) => {
-    let schedule = {}
+    let schedule = { days: {} }
     let times = section.meetingInformation.times
     for (let i = 0; i < times.length; i++) {
         pushSectionToSchedule(schedule, section, times[i])
@@ -83,13 +82,11 @@ let createSchedule = (section) => {
 }
 
 let pushSectionToSchedule = (schedule, section, currTime) => {
-    let info = Object.assign({}, section._doc)
-    delete info.meetingInformation
-    let newTime = { start: currTime.start, end: currTime.end, meeting: currTime, info }
-    if (!schedule[currTime.day]) {
-        schedule[currTime.day] = []
+    let newTime = { start: currTime.start, end: currTime.end, meeting: currTime, section }
+    if (!schedule.days[currTime.day]) {
+        schedule.days[currTime.day] = []
     }
-    schedule[currTime.day].push(newTime)
+    schedule.days[currTime.day].push(newTime)
 }
 
 let getCourses = () => {

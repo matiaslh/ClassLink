@@ -1,9 +1,11 @@
-import React from 'react';
+import React from 'react'
 import { withRouter } from "react-router-dom"
 import { getAllSchedules, clearCourses, getInitialSchedules } from '../utils/scheduleHandler'
-import { ReactAgenda, ReactAgendaCtrl, guid, Modal } from 'react-agenda';
+import { ReactAgenda, ReactAgendaCtrl, guid, Modal } from 'react-agenda'
+import Thumbnail from '../utils/Thumbnail'
 
-let monday = new Date('07/22/2019')
+const days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri']
+const monday = new Date('07/22/2019')
 
 var colors = {
     'color-1': "rgba(102, 195, 131 , 1)",
@@ -13,71 +15,62 @@ var colors = {
 
 class SchedulerDisplay extends React.Component {
 
-    constructor(props) {
-        super(props)
+    state = {
+        pagination: {
+            start: 0,
+            end: 10
+        },
+        thumbnail: {
+            width: 150,
+            height: 100
+        }
     }
 
-    async componentWillMount(){
+    async componentWillMount() {
+        let selected = 0
+        let schedules = await getInitialSchedules()
+        this.attachScheduleItems(schedules)
         this.setState({
-            selected: [],
-            cellHeight: 8,
-            showModal: false,
-            locale: "us",
-            rowsPerHour: 6,
-            numberOfDays: 5,
-            startDate: monday,
-            schedules: await getInitialSchedules(),
-            headFormat: "ddd"
+            selected,
+            schedules
         })
-        this.loadSchedules()
     }
 
-    getScheduleIndex = (schedules, i) => {
-        let items = []
-        let keys = Object.keys(schedules[i])
-        for (let j = 0; j < keys.length; j++) {
-            let currDay = schedules[i][keys[j]]
-            for (let k = 0; k < currDay.length; k++) {
-                let currTime = currDay[k]
-                let item = {
-                    _id: guid(),
-                    name: currTime.meeting.room,
-                    startDateTime: this.getTime(keys[j], currTime.start),
-                    endDateTime: this.getTime(keys[j], currTime.end),
-                    classes: `color-${1}`
+    attachScheduleItems = (schedules) => {
+        for (let i = this.state.pagination.start; i < schedules.length && i <= this.state.pagination.end; i++) {
+            let currSchedule = schedules[i]
+            let keys = Object.keys(currSchedule.days)
+            currSchedule.items = []
+
+            for (let j = 0; j < keys.length; j++) {
+                let currDaySchedule = currSchedule.days[keys[j]]
+                let currDay = keys[j]
+                for (let k = 0; k < currDaySchedule.length; k++) {
+                    let currTime = currDaySchedule[k]
+                    let item = {
+                        _id: guid(),
+                        name: currTime.meeting.type + ' - ' + currTime.section.department + '*' + currTime.section.course + ' - ' + currTime.section.section,
+                        startDateTime: this.getTime(currDay, currTime.start),
+                        endDateTime: this.getTime(currDay, currTime.end),
+                        classes: 'color-1'
+                    }
+                    currSchedule.items.push(item)
                 }
-                items.push(item)
             }
         }
-        return items
-    }
-
-    loadSchedules = () => {
-        let schedules = this.state.schedules
-        let items = schedules.length === 0 ? [] : this.getScheduleIndex(schedules, 0)
-        this.setState({
-            schedules,
-            items
-        })
+        return schedules
     }
 
     getTime = (day, time) => {
-        let daysToAdd = 0
-        switch (day) {
-            case 'Tues':
-                daysToAdd = 1
-                break
-            case 'Wed':
-                daysToAdd = 2
-                break
-            case 'Thur':
-                daysToAdd = 3
-                break
-            case 'Fri':
-                daysToAdd = 4
-                break
-        }
+        let daysToAdd = days.indexOf(day)
         return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + daysToAdd, time / 100, time % 100)
+    }
+
+    getItems = () => {
+        if (!this.state || !this.state.schedules || this.state.schedules.length === 0 || this.state.selected === undefined || this.state.selected >= this.state.schedules.length) {
+            return []
+        }
+        return this.state.schedules[this.state.selected].items
     }
 
     removeSchedules = () => {
@@ -87,7 +80,7 @@ class SchedulerDisplay extends React.Component {
 
     getNewSchedules = async () => {
 
-        // { "department": "CIS", "course": "1300" }
+        //this course is fucked // { "department": "CIS", "course": "1300" }
         // { "department": "CIS", "course": "2750" }
         // { "department": "MATH", "course": "1030" }
         // { "department": "MATH", "course": "1160" }
@@ -96,10 +89,11 @@ class SchedulerDisplay extends React.Component {
         let schedules = this.state.schedules
         let newCourse = JSON.parse(this.state.newCourse)
         let newSchedules = await getAllSchedules(schedules, newCourse)
+        this.attachScheduleItems(newSchedules)
+        console.log(newSchedules)
         this.setState({ schedules: newSchedules })
-        this.loadSchedules()
-        console.log(this.state)
     }
+
     handleCellSelection(item) {
         console.log('handleCellSelection', item)
     }
@@ -111,36 +105,46 @@ class SchedulerDisplay extends React.Component {
     }
 
     render() {
-        if (!this.state) {
-            return (<></>)
-        }
+        console.log(this.state)
         return (
             <>
                 <div>
-                    <input onChange={(e) => this.setState({ newCourse: e.target.value })} ></input>
+                    <input onChange={(e) => this.setState({ newCourse: e.target.value })}></input>
                     <button onClick={this.getNewSchedules}>SUBMIT</button>
                     <button onClick={this.removeSchedules}>CLEAR ALL SCHEDULES</button>
+                    <input onChange={(e) => this.setState({ selectedInput: parseInt(e.target.value) })}></input>
+                    <button onClick={() => this.setState({ selected: this.state.selectedInput })}>Change Schedule index</button>
                 </div>
-                <div>
+
+                <div style={styles.scheduleWrapper}>
+                    <div style={styles.thumbnails}>
+                        {this.state.schedules && this.state.schedules.map((schedule, index) => {
+                            console.log(schedule.items)
+                            return <div key={index}><Thumbnail items={schedule.items} width={this.state.thumbnail.width} height={this.state.thumbnail.height} /></div>
+                        })}
+                    </div>
+                    <div style={styles.agenda}>
+                        <ReactAgenda
+                            // minDate={monday}
+                            // maxDate={thursday}
+                            startDate={monday}
+                            cellHeight={8}
+                            locale={"us"}
+                            items={this.getItems()}
+                            numberOfDays={5}
+                            rowsPerHour={6}
+                            itemColors={colors}
+                            autoScale={false}
+                            fixedHeader={true}
+                            headFormat={"ddd"}
+                            startAtTime={8}
+                            endAtTime={22.9}
+                        // onItemEdit={this.handleItemEdit.bind(this)}
+                        // onCellSelect={this.handleCellSelection.bind(this)}
+                        // onRangeSelection={this.handleRangeSelection.bind(this)}
+                        />
+                    </div>
                 </div>
-                <ReactAgenda
-                    minDate={monday}
-                    maxDate={new Date(monday.getFullYear(), monday.getMonth() + 3)}
-                    disablePrevButton={true}
-                    startDate={this.state.startDate}
-                    cellHeight={this.state.cellHeight}
-                    locale={this.state.locale}
-                    items={this.state.items}
-                    numberOfDays={this.state.numberOfDays}
-                    rowsPerHour={this.state.rowsPerHour}
-                    itemColors={colors}
-                    autoScale={false}
-                    fixedHeader={true}
-                    headFormat={this.state.headFormat}
-                // onItemEdit={this.handleItemEdit.bind(this)}
-                // onCellSelect={this.handleCellSelection.bind(this)}
-                // onRangeSelection={this.handleRangeSelection.bind(this)}
-                />
             </>
         )
     }
@@ -149,5 +153,23 @@ class SchedulerDisplay extends React.Component {
 export default withRouter(SchedulerDisplay)
 
 const styles = {
-
+    scheduleWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingTop: '10px'
+    },
+    agenda: {
+        width: '60%',
+        border: '1px solid black',
+        flex: 2
+    },
+    thumbnails: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 }
