@@ -5,7 +5,7 @@ import SignUp from './SignUp'
 import Login from './Login'
 import Footer from '../utils/Footer'
 import Notify from './Notify'
-import Scheduler from './Scheduler'
+import SchedulerDisplay from './SchedulerDisplay'
 import NoMatch from './NoMatch'
 
 export default class Router extends React.Component {
@@ -24,8 +24,8 @@ export default class Router extends React.Component {
                         <Route path="/notify" render={() => (
                             <Notify />
                         )} />
-                        <Route path="/scheduler" render={() => (
-                            <Scheduler />
+                        <Route path="/Scheduler" render={() => (
+                            <SchedulerDisplay />
                         )} />
                         <Route component={NoMatch} />
                     </Switch>
