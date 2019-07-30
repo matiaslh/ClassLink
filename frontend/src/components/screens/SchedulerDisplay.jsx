@@ -113,7 +113,7 @@ class SchedulerDisplay extends React.Component {
                     <button onClick={() => this.setState({ selected: this.state.selectedInput })}>Change Schedule index</button>
                 </div> */}
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent:'center' }}>
-                    <div>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent:'center' }}>
                         <div>
                             <AutoSuggest getNewSchedules={this.getNewSchedules} />
                         </div>
