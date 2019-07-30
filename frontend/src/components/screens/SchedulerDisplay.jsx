@@ -17,7 +17,7 @@ var colors = {
     "color-2": "rgba(242, 177, 52, 1)",
     "color-3": "rgba(235, 85, 59, 1)"
 }
-  
+
 class SchedulerDisplay extends React.Component {
 
     state = {
@@ -112,35 +112,26 @@ class SchedulerDisplay extends React.Component {
                     <input onChange={(e) => this.setState({ selectedInput: parseInt(e.target.value) })}></input>
                     <button onClick={() => this.setState({ selected: this.state.selectedInput })}>Change Schedule index</button>
                 </div> */}
-                <div style={{display: 'flex', width: '400px', marginLeft: '50px'}}>
-                    <div style={{justifyContent: 'flex-start'}}>
-                        <AutoSuggest getNewSchedules={this.getNewSchedules}/>
-                    </div>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent:'center' }}>
+                    <div>
+                        <div>
+                            <AutoSuggest getNewSchedules={this.getNewSchedules} />
+                        </div>
 
-                    <div style={{justifyContent: 'flex-end', paddingTop: '20px', marginLeft: '10px'}}>
-                        <Fab size='small' aria-label="delete">
-                            <DeleteIcon onClick={this.removeSchedules}/>
-                        </Fab>
+                        <div style={{ paddingTop: '20px', marginLeft: '10px' }}>
+                            <Fab size='small' aria-label="delete">
+                                <DeleteIcon onClick={this.removeSchedules} />
+                            </Fab>
+                        </div>
                     </div>
                 </div>
 
                 <div style={styles.scheduleWrapper}>
-                    
-                    {/* <div style={styles.thumbnails}>
+                    <div style={styles.thumbnails}>
                         {this.state.schedules && this.state.schedules.map((schedule, index) => {
-                            console.log(schedule.items)
                             return <div key={index}><Thumbnail items={schedule.items} width={this.state.thumbnail.width} height={this.state.thumbnail.height} /></div>
                         })}
-                    </div> */}
-
-                    <div style={styles.thumbnails}>
-                        {this.state.courses ? this.state.courses.map((course, index) => {
-                            return <PaperSheet key={index} course={course}/>
-                        }) 
-                        : <div>No Courses Selected</div>
-                        }
                     </div>
-                    
                     <div style={styles.agenda}>
                         <ReactAgenda
                             // minDate={monday}
@@ -162,6 +153,13 @@ class SchedulerDisplay extends React.Component {
                         // onRangeSelection={this.handleRangeSelection.bind(this)}
                         />
                     </div>
+                    <div style={styles.courseCards}>
+                        {this.state.courses ? this.state.courses.map((course, index) => {
+                            return <PaperSheet key={index} course={course} />
+                        })
+                            : <div>No Courses Selected</div>
+                        }
+                    </div>
                 </div>
             </>
         )
@@ -179,9 +177,8 @@ const styles = {
         paddingTop: '10px'
     },
     agenda: {
-        width: '60%',
         border: '1px solid black',
-        flex: 2
+        flex: 4
     },
     thumbnails: {
         flex: 1,
@@ -189,5 +186,8 @@ const styles = {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    courseCards: {
+        flex: 2
     }
 }
