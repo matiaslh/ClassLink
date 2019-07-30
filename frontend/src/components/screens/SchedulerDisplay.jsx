@@ -3,6 +3,11 @@ import { withRouter } from "react-router-dom"
 import { getAllSchedules, clearCourses, getInitialSchedules } from '../utils/scheduleHandler'
 import { ReactAgenda, ReactAgendaCtrl, guid, Modal } from 'react-agenda'
 import Thumbnail from '../utils/Thumbnail'
+import AutoSuggest from '../utils/AutoSuggest'
+import PaperSheet from '../utils/CourseCards'
+import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri']
 const monday = new Date('07/22/2019')
@@ -12,7 +17,7 @@ var colors = {
     "color-2": "rgba(242, 177, 52, 1)",
     "color-3": "rgba(235, 85, 59, 1)"
 }
-
+  
 class SchedulerDisplay extends React.Component {
 
     state = {
@@ -32,7 +37,8 @@ class SchedulerDisplay extends React.Component {
         this.attachScheduleItems(schedules)
         this.setState({
             selected,
-            schedules
+            schedules,
+            courses: []
         })
     }
 
@@ -75,10 +81,10 @@ class SchedulerDisplay extends React.Component {
 
     removeSchedules = () => {
         clearCourses()
-        this.setState({ schedules: [] })
+        this.setState({ schedules: [], courses: [] })
     }
 
-    getNewSchedules = async () => {
+    getNewSchedules = async (course) => {
 
         //this course is fucked // { "department": "CIS", "course": "1300" }
         // { "department": "CIS", "course": "2750" }
@@ -87,42 +93,54 @@ class SchedulerDisplay extends React.Component {
         // { "department": "CIS", "course": "1910" }
 
         let schedules = this.state.schedules
-        let newCourse = JSON.parse(this.state.newCourse)
-        let newSchedules = await getAllSchedules(schedules, newCourse)
+        // let newCourse = JSON.parse(this.state.newCourse)
+        let newSchedules = await getAllSchedules(schedules, course)
         this.attachScheduleItems(newSchedules)
         console.log(newSchedules)
+        this.state.courses.push(course)
         this.setState({ schedules: newSchedules })
-    }
-
-    handleCellSelection(item) {
-        console.log('handleCellSelection', item)
-    }
-    handleItemEdit(item) {
-        console.log('handleItemEdit', item)
-    }
-    handleRangeSelection(item) {
-        console.log('handleRangeSelection', item)
     }
 
     render() {
         console.log(this.state)
         return (
             <>
-                <div>
+                {/* <div>
                     <input onChange={(e) => this.setState({ newCourse: e.target.value })}></input>
                     <button onClick={this.getNewSchedules}>SUBMIT</button>
                     <button onClick={this.removeSchedules}>CLEAR ALL SCHEDULES</button>
                     <input onChange={(e) => this.setState({ selectedInput: parseInt(e.target.value) })}></input>
                     <button onClick={() => this.setState({ selected: this.state.selectedInput })}>Change Schedule index</button>
+                </div> */}
+                <div style={{display: 'flex', width: '400px', marginLeft: '50px'}}>
+                    <div style={{justifyContent: 'flex-start'}}>
+                        <AutoSuggest getNewSchedules={this.getNewSchedules}/>
+                    </div>
+
+                    <div style={{justifyContent: 'flex-end', paddingTop: '20px', marginLeft: '10px'}}>
+                        <Fab size='small' aria-label="delete">
+                            <DeleteIcon onClick={this.removeSchedules}/>
+                        </Fab>
+                    </div>
                 </div>
 
                 <div style={styles.scheduleWrapper}>
-                    <div style={styles.thumbnails}>
+                    
+                    {/* <div style={styles.thumbnails}>
                         {this.state.schedules && this.state.schedules.map((schedule, index) => {
                             console.log(schedule.items)
                             return <div key={index}><Thumbnail items={schedule.items} width={this.state.thumbnail.width} height={this.state.thumbnail.height} /></div>
                         })}
+                    </div> */}
+
+                    <div style={styles.thumbnails}>
+                        {this.state.courses ? this.state.courses.map((course, index) => {
+                            return <PaperSheet key={index} course={course}/>
+                        }) 
+                        : <div>No Courses Selected</div>
+                        }
                     </div>
+                    
                     <div style={styles.agenda}>
                         <ReactAgenda
                             // minDate={monday}

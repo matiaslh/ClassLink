@@ -9,7 +9,8 @@ const URL = {
     register: `${protocol}${HOST}/auth/register`,
     login: `${protocol}${HOST}/auth/login`,
     user: `${protocol}${HOST}/auth/user`,
-    sectionSearch: `${protocol}${HOST}/schedule/search`
+    sectionSearch: `${protocol}${HOST}/schedule/search`,
+    courses: `${protocol}${HOST}/schedule/courses`
 }
 
 let getSectionsFn = async (course) => {
@@ -134,6 +135,18 @@ let isLoggedInFn = () => {
     return loggedIn
 }
 
+let getAllCourses = async () => {
+
+    let options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    return await fetch(URL.courses, options).then(res => res.json())
+}
+
 export default {
     saveUser: saveUserFn,
     getUser: getUserFn,
@@ -141,5 +154,6 @@ export default {
     logout: logoutFn,
     signup: signUpFn,
     isLoggedIn: isLoggedInFn,
-    getSections: getSectionsFn
+    getSections: getSectionsFn,
+    getAllCourses: getAllCourses
 }
