@@ -40,23 +40,26 @@ class Thumbnail extends React.Component {
         let items = this.props.items
         for (let i = 0; i < items.length; i++) {
             let currItem = items[i]
-            // console.log(i, currItem)
             let col = currItem.startDateTime.getDay() - 1
             let rowStart = currItem.startDateTime.getHours() * 100 + currItem.startDateTime.getMinutes()
             let rowEnd = currItem.endDateTime.getHours() * 100 + currItem.endDateTime.getMinutes()
 
-            ctx.fillRect(col * colWidth, mapToRange(rowStart, START_HOUR, END_HOUR, 0, height), colWidth, mapToRange(rowEnd - rowStart, 0, END_HOUR - START_HOUR, 0, height))
+            ctx.fillStyle = this.props.colours[currItem.classes]
+            let rect = {
+                x: col * colWidth + 1,
+                y: mapToRange(rowStart, START_HOUR, END_HOUR, 0, height),
+                width: colWidth - 2,
+                height: mapToRange(rowEnd - rowStart, 0, END_HOUR - START_HOUR, 0, height)
+            }
+            ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
 
         }
-
-        // ctx.fillRect(0, 10, 100, 50)
     }
 
     render() {
-
         return (
             <div style={styles.container}>
-                <canvas style={styles.canvas} ref="canvas" width={this.props.width} height={this.props.height} />
+                <canvas onClick={this.props.onClick} style={styles.canvas} ref="canvas" width={this.props.width} height={this.props.height} />
             </div>
         )
     }

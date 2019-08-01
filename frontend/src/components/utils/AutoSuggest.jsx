@@ -17,25 +17,24 @@ import AddIcon from '@material-ui/icons/Add';
 let suggestions = [];
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  const { classes, inputRef = () => { }, ref, ...other } = inputProps;
 
   return (
     <div>
-    <FontAwesomeIcon className={classes.textField} icon="search"/>
-    <TextField
-      className={classes.textField}
-      fullWidth
-      InputProps={{
-        inputRef: node => {
-          ref(node);
-          inputRef(node);
-        },
-        classes: {
-          input: classes.resize,
-        },
-      }}
-      {...other}
-    />
+      <TextField
+        className={classes.textField}
+        fullWidth
+        InputProps={{
+          inputRef: node => {
+            ref(node);
+            inputRef(node);
+          },
+          classes: {
+            input: classes.resize,
+          },
+        }}
+        {...other}
+      />
     </div>
   );
 }
@@ -49,14 +48,14 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
       <div>
         {parts.map((part, index) => {
           return part.highlight ? (
-            <span key={String(index)} style={{ fontWeight: 500, fontSize:13 }}>
+            <span key={String(index)} style={{ fontWeight: 500, fontSize: 13 }}>
               {part.text}
             </span>
           ) : (
-            <strong key={String(index)} style={{ fontWeight: 300, fontSize:13 }}>
-              {part.text}
-            </strong>
-          );
+              <strong key={String(index)} style={{ fontWeight: 300, fontSize: 13 }}>
+                {part.text}
+              </strong>
+            );
         })}
       </div>
     </MenuItem>
@@ -71,15 +70,15 @@ function getSuggestions(value) {
   return inputLength === 0
     ? []
     : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 && suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
+      const keep =
+        count < 5 && suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
 
-        if (keep) {
-          count += 1;
-        }
+      if (keep) {
+        count += 1;
+      }
 
-        return keep;
-      });
+      return keep;
+    });
 }
 
 function getSuggestionValue(suggestion) {
@@ -98,7 +97,7 @@ const styles = theme => ({
   suggestionsContainerOpen: {
     position: 'absolute',
     zIndex: 1,
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     left: 0,
     right: 0,
   },
@@ -111,13 +110,13 @@ const styles = theme => ({
     listStyleType: 'none',
   },
   divider: {
-    height: theme.spacing.unit * 2,
+    height: theme.spacing(2),
   },
   textField: {
     width: '400px'
   },
   resize: {
-    fontSize:17
+    fontSize: 17
   },
 });
 
@@ -153,11 +152,11 @@ class IntegrationAutosuggest extends React.Component {
   handleKeyPress = (e) => {
     let course = {}
     if (e.key === 'Enter' || e === 'buttonClick') {
-        let arr = this.state.single.split('*')
-        course['department'] = arr[0]
-        course['course'] = arr[1]
-        this.setState({single:''})
-        this.props.getNewSchedules(course)
+      let arr = this.state.single.split('*')
+      course['department'] = arr[0]
+      course['course'] = arr[1]
+      this.setState({ single: '' })
+      this.props.getNewSchedules(course)
     }
   }
 
@@ -166,7 +165,7 @@ class IntegrationAutosuggest extends React.Component {
     let arr = this.state.single.split('*')
     course['department'] = arr[0]
     course['course'] = arr[1]
-    this.setState({single:''})
+    this.setState({ single: '' })
     this.props.getNewSchedules(course)
   }
 
@@ -183,38 +182,38 @@ class IntegrationAutosuggest extends React.Component {
     };
 
     return (
-      <div className={classes.root} style={{display: 'flex', justifyContent:'left'}}>
+      <div className={classes.root} style={{ display: 'flex', justifyContent: 'left' }}>
         <div>
-            <Autosuggest
+          <Autosuggest
             {...autosuggestProps}
             inputProps={{
-                classes,
-                placeholder: 'Search a Course Code',
-                value: this.state.single,
-                onChange: this.handleChange('single'),
-                onKeyDown: this.handleKeyPress,
+              classes,
+              placeholder: 'Search a Course Code',
+              value: this.state.single,
+              onChange: this.handleChange('single'),
+              onKeyDown: this.handleKeyPress,
             }}
             theme={{
-                container: classes.container,
-                suggestionsContainerOpen: classes.suggestionsContainerOpen,
-                suggestionsList: classes.suggestionsList,
-                suggestion: classes.suggestion,
+              container: classes.container,
+              suggestionsContainerOpen: classes.suggestionsContainerOpen,
+              suggestionsList: classes.suggestionsList,
+              suggestion: classes.suggestion,
             }}
             renderSuggestionsContainer={options => (
-                <Paper {...options.containerProps} square>
+              <Paper {...options.containerProps} square>
                 {options.children}
-                </Paper>
+              </Paper>
             )}
-            />
+          />
         </div>
         <div className={classes.divider} />
-        <div style={{paddingTop: '20px', marginLeft: '-px'}}>
-            {/* <Button onClick={this.handleButtonSubmit} variant="contained" className={classes.button}>
+        <div style={{ paddingTop: '20px', marginLeft: '-px' }}>
+          {/* <Button onClick={this.handleButtonSubmit} variant="contained" className={classes.button}>
                 Search
             </Button> */}
-            <Fab size='small' color="primary" aria-label="add" className={classes.fab}>
-                <AddIcon onClick={this.handleButtonSubmit} variant="contained" className={classes.button}/>
-            </Fab>
+          <Fab size='small' color="primary" aria-label="add" className={classes.fab}>
+            <AddIcon onClick={this.handleButtonSubmit} variant="contained" className={classes.button} />
+          </Fab>
         </div>
       </div>
     );

@@ -36,3 +36,7 @@ body,
 #agenda-wrapper>div.agenda__table.--body>table>tbody>tr:nth-child(3n)>:not(.disable-select).agenda__cell {
   border-bottom: 1px solid rgba(192, 192, 192, 0.4)
 }
+
+#root>div>div:nth-child(2)>div>div:nth-child(1)>div>div:nth-child(1)>div>div:nth-child(1) {
+  display: flex
+}

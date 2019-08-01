@@ -11,28 +11,29 @@ export async function getInitialSchedules() {
     let courses = getCourses()
     let schedules = []
     for (let i = 0; i < courses.length; i++) {
-        schedules = await getAllSchedules(schedules, courses[i], true)
+        schedules = await getAllSchedules(schedules, courses[i], i === 0, true)
     }
     return schedules
 }
 
-export async function getAllSchedules(schedules, newCourse, newCourseFlag) {
+export async function getAllSchedules(schedules, newCourse, firstCourse, initialCourses) {
 
     let courses = getCourses()
     let response = await requests.getSections(newCourse)
     let allSections = response.sections
 
-    if (!newCourseFlag) {
+    if (!initialCourses) {
         courses.push(newCourse)
+        storeCourses(courses)
     }
-    storeCourses(courses)
 
     allSections = _.filter(allSections, (course) => course.available > 0) // might add preference for this
     if (allSections.length === 0) {
         return []
     }
 
-    if (courses.length === 1) {
+    // adding first course
+    if (firstCourse || courses.length === 1) {
         for (let i = 0; i < allSections.length; i++) {
             let schedule = createSchedule(allSections[i])
             schedules.push(schedule)
@@ -89,7 +90,7 @@ let pushSectionToSchedule = (schedule, section, currTime) => {
     schedule.days[currTime.day].push(newTime)
 }
 
-let getCourses = () => {
+export function getCourses() {
     let coursesStr = localStorage.getItem(coursesKey)
     if (!coursesStr) {
         return []

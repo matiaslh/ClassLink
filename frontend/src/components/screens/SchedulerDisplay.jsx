@@ -1,45 +1,55 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
-import { getAllSchedules, clearCourses, getInitialSchedules } from '../utils/scheduleHandler'
-import { ReactAgenda, ReactAgendaCtrl, guid, Modal } from 'react-agenda'
+import { getAllSchedules, clearCourses, getInitialSchedules, getCourses } from '../utils/scheduleHandler'
+import { ReactAgenda, guid, Modal } from 'react-agenda'
 import Thumbnail from '../utils/Thumbnail'
 import AutoSuggest from '../utils/AutoSuggest'
 import PaperSheet from '../utils/CourseCards'
-import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
+import _ from 'underscore'
 
 const days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri']
 const monday = new Date('07/22/2019')
 
-var colors = {
-    'color-1': "rgba(102, 195, 131 , 1)",
-    "color-2": "rgba(242, 177, 52, 1)",
-    "color-3": "rgba(235, 85, 59, 1)"
+const colours = {
+    "colour-0": "rgba(242, 177, 52, 1)",
+    'colour-1': "rgba(102, 195, 131 , 1)",
+    "colour-2": "rgba(242, 177, 52, 1)",
+    "colour-3": "rgba(235, 85, 59, 1)"
 }
 
 class SchedulerDisplay extends React.Component {
 
-    state = {
-        pagination: {
-            start: 0,
-            end: 10
-        },
-        thumbnail: {
-            width: 150,
-            height: 100
+    constructor(props) {
+        super(props)
+
+        let selected = 0
+        let courses = getCourses()
+        this.state = {
+            selected,
+            courses,
+            pagination: {
+                start: 0,
+                end: 10
+            },
+            thumbnail: {
+                width: 150,
+                height: 100
+            }
         }
+        getInitialSchedules().then(schedules => {
+            this.attachScheduleItems(schedules)
+            this.setState({
+                schedules
+            })
+        })
     }
 
-    async componentWillMount() {
-        let selected = 0
-        let schedules = await getInitialSchedules()
-        this.attachScheduleItems(schedules)
-        this.setState({
-            selected,
-            schedules,
-            courses: []
-        })
+    getColourForCourse = (department, course) => {
+        let colourIndex = _.findIndex(this.state.courses, { department, course })
+        let key = 'colour-' + colourIndex
+        return key
     }
 
     attachScheduleItems = (schedules) => {
@@ -58,7 +68,7 @@ class SchedulerDisplay extends React.Component {
                         name: currTime.meeting.type + ' - ' + currTime.section.department + '*' + currTime.section.course + ' - ' + currTime.section.section,
                         startDateTime: this.getTime(currDay, currTime.start),
                         endDateTime: this.getTime(currDay, currTime.end),
-                        classes: 'color-1'
+                        classes: this.getColourForCourse(currTime.section.department, currTime.section.course)
                     }
                     currSchedule.items.push(item)
                 }
@@ -93,12 +103,12 @@ class SchedulerDisplay extends React.Component {
         // { "department": "CIS", "course": "1910" }
 
         let schedules = this.state.schedules
-        // let newCourse = JSON.parse(this.state.newCourse)
         let newSchedules = await getAllSchedules(schedules, course)
         this.attachScheduleItems(newSchedules)
-        console.log(newSchedules)
-        this.state.courses.push(course)
-        this.setState({ schedules: newSchedules })
+
+        let courses = this.state.courses
+        courses.push(course)
+        this.setState({ schedules: newSchedules, courses })
     }
 
     render() {
@@ -112,8 +122,8 @@ class SchedulerDisplay extends React.Component {
                     <input onChange={(e) => this.setState({ selectedInput: parseInt(e.target.value) })}></input>
                     <button onClick={() => this.setState({ selected: this.state.selectedInput })}>Change Schedule index</button>
                 </div> */}
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent:'center' }}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent:'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                         <div>
                             <AutoSuggest getNewSchedules={this.getNewSchedules} />
                         </div>
@@ -129,7 +139,16 @@ class SchedulerDisplay extends React.Component {
                 <div style={styles.scheduleWrapper}>
                     <div style={styles.thumbnails}>
                         {this.state.schedules && this.state.schedules.map((schedule, index) => {
-                            return <div key={index}><Thumbnail items={schedule.items} width={this.state.thumbnail.width} height={this.state.thumbnail.height} /></div>
+                            return (
+                                <div key={index}>
+                                    <Thumbnail
+                                        onClick={() => this.setState({ selected: index })}
+                                        items={schedule.items}
+                                        width={this.state.thumbnail.width}
+                                        height={this.state.thumbnail.height}
+                                        colours={colours} />
+                                </div>
+                            )
                         })}
                     </div>
                     <div style={styles.agenda}>
@@ -142,7 +161,7 @@ class SchedulerDisplay extends React.Component {
                             items={this.getItems()}
                             numberOfDays={5}
                             rowsPerHour={6}
-                            itemColors={colors}
+                            itemColors={colours}
                             autoScale={false}
                             fixedHeader={true}
                             headFormat={"ddd"}
