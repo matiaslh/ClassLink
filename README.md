@@ -21,6 +21,11 @@ Sign up [here](https://notifymeguelph.xyz/)
 
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
+- [ ] Thumbnail is not perfect, grid border messes it up
+- [ ] Adding courses has bugs for Math1200, Cis1300 and Cis1500
+- [ ] Lectures that are 50 mins long shows as 1h on the schedule
+- [ ] Make agenda items clickable
+- [ ] Remove unneeded small red description on items
 
 - [ ] Responsive design for all pages
 - [ ] Logo?

@@ -11,7 +11,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function PaperSheet(props) {
   const classes = useStyles();
-  console.log(props)
 
   return (
     <div>
