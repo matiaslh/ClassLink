@@ -1,11 +1,11 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
-
-// map a number in one range to another range
-const mapToRange = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+import { mapToRange, colours } from '../utils/helpers'
 
 const START_HOUR = 800
-const END_HOUR = 2300
+const END_HOUR = 2200
+const DAYS = 5
+const HOURS = (END_HOUR - START_HOUR - 1) / 100
 
 class Thumbnail extends React.Component {
 
@@ -16,9 +16,9 @@ class Thumbnail extends React.Component {
         let height = canvas.clientHeight
         let width = canvas.clientWidth
 
-        let cols = 5
+        let cols = DAYS
         let colWidth = width / cols
-        let rows = 14
+        let rows = HOURS
         let rowHeight = height / rows
 
         // make column lines
@@ -44,15 +44,15 @@ class Thumbnail extends React.Component {
             let rowStart = currItem.startDateTime.getHours() * 100 + currItem.startDateTime.getMinutes()
             let rowEnd = currItem.endDateTime.getHours() * 100 + currItem.endDateTime.getMinutes()
 
-            ctx.fillStyle = this.props.colours[currItem.classes]
             let rect = {
-                x: col * colWidth + 1,
+                x: col * colWidth,
                 y: mapToRange(rowStart, START_HOUR, END_HOUR, 0, height),
-                width: colWidth - 2,
-                height: mapToRange(rowEnd - rowStart, 0, END_HOUR - START_HOUR, 0, height)
+                width: colWidth,
+                height: mapToRange(rowEnd - rowStart, 0, END_HOUR - START_HOUR, 0, height),
+                colour: colours[currItem.classes]
             }
+            ctx.fillStyle = rect.colour
             ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
-
         }
     }
 
@@ -69,6 +69,7 @@ export default withRouter(Thumbnail)
 
 const styles = {
     container: {
+        padding: '0.43vh'
     },
     canvas: {
         border: '1px solid black'

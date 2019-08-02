@@ -80,13 +80,9 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
     // loop to refresh DB and check users
     while (true) {
         // get all courses from webadvisor
-        let courses = null
-        try {
-            console.log('Getting all courses')
-            courses = await getAllCourses()
-        } catch (err) {
-            continue
-        }
+        console.log('Getting all courses')
+        let courses = await getAllCourses()
+
         console.log({ allCoursesFound: courses.length })
         courses = _.filter(courses, (course) => {
             if (!course.title || course.status == 'error') return false
@@ -209,6 +205,7 @@ async function getAllCourses() {
     }
     let values = await Promise.all(promises)
     let courses = _.flatten(values)
+    courses = _.without(courses, undefined)
     return courses
 }
 

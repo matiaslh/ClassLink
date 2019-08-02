@@ -2,6 +2,8 @@ const request = require('request');
 const querystring = require('querystring');
 const { JSDOM } = require("jsdom");
 
+const timeout = 3 * 1000;
+
 module.exports = function doGetRequests(query) {
 
     let promise = new Promise(function (resolve, reject) {
@@ -14,8 +16,8 @@ module.exports = function doGetRequests(query) {
         var formData = querystring.stringify(postFields);
         var contentLength = formData.length;
 
-        request(urlGet, { json: true }, (err, res, body) => {
-            if (err) { reject(err) }
+        request(urlGet, { json: true, timeout }, (err, res, body) => {
+            if (err) { reject(err); return }
 
             let cookies = getCookies(res.headers['set-cookie']);
             let sessionId = cookies.LASTTOKEN
@@ -23,10 +25,10 @@ module.exports = function doGetRequests(query) {
             let jar = request.jar();
             res.headers['set-cookie'].forEach((elem) => {
                 jar.setCookie(request.cookie(elem), urlGet + sessionId);
-            });
+            })
 
-            request({ url: urlGet + sessionId, json: true, jar: jar }, (err, res, body) => {
-                if (err) { reject(err) }
+            request({ url: urlGet + sessionId, json: true, jar: jar, timeout }, (err, res, body) => {
+                if (err) { reject(err); return }
 
                 let cookies = getCookies(res.headers['set-cookie']);
                 let sessionId = cookies.LASTTOKEN
@@ -34,28 +36,29 @@ module.exports = function doGetRequests(query) {
                 let jar = request.jar();
                 res.headers['set-cookie'].forEach((elem) => {
                     jar.setCookie(request.cookie(elem), urlGet + sessionId);
-                });
+                })
 
                 request.post({
                     url: urlPost + sessionId + urlPostParams,
                     body: formData,
                     jar: jar,
                     followAllRedirects: true,
+                    timeout,
                     headers: {
                         'Content-Length': contentLength,
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }, (err, res, body) => {
-                    if (err) { reject(err) }
+                    if (err) { reject(err); return }
+                    console.log(err)
                     let courses = getAllCourses(body)
                     resolve(courses)
-                });
-
-            });
-
-        });
-
-    });
+                })
+            })
+        })
+    }).catch(err => {
+        return undefined
+    })
     return promise
 
 }
@@ -66,7 +69,7 @@ function getTime(str) {
     let mins = str.substring(colonIndex + 1, colonIndex + 3)
     let AmPm = str.substring(colonIndex + 3)
     let result = parseInt(hrs + mins)
-    return (AmPm === 'AM') ? result : result + 1200
+    return (AmPm === 'AM' || hrs === '12') ? result : result + 1200
 }
 
 function getPosition(string, subString, index) {

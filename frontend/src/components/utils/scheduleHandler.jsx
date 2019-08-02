@@ -1,6 +1,4 @@
 import requests from "./requests";
-import _ from 'underscore'
-
 const coursesKey = 'courses'
 
 export function clearCourses() {
@@ -16,18 +14,18 @@ export async function getInitialSchedules() {
     return schedules
 }
 
-export async function getAllSchedules(schedules, newCourse, firstCourse, initialCourses) {
+export async function getAllSchedules(schedules, newCourse, firstCourse, alreadyInLocalStorage) {
 
     let courses = getCourses()
     let response = await requests.getSections(newCourse)
     let allSections = response.sections
 
-    if (!initialCourses) {
+    if (!alreadyInLocalStorage) {
         courses.push(newCourse)
         storeCourses(courses)
     }
 
-    allSections = _.filter(allSections, (course) => course.available > 0) // might add preference for this
+    // allSections = allSections.filter(course => course.available > 0) // might add preference for this
     if (allSections.length === 0) {
         return []
     }

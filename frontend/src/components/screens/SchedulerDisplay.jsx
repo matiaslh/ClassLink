@@ -7,17 +7,12 @@ import AutoSuggest from '../utils/AutoSuggest'
 import PaperSheet from '../utils/CourseCards'
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AgendaItem from '../utils/AgendaItem'
 import _ from 'underscore'
+import { days, monday, paginationLength, thumbnailSize, colours } from '../utils/helpers'
 
-const days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri']
-const monday = new Date('07/22/2019')
-
-const colours = {
-    "colour-0": "rgba(242, 177, 52, 1)",
-    'colour-1': "rgba(102, 195, 131 , 1)",
-    "colour-2": "rgba(242, 177, 52, 1)",
-    "colour-3": "rgba(235, 85, 59, 1)"
-}
+// set localstorage to this value to get 300 schedules
+//"[{"department":"CIS","course":"1300"},{"department":"MATH","course":"4150"},{"department":"CIS","course":"1500"},{"department":"FRHD","course":"3070"}]"
 
 class SchedulerDisplay extends React.Component {
 
@@ -29,14 +24,8 @@ class SchedulerDisplay extends React.Component {
         this.state = {
             selected,
             courses,
-            pagination: {
-                start: 0,
-                end: 10
-            },
-            thumbnail: {
-                width: 150,
-                height: 100
-            }
+            thumbnailStart: 0,
+            schedules: []
         }
         getInitialSchedules().then(schedules => {
             this.attachScheduleItems(schedules)
@@ -52,8 +41,9 @@ class SchedulerDisplay extends React.Component {
         return key
     }
 
-    attachScheduleItems = (schedules) => {
-        for (let i = this.state.pagination.start; i < schedules.length && i <= this.state.pagination.end; i++) {
+    attachScheduleItems = (schedules, startIndex) => {
+        startIndex = startIndex != undefined ? startIndex : this.state.thumbnailStart
+        for (let i = startIndex; i < schedules.length && i < startIndex + paginationLength; i++) {
             let currSchedule = schedules[i]
             let keys = Object.keys(currSchedule.days)
             currSchedule.items = []
@@ -77,16 +67,19 @@ class SchedulerDisplay extends React.Component {
         return schedules
     }
 
+    thumbnailsChangePage = (forwards) => {
+        let newStartIndex = forwards ? this.state.thumbnailStart + paginationLength : this.state.thumbnailStart - paginationLength
+        this.attachScheduleItems(this.state.schedules, newStartIndex)
+        this.setState({ thumbnailStart: newStartIndex })
+    }
+
     getTime = (day, time) => {
         let daysToAdd = days.indexOf(day)
         return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + daysToAdd, time / 100, time % 100)
     }
 
     getItems = () => {
-        if (!this.state || !this.state.schedules || this.state.schedules.length === 0 || this.state.selected === undefined || this.state.selected >= this.state.schedules.length) {
-            return []
-        }
-        return this.state.schedules[this.state.selected].items
+        return this.state.schedules.length > 0 && this.state.selected != undefined ? this.state.schedules[this.state.selected].items : []
     }
 
     removeSchedules = () => {
@@ -95,33 +88,17 @@ class SchedulerDisplay extends React.Component {
     }
 
     getNewSchedules = async (course) => {
-
-        //this course is fucked // { "department": "CIS", "course": "1300" }
-        // { "department": "CIS", "course": "2750" }
-        // { "department": "MATH", "course": "1030" }
-        // { "department": "MATH", "course": "1160" }
-        // { "department": "CIS", "course": "1910" }
-
         let schedules = this.state.schedules
         let newSchedules = await getAllSchedules(schedules, course)
+        this.state.courses.push(course)
         this.attachScheduleItems(newSchedules)
-
-        let courses = this.state.courses
-        courses.push(course)
-        this.setState({ schedules: newSchedules, courses })
+        this.setState({ schedules: newSchedules })
     }
 
     render() {
         console.log(this.state)
         return (
             <>
-                {/* <div>
-                    <input onChange={(e) => this.setState({ newCourse: e.target.value })}></input>
-                    <button onClick={this.getNewSchedules}>SUBMIT</button>
-                    <button onClick={this.removeSchedules}>CLEAR ALL SCHEDULES</button>
-                    <input onChange={(e) => this.setState({ selectedInput: parseInt(e.target.value) })}></input>
-                    <button onClick={() => this.setState({ selected: this.state.selectedInput })}>Change Schedule index</button>
-                </div> */}
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                         <div>
@@ -138,23 +115,35 @@ class SchedulerDisplay extends React.Component {
 
                 <div style={styles.scheduleWrapper}>
                     <div style={styles.thumbnails}>
-                        {this.state.schedules && this.state.schedules.map((schedule, index) => {
-                            return (
-                                <div key={index}>
-                                    <Thumbnail
-                                        onClick={() => this.setState({ selected: index })}
-                                        items={schedule.items}
-                                        width={this.state.thumbnail.width}
-                                        height={this.state.thumbnail.height}
-                                        colours={colours} />
-                                </div>
-                            )
+                        {(this.state.selected + 1) + '/' + this.state.schedules.length}
+                        <div>
+                            <button
+                                onClick={() => this.thumbnailsChangePage(false)}
+                                disabled={this.state.thumbnailStart < paginationLength} >
+                                {'<'}
+                            </button>
+                            <button
+                                onClick={() => this.thumbnailsChangePage(true)}
+                                disabled={this.state.thumbnailStart + paginationLength >= this.state.schedules.length} >
+                                {'>'}
+                            </button>
+                        </div>
+                        {this.state.schedules.map((schedule, index) => {
+                            if (index >= this.state.thumbnailStart && index < this.state.thumbnailStart + paginationLength) {
+                                return (
+                                    <div key={index}>
+                                        <Thumbnail
+                                            onClick={() => this.setState({ selected: index })}
+                                            items={schedule.items}
+                                            width={thumbnailSize.width}
+                                            height={thumbnailSize.height} />
+                                    </div>
+                                )
+                            }
                         })}
                     </div>
                     <div style={styles.agenda}>
                         <ReactAgenda
-                            // minDate={monday}
-                            // maxDate={thursday}
                             startDate={monday}
                             cellHeight={8}
                             locale={"us"}
@@ -166,14 +155,12 @@ class SchedulerDisplay extends React.Component {
                             fixedHeader={true}
                             headFormat={"ddd"}
                             startAtTime={8}
-                            endAtTime={22.9}
-                        // onItemEdit={this.handleItemEdit.bind(this)}
-                        // onCellSelect={this.handleCellSelection.bind(this)}
-                        // onRangeSelection={this.handleRangeSelection.bind(this)}
-                        />
+                            endAtTime={21.9}
+                            itemComponent={AgendaItem}
+                            onRangeSelection={() => { }} />
                     </div>
                     <div style={styles.courseCards}>
-                        {this.state.courses ? this.state.courses.map((course, index) => {
+                        {this.state.courses && this.state.courses.length > 0 ? this.state.courses.map((course, index) => {
                             return <PaperSheet key={index} course={course} />
                         })
                             : <div>No Courses Selected</div>
@@ -197,7 +184,7 @@ const styles = {
     },
     agenda: {
         border: '1px solid black',
-        flex: 4
+        flex: 5
     },
     thumbnails: {
         flex: 1,

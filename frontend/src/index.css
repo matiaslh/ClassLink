@@ -40,3 +40,13 @@ body,
 #root>div>div:nth-child(2)>div>div:nth-child(1)>div>div:nth-child(1)>div>div:nth-child(1) {
   display: flex
 }
+
+.agenda-item-description {
+  padding: 4px;
+}
+
+.agenda-item-description section {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
