@@ -1,23 +1,25 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
-import { getAllSchedules, clearCourses, getInitialSchedules, getCourses } from '../utils/scheduleHandler'
-import { ReactAgenda, guid, Modal } from 'react-agenda'
+import { getAllSchedules, clearCourses, getSchedulesFromCourses, getCourses, storeSort, storeCourses } from '../utils/scheduleHandler'
+import { ReactAgenda } from 'react-agenda'
 import Thumbnail from '../utils/Thumbnail'
 import AutoSuggest from '../utils/AutoSuggest'
 import PaperSheet from '../utils/CourseCards'
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AgendaItem from '../utils/AgendaItem'
-import _ from 'underscore'
-import { days, monday, paginationLength, thumbnailSize, colours } from '../utils/helpers'
+import { monday, paginationLength, thumbnailSize, colours } from '../utils/helpers'
 
 // set localstorage to this value to get 300 schedules
-//"[{"department":"CIS","course":"1300"},{"department":"MATH","course":"4150"},{"department":"CIS","course":"1500"},{"department":"FRHD","course":"3070"}]"
+//`[{"department":"CIS","course":"1300"},{"department":"MATH","course":"4150"},{"department":"CIS","course":"1500"},{"department":"FRHD","course":"3070"}]`
 
 class SchedulerDisplay extends React.Component {
 
     constructor(props) {
         super(props)
+
+        // SORTING: SPACE_BETWEEN_LOAD_BALANCED, SPACE_BETWEEN_NON_LOAD_BALANCED
+        storeSort('minutesBetweenClasses')
 
         let selected = 0
         let courses = getCourses()
@@ -27,44 +29,18 @@ class SchedulerDisplay extends React.Component {
             thumbnailStart: 0,
             schedules: []
         }
-        getInitialSchedules().then(schedules => {
+        getSchedulesFromCourses(courses).then(schedules => {
             this.attachScheduleItems(schedules)
-            this.setState({
-                schedules
-            })
+            this.setState({ schedules })
         })
     }
 
-    getColourForCourse = (department, course) => {
-        let colourIndex = _.findIndex(this.state.courses, { department, course })
-        let key = 'colour-' + colourIndex
-        return key
-    }
-
     attachScheduleItems = (schedules, startIndex) => {
-        startIndex = startIndex != undefined ? startIndex : this.state.thumbnailStart
+        startIndex = startIndex !== undefined ? startIndex : this.state.thumbnailStart
         for (let i = startIndex; i < schedules.length && i < startIndex + paginationLength; i++) {
             let currSchedule = schedules[i]
-            let keys = Object.keys(currSchedule.days)
-            currSchedule.items = []
-
-            for (let j = 0; j < keys.length; j++) {
-                let currDaySchedule = currSchedule.days[keys[j]]
-                let currDay = keys[j]
-                for (let k = 0; k < currDaySchedule.length; k++) {
-                    let currTime = currDaySchedule[k]
-                    let item = {
-                        _id: guid(),
-                        name: currTime.meeting.type + ' - ' + currTime.section.department + '*' + currTime.section.course + ' - ' + currTime.section.section,
-                        startDateTime: this.getTime(currDay, currTime.start),
-                        endDateTime: this.getTime(currDay, currTime.end),
-                        classes: this.getColourForCourse(currTime.section.department, currTime.section.course)
-                    }
-                    currSchedule.items.push(item)
-                }
-            }
+            currSchedule.generateItems()
         }
-        return schedules
     }
 
     thumbnailsChangePage = (forwards) => {
@@ -73,13 +49,8 @@ class SchedulerDisplay extends React.Component {
         this.setState({ thumbnailStart: newStartIndex })
     }
 
-    getTime = (day, time) => {
-        let daysToAdd = days.indexOf(day)
-        return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + daysToAdd, time / 100, time % 100)
-    }
-
     getItems = () => {
-        return this.state.schedules.length > 0 && this.state.selected != undefined ? this.state.schedules[this.state.selected].items : []
+        return this.state.schedules.length > 0 && this.state.selected !== undefined ? this.state.schedules[this.state.selected].getItems() : []
     }
 
     removeSchedules = () => {
@@ -89,10 +60,19 @@ class SchedulerDisplay extends React.Component {
 
     getNewSchedules = async (course) => {
         let schedules = this.state.schedules
-        let newSchedules = await getAllSchedules(schedules, course)
+        let newSchedules = await getAllSchedules(schedules, course, { sort: 'leastSpaceBetween' })
         this.state.courses.push(course)
         this.attachScheduleItems(newSchedules)
         this.setState({ schedules: newSchedules })
+    }
+
+    onDeleteCourse = async (index) => {
+        let courses = this.state.courses
+        courses.splice(index, 1)
+        storeCourses(courses)
+        let schedules = await getSchedulesFromCourses(courses)
+        this.attachScheduleItems(schedules)
+        this.setState({ courses, schedules })
     }
 
     render() {
@@ -134,12 +114,13 @@ class SchedulerDisplay extends React.Component {
                                     <div key={index}>
                                         <Thumbnail
                                             onClick={() => this.setState({ selected: index })}
-                                            items={schedule.items}
+                                            items={schedule.getItems()}
                                             width={thumbnailSize.width}
                                             height={thumbnailSize.height} />
                                     </div>
                                 )
                             }
+                            return null
                         })}
                     </div>
                     <div style={styles.agenda}>
@@ -161,7 +142,7 @@ class SchedulerDisplay extends React.Component {
                     </div>
                     <div style={styles.courseCards}>
                         {this.state.courses && this.state.courses.length > 0 ? this.state.courses.map((course, index) => {
-                            return <PaperSheet key={index} course={course} />
+                            return <PaperSheet onDelete={() => this.onDeleteCourse(index)} key={index} course={course} />
                         })
                             : <div>No Courses Selected</div>
                         }

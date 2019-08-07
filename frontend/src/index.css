@@ -41,12 +41,12 @@ body,
   display: flex
 }
 
-.agenda-item-description {
-  padding: 4px;
-}
-
 .agenda-item-description section {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.modal {
+  background: unset
 }

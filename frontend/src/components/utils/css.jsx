@@ -7,6 +7,6 @@ export default {
         text: 'white',
         headerText: 'white',
         errorText: 'red',
-        button:'blue'
+        button: 'blue'
     }
 }

@@ -17,6 +17,7 @@ export default function PaperSheet(props) {
       <Paper className={classes.root}>
         <Typography variant="h5" component="h2">
           {props.course.department}*{props.course.course}
+          <button onClick={props.onDelete}>Delete</button>
         </Typography>
       </Paper>
     </div>
