@@ -37,8 +37,10 @@ export default class ReactAgendaItem extends Component {
             arr = Array.from(rows)
             let row = arr.indexOf(element.parentElement) + 5
             let lastCell = rows[row].children.item(col)
-            lastCell.style.backgroundColor = '#FFFFFF'
-            lastCell.classList.add('lel')
+            lastCell.style.background = null
+
+            const colourClass = new RegExp(/\bcolour-.+?\b/, 'g');
+            lastCell.className = lastCell.className.replace(colourClass, '')
         }
 
         var elem = document.getElementById(this.props.parent)
