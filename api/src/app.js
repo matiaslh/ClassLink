@@ -25,14 +25,14 @@ var transporter = nodemailer.createTransport(smtpTransport({
 
 
 // setting up firebase with service account
-// let serviceAccount = require("../serviceAccount.json");
-// if (!serviceAccount) {
-//     console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT THERE')
-// }
-// firebase.initializeApp({
-//     credential: firebase.credential.cert(serviceAccount),
-//     databaseURL: "https://guelph-notifyme.firebaseio.com"
-// })
+let serviceAccount = require("../serviceAccount.json");
+if (!serviceAccount) {
+    console.log('YOUR FIREBASE SERVICE ACCOUNT IS NOT THERE')
+}
+firebase.initializeApp({
+    credential: firebase.credential.cert(serviceAccount),
+    databaseURL: "https://guelph-notifyme.firebaseio.com"
+})
 
 const dbConnection = 'mongodb://mongo:27017/auth'
 console.log(dbConnection)

@@ -18,14 +18,15 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [x] Possibly compute client side
 - [x] Mongo DB Update course rows instead of delete all
 - [x] Fix database bug of not gettings all courses
+- [x] Thumbnail is not perfect, grid border messes it up
+- [x] Adding courses has bugs for Math1200, Cis1300 and Cis1500
+- [x] Lectures that are 50 mins long shows as 1h on the schedule
+- [x] Make agenda items clickable
+- [x] Remove unneeded small red description on items
 
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
-- [ ] Thumbnail is not perfect, grid border messes it up
-- [ ] Adding courses has bugs for Math1200, Cis1300 and Cis1500
-- [ ] Lectures that are 50 mins long shows as 1h on the schedule
-- [ ] Make agenda items clickable
-- [ ] Remove unneeded small red description on items
+- [ ] Make agenda modals description
 
 - [ ] Responsive design for all pages
 - [ ] Logo?
