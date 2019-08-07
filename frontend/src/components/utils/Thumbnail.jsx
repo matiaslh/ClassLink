@@ -9,25 +9,24 @@ const HOURS = (END_HOUR - START_HOUR - 1) / 100
 
 class Thumbnail extends React.Component {
 
-    componentDidMount() {
+    doUpdate = () => {
+
         const canvas = this.refs.canvas
         const ctx = canvas.getContext('2d')
 
         let height = canvas.clientHeight
         let width = canvas.clientWidth
 
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         let cols = DAYS
         let colWidth = width / cols
         let rows = HOURS
         let rowHeight = height / rows
 
-        // make column lines
-        for (let i = 0; i < cols; i++) {
-            ctx.beginPath()
-            ctx.moveTo(i * colWidth, 0)
-            ctx.lineTo(i * colWidth, height)
-            ctx.stroke()
-        }
+        // style lines
+        ctx.lineWidth = 1
+        ctx.strokeStyle = 'gray'
 
         // make row lines
         for (let i = 0; i < rows; i++) {
@@ -54,6 +53,22 @@ class Thumbnail extends React.Component {
             ctx.fillStyle = rect.colour
             ctx.fillRect(rect.x, rect.y, rect.width, rect.height)
         }
+
+        // make column lines
+        for (let i = 0; i < cols; i++) {
+            ctx.beginPath()
+            ctx.moveTo(i * colWidth, 0)
+            ctx.lineTo(i * colWidth, height)
+            ctx.stroke()
+        }
+    }
+
+    componentDidMount() {
+        this.doUpdate()
+    }
+
+    componentDidUpdate() {
+        this.doUpdate()
     }
 
     render() {

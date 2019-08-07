@@ -1,16 +1,13 @@
 
-// import { HOST } from '/vars.js';
 
-// let HOST = 'notifymeguelph.xyz'
-// let protocol = 'https://'
-let HOST = 'localhost:5000'
-let protocol = 'http://'
+const start = `${process.env.REACT_APP_PROTOCOL}${process.env.REACT_APP_HOST}`
+
 const URL = {
-    register: `${protocol}${HOST}/auth/register`,
-    login: `${protocol}${HOST}/auth/login`,
-    user: `${protocol}${HOST}/auth/user`,
-    sectionSearch: `${protocol}${HOST}/schedule/search`,
-    courses: `${protocol}${HOST}/schedule/courses`
+    register: `${start}/auth/register`,
+    login: `${start}/auth/login`,
+    user: `${start}/auth/user`,
+    sectionSearch: `${start}/schedule/search`,
+    courses: `${start}/schedule/courses`
 }
 
 let getSectionsFn = async (course) => {
