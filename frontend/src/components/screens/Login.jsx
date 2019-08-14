@@ -3,6 +3,7 @@ import UserForm from '../utils/UserForm'
 import requests from '../utils/requests'
 import constants from '../utils/constants'
 import { withRouter } from "react-router-dom"
+import WrappedNormalLoginForm from '../utils/Form'
 
 class Login extends React.Component {
 
@@ -42,7 +43,7 @@ class Login extends React.Component {
 
     render() {
         return (
-            <UserForm type="Login" onChange={this.handleChange} errorMessage={this.state.errorMessage} onSubmit={this.handleSubmit} />
+            <WrappedNormalLoginForm type="Login" errorMessage={this.state.errorMessage} onChange={this.handleChange} onSubmit={this.handleSubmit} />            
         )
     }
 }
