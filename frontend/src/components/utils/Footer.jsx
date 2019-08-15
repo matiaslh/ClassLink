@@ -25,7 +25,8 @@ var style = {
     width: "100%",
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    fontFamily: 'Montserrat',
 }
 
 var phantom = {
