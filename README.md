@@ -28,6 +28,10 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Save favourite schedules
 - [ ] Make agenda modals description
 
+- [ ] Ant alerts
+- [ ] Ant modals
+- [ ] Ant search
+
 - [ ] Responsive design for all pages
 - [ ] Logo?
 - [ ] Login and signup page write up
@@ -39,6 +43,7 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Forgot password feature
 - [ ] Mobile UI update
 - [ ] Remove debug traces from code
+- [ ] Home page
 ---
 ### Potential Future Ideas
 - [ ] Course roadmap
