@@ -9,6 +9,8 @@ import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AgendaItem from '../utils/AgendaItem'
 import { monday, paginationLength, thumbnailSize, colours } from '../utils/helpers'
+import Menu from '../utils/Menu'
+
 
 // set localstorage to this value to get 300 schedules
 //`[{"department":"CIS","course":"1300"},{"department":"MATH","course":"4150"},{"department":"CIS","course":"1500"},{"department":"FRHD","course":"3070"}]`
@@ -79,6 +81,10 @@ class SchedulerDisplay extends React.Component {
         console.log(this.state)
         return (
             <>
+                <div style={styles.nav}>
+                    <Menu/>
+                </div>
+
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                         <div>
@@ -176,5 +182,9 @@ const styles = {
     },
     courseCards: {
         flex: 2
+    },
+    nav: {
+        width: '100%',
+        marginTop: '20px'
     }
 }
