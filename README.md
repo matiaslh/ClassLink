@@ -39,3 +39,10 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Forgot password feature
 - [ ] Mobile UI update
 - [ ] Remove debug traces from code
+---
+### Potential Future Ideas
+- [ ] Course roadmap
+- [ ] Tutoring connections
+- [ ] Textbook marketplace
+
+> classlink.ca is available
