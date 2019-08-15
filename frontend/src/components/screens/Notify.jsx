@@ -35,7 +35,9 @@ class Notify extends React.Component {
             if (response.status === 'Success') {
                 let user = response.info
                 let criteria = user && user.data && user.data.criteria ? user.data.criteria : []
+                let history = user && user.data && user.data.history ? user.data.history : []
                 this.state.criteria = criteria
+                this.state.history = history
                 this.state.userLoaded = true
                 this.forceUpdate()
             } else {
@@ -186,6 +188,24 @@ class Notify extends React.Component {
                 </Table> */}
 
                     <h5 style={styles.heading}>Completed</h5>
+
+                    <Table dataSource={this.state.history}>
+                        <Column title="Course Code" dataIndex="department" key="department" />
+                        <Column title="Course Level" dataIndex="level" key="level" />
+                        <Column title="Course Number" dataIndex="course" key="course" />
+                        <Column title="Section Number" dataIndex="section" key="section" />
+                        <Column
+                            title="Action"
+                            key="action"
+                            render={(text, record, index) => (
+                                <span style={styles.buttons}>
+                                    <a onClick={() => this.setState({ modal: { show: true, action: 'edit', index } })}>Edit</a>
+                                    <Divider type="vertical" />
+                                    <a onClick={() => this.setState({ confirmModal: { show: true, index } })}>Delete</a>
+                                </span>
+                            )}
+                        />
+                    </Table>
 
                     {/* <Table responsive>
                     <thead>
