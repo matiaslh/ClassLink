@@ -165,7 +165,7 @@ const styles = {
     },
     agenda: {
         border: '1px solid black',
-        flex: 5
+        flex: 6
     },
     thumbnails: {
         flex: 1,

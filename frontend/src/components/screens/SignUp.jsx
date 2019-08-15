@@ -3,6 +3,7 @@ import UserForm from '../utils/UserForm'
 import requests from '../utils/requests'
 import constants from '../utils/constants'
 import { withRouter } from "react-router-dom"
+import WrappedNormalLoginForm from '../utils/Form'
 
 class SignUp extends React.Component {
 
@@ -21,6 +22,7 @@ class SignUp extends React.Component {
     }
 
     handleChange = (event) => {
+        console.log(this.state)
         this.setState({ [event.target.name]: event.target.value, errorMessage: undefined })
     }
 
@@ -50,7 +52,7 @@ class SignUp extends React.Component {
 
     render() {
         return (
-            <UserForm type="Sign Up" errorMessage={this.state.errorMessage} onChange={this.handleChange} onSubmit={this.handleSubmit} />
+            <WrappedNormalLoginForm type="Sign Up" errorMessage={this.state.errorMessage} onChange={this.handleChange} onSubmit={this.handleSubmit} />
         )
     }
 }
