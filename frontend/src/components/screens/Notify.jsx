@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Table } from 'reactstrap'
+import { Button } from 'antd';
 import { withRouter } from "react-router-dom"
 import { withAlert } from 'react-alert'
 import css from '../utils/css';
@@ -9,6 +9,12 @@ import messaging from '../utils/firebase-messaging-config'
 import Notification from '../utils/Notification'
 import CourseModal from '../utils/CourseModal'
 import ConfirmModal from '../utils/ConfirmModal'
+import { Table, Divider, Tag } from 'antd'
+import '../utils/styles/table.css'
+import colours from '../utils/css'
+import Menu from '../utils/Menu'
+
+const { Column, ColumnGroup } = Table;
 
 class Notify extends React.Component {
 
@@ -96,9 +102,9 @@ class Notify extends React.Component {
             }
             let message = await requests.saveUser(body)
             if (message.status === 'Success') {
-                this.props.alert.show(message.info)
+                this.props.alert.show('Updated Successfully')
             } else {
-                this.props.alert.show(message.error)
+                this.props.alert.show('Error Saving Course')
             }
         } else {
             this.props.history.push('/login')
@@ -113,24 +119,48 @@ class Notify extends React.Component {
 
         return (
 
-            <div style={styles.container}>
-
-                <CourseModal action={this.state.modal.action} content={this.getContentForModal()} save={this.saveChanges} close={() => this.setState({ modal: { show: false } })} show={this.state.modal.show} />
-
-                <ConfirmModal onConfirm={this.handleDelete} close={() => this.setState({ confirmModal: { show: false } })} show={this.state.confirmModal.show} data={this.state.confirmModal.index} />
-
-                <div style={styles.top}>
-                    <div>
-                        <h4 style={{ fontSize: '30px' }}>Dashboard</h4>
-                    </div>
-                    <div>
-                        <div style={styles.button}><Button style={styles.buttonColours} color="primary" onClick={() => this.setState({ modal: { show: true, action: 'add' } })} disabled={this.state.criteria.length >= 5}>Add Course</Button></div>
-                    </div>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                
+                <div style={styles.nav}>
+                    <Menu />
                 </div>
 
-                <h5 style={styles.heading}>In Progress</h5>
+                <div style={styles.container}>
 
-                <Table responsive>
+                    <CourseModal action={this.state.modal.action} content={this.getContentForModal()} save={this.saveChanges} close={() => this.setState({ modal: { show: false } })} show={this.state.modal.show} />
+
+                    <ConfirmModal onConfirm={this.handleDelete} close={() => this.setState({ confirmModal: { show: false } })} show={this.state.confirmModal.show} data={this.state.confirmModal.index} />
+
+                    <div style={styles.top}>
+                        <div>
+                            <h4 style={{ fontSize: '30px', color: colours.colours.primary }}>Dashboard</h4>
+                        </div>
+                        <div>
+                            <div><Button style={styles.button} color="primary" icon="search" onClick={() => this.setState({ modal: { show: true, action: 'add' } })} disabled={this.state.criteria.length >= 5}>Add Course</Button></div>
+                        </div>
+                    </div>
+
+                    <h5 style={styles.heading}>In Progress</h5>
+
+                    <Table dataSource={this.state.criteria}>
+                        <Column title="Course Code" dataIndex="department" key="department" />
+                        <Column title="Course Level" dataIndex="level" key="level" />
+                        <Column title="Course Number" dataIndex="course" key="course" />
+                        <Column title="Section Number" dataIndex="section" key="section" />
+                        <Column
+                            title="Action"
+                            key="action"
+                            render={(text, record, index) => (
+                                <span style={styles.buttons}>
+                                    <a onClick={() => this.setState({ modal: { show: true, action: 'edit', index } })}>Edit</a>
+                                    <Divider type="vertical" />
+                                    <a onClick={() => this.setState({ confirmModal: { show: true, index } })}>Delete</a>
+                                </span>
+                            )}
+                        />
+                    </Table>
+
+                    {/* <Table responsive>
                     <thead>
                         <tr>
                             <th>Course Code</th>
@@ -153,11 +183,11 @@ class Notify extends React.Component {
                             </tr>
                         )) : null}
                     </tbody>
-                </Table>
+                </Table> */}
 
-                <h5 style={styles.heading}>Completed</h5>
+                    <h5 style={styles.heading}>Completed</h5>
 
-                <Table responsive>
+                    {/* <Table responsive>
                     <thead>
                         <tr>
                             <th>Course Code</th>
@@ -167,7 +197,7 @@ class Notify extends React.Component {
                             <th>Status</th>
                             <th>Completed On</th>
                         </tr>
-                    </thead>
+                    </thead> */}
                     {/* <tbody>
                         {this.state.criteria.length > 0 ?  this.state.criteria.map(obj => (
                         <tr >
@@ -180,10 +210,11 @@ class Notify extends React.Component {
                         </tr>
                         )): null}
                     </tbody> */}
-                </Table>
+                    {/* </Table> */}
 
-                <Notification message={this.state.notification} handleClose={() => this.setState({ notification: undefined })} />
+                    <Notification message={this.state.notification} handleClose={() => this.setState({ notification: undefined })} />
 
+                </div>
             </div>
         )
     }
@@ -194,20 +225,23 @@ export default withAlert()(withRouter(Notify))
 const styles = {
     container: {
         width: '80%',
-        margin: '0px auto'
-    },
-    header: {
-        color: css.colours.text,
-        fontSize: 20
+        margin: '0px auto',
+        fontFamily: 'Montserrat'
     },
     button: {
-        paddingLeft: '20px'
+        border: 'none',
+        color: 'white',
+        backgroundColor: colours.colours.primary,
+        height: '40px',
+        display: 'flex',
+        alignItems: 'center'
     },
     buttonColours: {
-        backgroundColor: '#00b3b3'
+        backgroundColor: colours.colours.primary,
+        border: 'none',
     },
     criteriaWrapper: {
-        color: css.colours.text,
+        color: colours.colours.text,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
@@ -221,7 +255,7 @@ const styles = {
         padding: '20px'
     },
     heading: {
-        color: '#00b3b3',
+        color: colours.colours.secondary,
         float: 'left',
         paddingTop: '30px'
     },
@@ -231,5 +265,15 @@ const styles = {
         justifyContent: 'space-between',
         paddingTop: '60px',
         flexWrap: 'wrap'
+    },
+    buttons: {
+        color: colours.colours.primary
+    },
+    nav: {
+        width: '10%',
+        height: '82vh',
+        marginTop: '20px',
+        display: 'flex',
+        justifyContent: 'flex-start'
     }
 }

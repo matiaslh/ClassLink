@@ -2,8 +2,9 @@
 export default {
     colours: {
         headerBackground: '#003459',
-        background: '#00171F',
-        background2: '#2a80bd',
+        background: 'rgb(250, 250, 250)',
+        primary: '#FC4A1A',
+        secondary: '#4ABDAC',
         text: 'white',
         headerText: 'white',
         errorText: 'red',
