@@ -79,8 +79,6 @@ class SchedulerDisplay extends React.Component {
         console.log(this.state)
         return (
             <>
-
-
                 <div style={styles.scheduleWrapper}>
                     <div style={styles.thumbnails}>
                         {(this.state.selected + 1) + '/' + this.state.schedules.length}

@@ -26,7 +26,7 @@ class Thumbnail extends React.Component {
 
         // style lines
         ctx.lineWidth = 1
-        ctx.strokeStyle = 'gray'
+        ctx.strokeStyle = '#ccc'
 
         // make row lines
         for (let i = 0; i < rows; i++) {

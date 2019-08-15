@@ -41,10 +41,6 @@ body,
   border-bottom: 1px solid rgba(192, 192, 192, 0.18)
 }
 
-#agenda-wrapper>div.agenda__table.--body>table>tbody>tr:nth-child(6n)>:not(.disable-select).agenda__cell {
-  border-bottom: 1px solid rgba(192, 192, 192, 0.3)
-}
-
 /*
   End section for scheduler table borders
 */
