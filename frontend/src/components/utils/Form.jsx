@@ -52,17 +52,18 @@ class NormalLoginForm extends React.Component {
                                 />,
                             )}
                         </Form.Item>
-                        <Form.Item>
-                            {this.props.type === 'Sign Up' &&
-                                <Input
-                                    name="confirmPassword"
-                                    onChange={this.props.onChange}
-                                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    type="password"
-                                    placeholder="Confirm Password"
-                                />
+                            {
+                                this.props.type === 'Sign Up' &&
+                                <Form.Item>
+                                    <Input
+                                        name="confirmPassword"
+                                        onChange={this.props.onChange}
+                                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                        type="password"
+                                        placeholder="Confirm Password"
+                                    />
+                                </Form.Item>
                             }
-                        </Form.Item>
                         <Form.Item>
                             {getFieldDecorator('remember', {
                                 valuePropName: 'checked',
@@ -92,7 +93,7 @@ export default Form.create({ name: 'normal_login' })(NormalLoginForm);
 
 const s = {
     font: {
-        color: '#FC4A1A'
+        color: '#FC4A1A',
     },
     remember: {
         float: 'left',
@@ -111,6 +112,7 @@ const s = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        fontFamily: 'Montserrat',
     },
     header: {
         color: '#FC4A1A',
