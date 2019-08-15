@@ -2,7 +2,7 @@
 import _ from 'underscore'
 
 // constants
-export const days = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri']
+export const DAYS = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri']
 export const monday = new Date('07/22/2019')
 export const paginationLength = 6
 export const thumbnailSize = {
@@ -11,18 +11,18 @@ export const thumbnailSize = {
 }
 
 export const colours = {
-    "colour-0": "rgba(242, 177, 52, 1)",
-    'colour-1': "rgba(102, 195, 131 , 1)",
-    "colour-2": "rgba(242, 177, 255, 1)",
-    "colour-3": "rgba(235, 85, 59, 1)",
-    "colour-4": "rgba(60, 100, 59, 1)"
+    "colour-0": "#7AC9A7",
+    'colour-1': "#F38220",
+    "colour-2": "#F9A71A",
+    "colour-3": "#FFCC74",
+    "colour-4": "#E48000"
 }
 
 // map a number in one range to another range
 export const mapToRange = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
 
 export function getTime(day, time) {
-    let daysToAdd = days.indexOf(day)
+    let daysToAdd = DAYS.indexOf(day)
     return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + daysToAdd, Math.floor(time / 100), time % 100)
 }
 
@@ -38,3 +38,10 @@ export function minutesBetween(start, end) {
     let minutesDuration = durationHrs * 60 + durationMins
     return minutesDuration
 }
+
+export const sortingLabels = {
+    minutesBetweenClasses: 'Least Time on Campus',
+    daysOff: 'Most Days Off'
+}
+
+export const sortDefault = 'minutesBetweenClasses'

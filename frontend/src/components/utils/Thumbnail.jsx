@@ -5,7 +5,7 @@ import { mapToRange, colours } from '../utils/helpers'
 const START_HOUR = 800
 const END_HOUR = 2200
 const DAYS = 5
-const HOURS = (END_HOUR - START_HOUR - 1) / 100
+const HOURS = ((END_HOUR - START_HOUR) / 100) - 1
 
 class Thumbnail extends React.Component {
 
