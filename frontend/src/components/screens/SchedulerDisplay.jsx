@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
-import { getAllSchedules, clearCourses, getSchedulesFromCourses, getCourses, storeSort, storeCourses } from '../utils/scheduleHandler'
+import { getAllSchedules, getSchedulesFromCourses, getCourses, storeCourses, storeSort } from '../utils/scheduleHandler'
 import { ReactAgenda } from 'react-agenda'
 import Thumbnail from '../utils/Thumbnail'
 import AutoSuggest from '../utils/AutoSuggest'
@@ -15,11 +15,10 @@ import { monday, paginationLength, thumbnailSize, colours } from '../utils/helpe
 
 class SchedulerDisplay extends React.Component {
 
+
     constructor(props) {
         super(props)
-
-        // SORTING: SPACE_BETWEEN_LOAD_BALANCED, SPACE_BETWEEN_NON_LOAD_BALANCED
-        storeSort('minutesBetweenClasses')
+        storeSort({ value: 'daysOff', descending: true })
 
         let selected = 0
         let courses = getCourses()
@@ -54,7 +53,8 @@ class SchedulerDisplay extends React.Component {
     }
 
     removeSchedules = () => {
-        clearCourses()
+        // clear courses from localstorage
+        storeCourses([])
         this.setState({ schedules: [], courses: [] })
     }
 
@@ -79,19 +79,7 @@ class SchedulerDisplay extends React.Component {
         console.log(this.state)
         return (
             <>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                        <div>
-                            <AutoSuggest getNewSchedules={this.getNewSchedules} />
-                        </div>
 
-                        <div style={{ paddingTop: '20px', marginLeft: '10px' }}>
-                            <Fab size='small' aria-label="delete">
-                                <DeleteIcon onClick={this.removeSchedules} />
-                            </Fab>
-                        </div>
-                    </div>
-                </div>
 
                 <div style={styles.scheduleWrapper}>
                     <div style={styles.thumbnails}>
@@ -141,11 +129,26 @@ class SchedulerDisplay extends React.Component {
                             onRangeSelection={() => { }} />
                     </div>
                     <div style={styles.courseCards}>
-                        {this.state.courses && this.state.courses.length > 0 ? this.state.courses.map((course, index) => {
-                            return <PaperSheet onDelete={() => this.onDeleteCourse(index)} key={index} course={course} />
-                        })
-                            : <div>No Courses Selected</div>
-                        }
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                                <div>
+                                    <AutoSuggest getNewSchedules={this.getNewSchedules} />
+                                </div>
+
+                                <div style={{ paddingTop: '20px', marginLeft: '10px' }}>
+                                    <Fab size='small' aria-label="delete">
+                                        <DeleteIcon onClick={this.removeSchedules} />
+                                    </Fab>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            {this.state.courses && this.state.courses.length > 0 ? this.state.courses.map((course, index) => {
+                                return <PaperSheet onDelete={() => this.onDeleteCourse(index)} key={index} course={course} />
+                            })
+                                : <div>No Courses Selected</div>
+                            }
+                        </div>
                     </div>
                 </div>
             </>
