@@ -3,13 +3,27 @@
 
 (enable-console-print!)
 
-(defn scheduler
-  "This function gets a new section and previous schedules as input and returns new schedules with that section added"
-  [newSection, schedules]
-  (println newSection)
+(defn get-day-from-time
+  "Creates day using the time object provided"
+  [time]
+  {(.-day time) [time]}
 )
 
-(scheduler '(1,2,3) '(7,8))
+(defn create-schedule-with-section
+  "Creates a schedule using the section provided"
+  [section]
+  ;; this doesnt work since it overrides the previous map keys aka a lab and lec on same day
+  (into {} (map get-day-from-time (.-times (.-meetingInformation section))))
+)
+
+(defn ^:export get-new-schedules-with-sections
+  "Gets a new section and previous schedules as input and returns new schedules with that section added"
+  [newSections, schedules]
+  (cond
+    (empty? schedules) (clj->js (map create-schedule-with-section newSections))
+    
+  )
+)
 
 ;; define your app data so that it doesn't get over-written on reload
 
