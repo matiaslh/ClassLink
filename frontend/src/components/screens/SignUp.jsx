@@ -1,8 +1,8 @@
 import React from 'react';
-import UserForm from '../utils/UserForm'
 import requests from '../utils/requests'
 import constants from '../utils/constants'
 import { withRouter } from "react-router-dom"
+import { openNotification } from "../utils/Alert"
 import WrappedNormalLoginForm from '../utils/Form'
 
 class SignUp extends React.Component {
@@ -42,10 +42,12 @@ class SignUp extends React.Component {
 
         if (response.status === 'Success') {
             history.push('/notify')
+            openNotification('Welcome', 'Successfully registered. Welcome to ClassLink!')
         } else {
             // add other error messages here
             if (response.info.errors.email) {
                 this.setState({ errorMessage: 'Email is already taken' })
+                openNotification('Error', this.state.errorMessage)
             }
         }
     }
