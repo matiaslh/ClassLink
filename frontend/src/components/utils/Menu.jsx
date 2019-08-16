@@ -34,19 +34,19 @@ class NavMenu extends Component {
     render() {
         return (
             <Menu style={s.main} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="inline">
-                <Menu.Item key="home">
+                <Menu.Item style={s.item} key="home">
                     <Icon type="home" />
                     Home
                 </Menu.Item>
-                <Menu.Item key="schedule">
+                <Menu.Item style={s.item} key="schedule">
                     <Icon type="schedule" />
                     Scheduler
                 </Menu.Item>
-                <Menu.Item key="notification">
+                <Menu.Item style={s.item} key="notification">
                     <Icon type="notification" />
                     Notifier
                 </Menu.Item>
-                <Menu.Item key="user">
+                <Menu.Item style={s.item} key="user">
                     <Icon type="user" />
                     Account
                 </Menu.Item>
@@ -60,5 +60,15 @@ export default withRouter(NavMenu)
 const s = {
     main: {
         backgroundColor: colour.colours.background,
+        display: 'flex',
+        flexDirection: 'column',
+        marginLeft: '30px',
+        justifyContent: 'flex-start'
+    },
+    item: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     }
 }
