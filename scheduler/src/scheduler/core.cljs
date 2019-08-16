@@ -9,11 +9,10 @@
   {(.-day time) [time]}
 )
 
-(defn create-schedule-with-section
+(defn ^:export create-schedule-with-section
   "Creates a schedule using the section provided"
   [section]
-  ;; this doesnt work since it overrides the previous map keys aka a lab and lec on same day
-  (into {} (map get-day-from-time (.-times (.-meetingInformation section))))
+  (clj->js (apply merge-with into (map get-day-from-time (.-times (.-meetingInformation section)))))
 )
 
 (defn ^:export get-new-schedules-with-sections
@@ -21,9 +20,14 @@
   [newSections, schedules]
   (cond
     (empty? schedules) (clj->js (map create-schedule-with-section newSections))
-    
   )
 )
+
+(js/console.log (clj->js (apply merge-with into
+	  [{"Lisp" [1,2,3]
+	   "ML" [10,11,12]}
+	  {"Lisp" [4,5]
+	   "ML" [13,14]}] )))
 
 ;; define your app data so that it doesn't get over-written on reload
 
