@@ -1,7 +1,6 @@
 import requests from "./requests";
 import { guid } from 'react-agenda'
-import { getTime, getColourForCourse, minutesBetween } from './helpers'
-const coursesKey = 'courses'
+import { getTime, getColourForCourse, minutesBetween, sortDefault } from './helpers'
 
 class Schedule {
 
@@ -16,6 +15,7 @@ class Schedule {
             for (let i = 0; i < times.length; i++) {
                 this.forcePushSection(section, times[i])
             }
+            this.setConstants()
         }
     }
 
@@ -58,9 +58,9 @@ class Schedule {
             }
             newSchedule.forcePushSection(section, currTime)
         }
-        this.setMinutesBetweenClasses()
-        this.addCourseFromSection(section)
         this.setDays(newSchedule.getDays())
+        this.addCourseFromSection(section)
+        this.setConstants()
     }
 
     forcePushSection = (section, currTime) => {
@@ -81,24 +81,25 @@ class Schedule {
             currDay.end = newTime.end
         }
 
-        currDay.minutesInClass += newTime.durationMins
+        currDay.minutesInClass += newTime.durationMins // this doesnt work for CIS*1300 since it adds it twice
         currDay.minutesBetweenClasses = minutesBetween(currDay.start, currDay.end) - currDay.minutesInClass
         this.getDayTimes(currTime.day).push(newTime)
     }
 
-    setMinutesBetweenClasses = () => {
-        let minsBetween = 0
+    setConstants = () => {
         let keys = this.getDayKeys()
         let days = this.getDays()
+
+        // find total number of minutes between classes
+        let minsBetween = 0
         for (let i = 0; i < keys.length; i++) {
             let day = days[keys[i]]
             minsBetween += day.minutesBetweenClasses
 
             // threshold for when you have only one course on a day
-            // if (day.minutesBetweenClasses === 0) {
-            //     minsBetween += 120
-            // }
-
+            if (day.minutesBetweenClasses === 0) {
+                minsBetween += 120
+            }
         }
         this.minutesBetweenClasses = minsBetween
     }
@@ -156,23 +157,34 @@ class Schedule {
         newSchedule.setDays(JSON.parse(JSON.stringify(this.getDays())))
         newSchedule.setCourses(JSON.parse(JSON.stringify(this.getCourses())))
         newSchedule.setItems(JSON.parse(JSON.stringify(this.getItems())))
+        newSchedule.setConstants()
         return newSchedule
     }
 
 }
 
-export function clearCourses() {
-    storeCourses([])
-}
-
+// SORTING: SPACE_BETWEEN_LOAD_BALANCED, SPACE_BETWEEN_NON_LOAD_BALANCED
 function sortSchedules(schedules) {
     let sort = getSort()
+    let xMult = 1, yMult = -1
 
-    if (sort) {
-        schedules.sort((scheduleX, scheduleY) => {
-            return scheduleX[sort] - scheduleY[sort]
-        })
+    if (!sort.descending) {
+        xMult = -1
+        yMult = 1
     }
+
+    const compareFns = {
+        minutesBetweenClasses: (a, b, aMult, bMult) => {
+            return aMult * a.minutesBetweenClasses + bMult * b.minutesBetweenClasses
+        },
+        daysOff: (a, b, aMult, bMult) => {
+            return aMult * a.getDayKeys().length + bMult * b.getDayKeys().length
+        }
+    }
+
+    schedules.sort((scheduleX, scheduleY) => {
+        return compareFns[sort.value](scheduleX, scheduleY, xMult, yMult) || compareFns[sortDefault](scheduleX, scheduleY, xMult, yMult)
+    })
 }
 
 export async function getSchedulesFromCourses(courses) {
@@ -228,7 +240,7 @@ export async function getAllSchedules(schedules, newCourse, options) {
 }
 
 export function getCourses() {
-    let coursesStr = localStorage.getItem(coursesKey)
+    let coursesStr = localStorage.getItem('courses')
     if (!coursesStr) {
         return []
     }
@@ -237,14 +249,22 @@ export function getCourses() {
 
 export function storeCourses(courses) {
     let coursesStr = JSON.stringify(courses)
-    localStorage.setItem(coursesKey, coursesStr)
+    localStorage.setItem('courses', coursesStr)
 }
 
-export function getSort() {
+function getSort() {
     let sort = localStorage.getItem('sort')
-    return sort
+    if (!sort) {
+        return { value: sortDefault, descending: true }
+    }
+    return JSON.parse(sort)
 }
 
 export function storeSort(sort) {
-    localStorage.setItem('sort', sort)
+    let sortStr = JSON.stringify(sort)
+    localStorage.setItem('sort', sortStr)
+}
+
+export function storeBlockedTimes(blockedTimes) {
+    localStorage.setItem('blockedTimes', blockedTimes)
 }

@@ -33,6 +33,11 @@ export default class ReactAgendaItem extends Component {
             let element = document.getElementById(this.props.parent)
             let arr = Array.from(element.parentElement.children)
             let col = arr.indexOf(element)
+
+            if (this.props.item.startDateTime.getMinutes() === 0) {
+                col--
+            }
+
             let rows = element.parentElement.parentElement.children
             arr = Array.from(rows)
             let row = arr.indexOf(element.parentElement) + 5
@@ -81,7 +86,7 @@ export default class ReactAgendaItem extends Component {
         window.removeEventListener("resize", this.updateDimensions);
     }
 
-    lowerZindex = (e) => {
+    lowerZindex = () => {
         let sty = this.state.wrapper;
         if (sty.zIndex === 8) {
             var newState = { wrapper: Object.assign({}, sty, { zIndex: 5 }) };
@@ -89,7 +94,7 @@ export default class ReactAgendaItem extends Component {
         }
 
     }
-    raiseZindex = (e) => {
+    raiseZindex = () => {
         let sty = this.state.wrapper;
         if (sty.zIndex === 5) {
             var newState = { wrapper: Object.assign({}, sty, { zIndex: 8 }) };
@@ -102,9 +107,9 @@ export default class ReactAgendaItem extends Component {
         var duratL = moment(this.props.item.startDateTime).format("HH:mm")
         var duratE = moment(this.props.item.endDateTime).format("HH:mm")
 
-        var marginTop = mapToRange(this.props.item.duration._milliseconds, 3000000, 10200000, 1, 48) + 'px'
-        var paddingVert = '1px'
-        var paddingHoriz = '7px'
+        var marginTop = mapToRange(this.props.item.duration._milliseconds, 3000000, 10200000, 0, 10) + 'px'
+        var paddingVert = mapToRange(this.props.item.duration._milliseconds, 3000000, 10200000, 1, 40) + 'px'
+        var paddingHoriz = '10px'
 
         return <div
             style={{ ...this.state.wrapper, marginTop }}
@@ -113,22 +118,7 @@ export default class ReactAgendaItem extends Component {
             onMouseLeave={this.lowerZindex}
             onClick={this.toggle}>
 
-            <div className="agenda-controls-item" style={this.state.controls}>
-                {/* {this.props.edit ?
-                    <div className="agenda-edit-event">
-                        <a onClick={() => this.props.edit(this.props.item)} className="agenda-edit-modele">
-                            <i className="edit-item-icon"></i>
-                        </a>
-                    </div> : ''} */}
-                {/* {this.props.remove ?
-                    <div className="agenda-delete-event">
-                        <a onClick={() => this.props.remove(this.props.item)} className="agenda-delete-modele">
-                            <i className="remove-item-icon"></i>
-                        </a>
-                    </div> : ''} */}
-            </div>
-
-            <div className="agenda-item-description" style={{ padding: `${paddingVert} ${paddingHoriz} ${paddingVert} ${paddingHoriz}` }}>
+            <div className="agenda-item-description" style={styles.item(paddingVert, paddingHoriz)}>
                 <section>{this.props.item.name}</section>
                 <small>
                     {duratL} - {duratE}
@@ -136,7 +126,7 @@ export default class ReactAgendaItem extends Component {
             </div>
             <div>
                 <Modal isOpen={this.state.modal}>
-                    <ModalHeader>{this.props.title ? this.props.title : 'Confirm Delete'}</ModalHeader>
+                    <ModalHeader>{this.props.title ? this.props.title : 'Course Info'}</ModalHeader>
                     <ModalBody>
                         {JSON.stringify(this.props.item.section)}
                     </ModalBody>
@@ -150,13 +140,25 @@ export default class ReactAgendaItem extends Component {
     }
 }
 
+const styles = {
+    item: (paddingVert, paddingHoriz) => {
+        return {
+            padding: `${paddingVert} ${paddingHoriz} ${paddingVert} ${paddingHoriz}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            fontFamily: 'Montserrat'
+        }
+    }
+}
+
 ReactAgendaItem.propTypes = {
     parent: PropTypes.string,
     item: PropTypes.object,
     padder: PropTypes.number,
     edit: PropTypes.func,
     remove: PropTypes.func
-
 };
 
 ReactAgendaItem.defaultProps = {

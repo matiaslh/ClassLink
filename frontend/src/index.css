@@ -25,6 +25,10 @@ body,
   height: auto
 }
 
+
+/*
+  This section is for changing the borders on the scheduler table
+*/
 #agenda-wrapper>div.agenda__table.--header>table>thead>tr>th.agenda__cell.--controls>div {
   display: none
 }
@@ -34,8 +38,13 @@ body,
 }
 
 #agenda-wrapper>div.agenda__table.--body>table>tbody>tr:nth-child(3n)>:not(.disable-select).agenda__cell {
-  border-bottom: 1px solid rgba(192, 192, 192, 0.4)
+  border-bottom: 1px solid rgba(192, 192, 192, 0.18)
 }
+
+/*
+  End section for scheduler table borders
+*/
+
 
 #root>div>div:nth-child(2)>div>div:nth-child(1)>div>div:nth-child(1)>div>div:nth-child(1) {
   display: flex

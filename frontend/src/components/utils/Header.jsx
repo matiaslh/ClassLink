@@ -37,7 +37,7 @@ class Header extends React.Component {
         } 
 
         return (
-            <div>
+            <div style={styles.main}>
                 <Navbar style={styles.nav} expand="md">
                     <div style={styles.align}>
                         <NavbarBrand href="/">
@@ -67,6 +67,9 @@ class Header extends React.Component {
 export default withRouter(Header)
 
 const styles = {
+    main: {
+        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.10)'
+    },
     nav: {
         display: 'flex',
         justifyContent: 'space-around',

@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
-import { getAllSchedules, clearCourses, getSchedulesFromCourses, getCourses, storeSort, storeCourses } from '../utils/scheduleHandler'
+import { getAllSchedules, getSchedulesFromCourses, getCourses, storeCourses, storeSort } from '../utils/scheduleHandler'
 import { ReactAgenda } from 'react-agenda'
 import Thumbnail from '../utils/Thumbnail'
 import AutoSuggest from '../utils/AutoSuggest'
@@ -9,17 +9,18 @@ import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AgendaItem from '../utils/AgendaItem'
 import { monday, paginationLength, thumbnailSize, colours } from '../utils/helpers'
+import Menu from '../utils/Menu'
+
 
 // set localstorage to this value to get 300 schedules
 //`[{"department":"CIS","course":"1300"},{"department":"MATH","course":"4150"},{"department":"CIS","course":"1500"},{"department":"FRHD","course":"3070"}]`
 
 class SchedulerDisplay extends React.Component {
 
+
     constructor(props) {
         super(props)
-
-        // SORTING: SPACE_BETWEEN_LOAD_BALANCED, SPACE_BETWEEN_NON_LOAD_BALANCED
-        storeSort('minutesBetweenClasses')
+        storeSort({ value: 'daysOff', descending: true })
 
         let selected = 0
         let courses = getCourses()
@@ -54,7 +55,8 @@ class SchedulerDisplay extends React.Component {
     }
 
     removeSchedules = () => {
-        clearCourses()
+        // clear courses from localstorage
+        storeCourses([])
         this.setState({ schedules: [], courses: [] })
     }
 
@@ -79,20 +81,6 @@ class SchedulerDisplay extends React.Component {
         console.log(this.state)
         return (
             <>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                        <div>
-                            <AutoSuggest getNewSchedules={this.getNewSchedules} />
-                        </div>
-
-                        <div style={{ paddingTop: '20px', marginLeft: '10px' }}>
-                            <Fab size='small' aria-label="delete">
-                                <DeleteIcon onClick={this.removeSchedules} />
-                            </Fab>
-                        </div>
-                    </div>
-                </div>
-
                 <div style={styles.scheduleWrapper}>
                     <div style={styles.thumbnails}>
                         {(this.state.selected + 1) + '/' + this.state.schedules.length}
@@ -141,11 +129,26 @@ class SchedulerDisplay extends React.Component {
                             onRangeSelection={() => { }} />
                     </div>
                     <div style={styles.courseCards}>
-                        {this.state.courses && this.state.courses.length > 0 ? this.state.courses.map((course, index) => {
-                            return <PaperSheet onDelete={() => this.onDeleteCourse(index)} key={index} course={course} />
-                        })
-                            : <div>No Courses Selected</div>
-                        }
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                                <div>
+                                    <AutoSuggest getNewSchedules={this.getNewSchedules} />
+                                </div>
+
+                                <div style={{ paddingTop: '20px', marginLeft: '10px' }}>
+                                    <Fab size='small' aria-label="delete">
+                                        <DeleteIcon onClick={this.removeSchedules} />
+                                    </Fab>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            {this.state.courses && this.state.courses.length > 0 ? this.state.courses.map((course, index) => {
+                                return <PaperSheet onDelete={() => this.onDeleteCourse(index)} key={index} course={course} />
+                            })
+                                : <div>No Courses Selected</div>
+                            }
+                        </div>
                     </div>
                 </div>
             </>
@@ -176,5 +179,9 @@ const styles = {
     },
     courseCards: {
         flex: 2
+    },
+    nav: {
+        width: '100%',
+        marginTop: '20px'
     }
 }
