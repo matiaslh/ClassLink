@@ -1,8 +1,8 @@
 import React from 'react';
-import UserForm from '../utils/UserForm'
 import requests from '../utils/requests'
 import constants from '../utils/constants'
 import { withRouter } from "react-router-dom"
+import { openNotification } from "../utils/Alert"
 import WrappedNormalLoginForm from '../utils/Form'
 
 class Login extends React.Component {
@@ -36,8 +36,10 @@ class Login extends React.Component {
         let response = await requests.login({ email, password })
         if (response.status === 'Success') {
             history.push('/notify')
+            openNotification('Welcome', 'Successfully logged in')
         } else {
             this.setState({ errorMessage: 'Email or password is incorrect' })
+            openNotification('Error', this.state.errorMessage)
         }
     }
 
