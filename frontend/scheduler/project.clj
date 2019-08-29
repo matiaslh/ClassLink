@@ -32,9 +32,9 @@
                            :open-urls ["http://localhost:3449/index.html"]}
 
                 :compiler {:main scheduler.core
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/scheduler.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :asset-path "js/out"
+                           :output-to "resources/public/js/scheduler.js"
+                           :output-dir "resources/public/js/out"
                            :source-map-timestamp true
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
@@ -44,7 +44,7 @@
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/scheduler.js"
+                :compiler {:output-to "resources/public/js/scheduler.js"
                            :main scheduler.core
                            :optimizations :simple
                            :pretty-print true}}]}
@@ -93,5 +93,5 @@
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; need to add the compliled assets to the :clean-targets
-                   :clean-targets ^{:protect false} ["resources/public/js/compiled"
+                   :clean-targets ^{:protect false} ["resources/public/js"
                                                      :target-path]}})
