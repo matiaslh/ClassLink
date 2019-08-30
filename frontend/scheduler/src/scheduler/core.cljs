@@ -1,8 +1,8 @@
 (ns scheduler.core
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs-http.client :as http]
-            [cljs.core.async :refer [<!]]
-            [promesa.core :as p]
+            [cljs.core.async :as async]
+            [clojure.core]
             [clojure.pprint :as pp]))
 
 (enable-console-print!)
@@ -23,7 +23,6 @@
 (defn two-times-valid?
   "Checks if two given times conflict"
   [time-A time-B]
-  ; (println time-A (:start time-A))
   (or
     (> (:start time-A) (:end time-B))
     (< (:end time-A) (:start time-B))))
@@ -31,7 +30,6 @@
 (defn is-valid-day?
   "Checks if the given day schedule (list of times) is valid and has no conflicting classes"
   [day]
-  ; (println day (count day))
   (cond
     (empty? day) true
     (= (count day) 1) true
@@ -71,24 +69,21 @@
 (defn get-sections-for-course
   "Does a request to get back json object of course sections"
   [department course]
-  (def response (p/promise))
   (go (let [http-response (<!
     (http/post "https://notifymeguelph.xyz/schedule/search"
       {:with-credentials? false :json-params {:course {:department department :course course}}}))]
       (cond
-        (= 200 (:status http-response)) (p/resolve! response (:sections (:body http-response)))
-        :else (p/resolve! response [])) ;; Could not find any sections for this course
-      ))
-  response)
+        (= 200 (:status http-response)) (:sections (:body http-response))
+        :else [])))) ;; Could not find any sections for this course
 
 (defn get-new-schedules
   "Returns list of new schedules after adding another course to the existing list of schedules"
   [old-schedule-list-js department course]
   (def old-schedule-list (js->clj old-schedule-list-js :keywordize-keys true))
-  (p/then (get-sections-for-course department course) (fn [new-sections] (js/console.log (clj->js (get-new-schedules-with-sections old-schedule-list new-sections))))))
+  (def new-sections (get-sections-for-course department course))
+  (async/take! new-sections #(js/console.log (clj->js (get-new-schedules-with-sections old-schedule-list %)))))
 
-(defn fact
-  [n]
-  (cond
-    (or (= n 1) (= n 0)) 1
-    :else (* n (fact (- n 1)))))
+(defn run-tests
+  "This runs the tests for this class"
+  []
+  (get-new-schedules [] "CIS" "1500"))
