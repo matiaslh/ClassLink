@@ -1,9 +1,9 @@
 import React from 'react';
-// import { Dropdown as StrapDropDown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Dropdown as StrapDropDown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { withRouter } from "react-router-dom"
-import { Menu, Dropdown, Button } from 'antd'
+// import { Menu, Dropdown, Button } from 'antd'
 
-class DropdownMenu extends React.Component {
+class Dropdown extends React.Component {
 
     constructor(props) {
         super(props)
@@ -27,43 +27,43 @@ class DropdownMenu extends React.Component {
         }))
     }
 
-    getMenu = () => {
-        return (
-            <Menu>
-                {this.props.items.map((entry, index) => {
-                    let value = Object.keys(entry)[0]
-                    let label = (index === 0) ? entry[value] : value + ' - ' + entry[value]
-                    return (
-                        <Menu.Item>
-                            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-                                1st menu item
-                            </a>
-                        </Menu.Item>)
-                    })}   
-            </Menu>
-        )
-    }
+    // getMenu = () => {
+    //     return (
+    //         <Menu>
+    //             {this.props.items.map((entry, index) => {
+    //                 let value = Object.keys(entry)[0]
+    //                 let label = (index === 0) ? entry[value] : value + ' - ' + entry[value]
+    //                 return (
+    //                     <Menu.Item>
+    //                         {label}
+    //                     </Menu.Item>)
+    //             })}
+    //         </Menu>
+    //     )
+    // }
 
     render() {
         return (
-            // <StrapDropDown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
-            //     <DropdownToggle color="primary" style={styles.button} caret>{this.getSelected()}</DropdownToggle>
-            //     <DropdownMenu style={styles.menu}>
-            //         {this.props.items.map((entry, index) => {
-            //             let value = Object.keys(entry)[0]
-            //             let label = (index === 0) ? entry[value] : value + ' - ' + entry[value]
-            //             return (<DropdownItem key={index} label={entry[value]} value={value} onClick={this.onSelect}>{label}</DropdownItem>)
-            //         })}
-            //     </DropdownMenu>
-            // </StrapDropDown>
-            <Dropdown overlay={this.getMenu} placement="bottomCenter">
-                <Button>bottomCenter</Button>
-            </Dropdown>
+            <StrapDropDown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
+                <DropdownToggle color="primary" style={styles.button} caret>{this.getSelected()}</DropdownToggle>
+                <DropdownMenu style={styles.menu}>
+                    {this.props.items.map((entry, index) => {
+                        let value = Object.keys(entry)[0]
+                        let label = (index === 0) ? entry[value] : value + ' - ' + entry[value]
+                        return (<DropdownItem key={index} label={entry[value]} value={value} onClick={this.onSelect}>{label}</DropdownItem>)
+                    })}
+                </DropdownMenu>
+            </StrapDropDown>
+            // <div style={{ padding: 100}} id="area">
+            //     <Dropdown overlay={this.getMenu} placement="bottomCenter"  style={{ width: 120 }} getPopupContainer={() => document.getElementById('area')}>
+            //         <Button>bottomCenter</Button>
+            //     </Dropdown>
+            // </div>
         )
     }
 }
 
-export default withRouter(DropdownMenu)
+export default withRouter(Dropdown)
 
 const styles = {
     menu: {

@@ -8,7 +8,8 @@
 
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.520"]
-                 [org.clojure/core.async  "0.4.500"]]
+                 [org.clojure/core.async  "0.4.500"]
+                 [cljs-http "0.1.46"]]
 
   :plugins [[lein-figwheel "0.5.19"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
@@ -30,9 +31,9 @@
                            :open-urls ["http://localhost:3449/index.html"]}
 
                 :compiler {:main scheduler.core
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/scheduler.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :asset-path "js/out"
+                           :output-to "resources/public/js/scheduler.js"
+                           :output-dir "resources/public/js/out"
                            :source-map-timestamp true
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
@@ -42,10 +43,10 @@
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/scheduler.js"
+                :compiler {:output-to "resources/public/js/scheduler.js"
                            :main scheduler.core
-                           :optimizations :advanced
-                           :pretty-print false}}]}
+                           :optimizations :simple
+                           :pretty-print true}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
@@ -91,5 +92,5 @@
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; need to add the compliled assets to the :clean-targets
-                   :clean-targets ^{:protect false} ["resources/public/js/compiled"
+                   :clean-targets ^{:protect false} ["resources/public/js"
                                                      :target-path]}})

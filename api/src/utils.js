@@ -109,6 +109,7 @@ function getAllCourses(html) {
 
             let meetings = getCell(cols, 5);
             let times = []
+            let exam = {}
             if (meetings) {
                 let raw = meetings.split('\n')
                 for (let i = 0; i < raw.length; i++) {
@@ -133,7 +134,12 @@ function getAllCourses(html) {
                     }
                     if (days != null) {
                         for (let j = 0; j < days.length; j++) {
-                            times.push({ dates, day: days[j], type, start, end, room })
+                            let item = { dates, day: days[j], type, start, end, room }
+                            if (item.type === 'EXAM') {
+                                exam = item
+                            } else {
+                                times.push(item)
+                            }
                         }
                     } else {
                         // THESE ARE ALL DATES THAT ARE TBA
@@ -142,7 +148,7 @@ function getAllCourses(html) {
                 }
             }
 
-            course.meetingInformation = { details: meetings, times }
+            course.meetingInformation = { details: meetings, times, exam }
             course.faculty = getCell(cols, 6);
             let space = getCell(cols, 7);
             let slashIndex = space.indexOf('/')

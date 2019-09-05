@@ -27,6 +27,7 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
 - [ ] Make agenda modals description
+- [ ] The database stores EXAM times in the wrong place
 
 - [ ] Ant alerts
 - [ ] Ant modals
