@@ -1,4 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 import uniqueValidator  from 'mongoose-unique-validator';
 import bcrypt from 'bcrypt';
 import { userModel } from './Interfaces'
