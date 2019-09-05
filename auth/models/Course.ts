@@ -1,4 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
 // User model config
 const CourseSchema: mongoose.Schema<any> = new Schema({
