@@ -144,33 +144,40 @@ async function callRequests(user) {
 
 function contact(courses, fcm_tokens, email) {
     let message = courses.join('\n')
-    let notif = {
-        notification: {
-            title: 'NotifyMe U of G Courses Available',
-            body: message
-        },
-        android: {
+
+    // filter invalid fcm tokens
+    let valid_fcm_tokens = _.without(fcm_tokens, null, undefined, "")
+
+    // only message fcm tokens that are valid if there are any
+    if (valid_fcm_tokens && valid_fcm_tokens.length > 0) {
+        let notif = {
             notification: {
-                sound: "default"
-            }
-        },
-        apns: {
-            payload: {
-                aps: {
+                title: 'NotifyMe U of G Courses Available',
+                body: message
+            },
+            android: {
+                notification: {
                     sound: "default"
                 }
-            }
-        },
-        data: { courses: JSON.stringify(courses) },
-        tokens: fcm_tokens
-    }
+            },
+            apns: {
+                payload: {
+                    aps: {
+                        sound: "default"
+                    }
+                }
+            },
+            data: { courses: JSON.stringify(courses) },
+            tokens: valid_fcm_tokens
+        }
 
-    firebase.messaging().sendMulticast(notif).then((response) => {
-        // Response is a message ID string.
-        console.log('Successfully sent message:', response);
-    }).catch((error) => {
-        console.log('Error sending message:', error);
-    })
+        firebase.messaging().sendMulticast(notif).then((response) => {
+            // Response is a message ID string.
+            console.log('Successfully sent message:', response);
+        }).catch((error) => {
+            console.log('Error sending message:', error);
+        })
+    }
 
     // send mail with defined transport object
     transporter.sendMail({
