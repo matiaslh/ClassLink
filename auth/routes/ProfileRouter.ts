@@ -56,19 +56,20 @@ router.get("/user", ensureAuthenticated, (req: Request, res: Response) => {
   sendResponse(user, 200, res);
 });
 
-// router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
-//   const { data, email } = req.body;
-//   if (!data && !email) return res.redirect('/redirect/missingFieldError');
-//   req.user.data = data ? data : req.user.data;
-//   req.user.email = email ? email : req.user.email;
-//   req.user.save()
-//     .then((user: userModel) => {
-//       sendResponse('Successfully updated user.', 200, res);
-//     })
-//     .catch((err: Error) => {
-//       sendResponse(err, 500, res);
-//     });
-// });
+/*
+router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
+  const { data, email } = req.body;
+  if (!data && !email) return res.redirect('/redirect/missingFieldError');
+  req.user.data = data ? data : req.user.data;
+  req.user.email = email ? email : req.user.email;
+  req.user.save()
+    .then((user: userModel) => {
+      sendResponse('Successfully updated user.', 200, res);
+    })
+    .catch((err: Error) => {
+      sendResponse(err, 500, res);
+    });
+});
 
 router.delete("/user", ensureAuthenticated, (req: Request, res: Response) => {
   User.findByIdAndDelete({ _id: req.user.id })
@@ -79,5 +80,6 @@ router.delete("/user", ensureAuthenticated, (req: Request, res: Response) => {
       sendResponse(err, 500, res);
     });
 });
+*/
 
 export const profileRouter: Router = router;
