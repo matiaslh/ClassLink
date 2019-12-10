@@ -201,7 +201,7 @@ async function getAllCourses() {
             courses: [
                 { department: departments[i] }
             ],
-            semester: 'W2O'
+            semester: 'W20'
         }
         for (let j = 1; j <= 4; j++) {
             if (i + j < departments.length) {
