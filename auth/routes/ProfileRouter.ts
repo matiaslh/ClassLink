@@ -56,7 +56,7 @@ router.get("/user", ensureAuthenticated, (req: Request, res: Response) => {
   sendResponse(user, 200, res);
 });
 
-/*
+
 router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
   const { data, email } = req.body;
   if (!data && !email) return res.redirect('/redirect/missingFieldError');
@@ -70,7 +70,7 @@ router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
       sendResponse(err, 500, res);
     });
 });
-
+/*
 router.delete("/user", ensureAuthenticated, (req: Request, res: Response) => {
   User.findByIdAndDelete({ _id: req.user.id })
     .then((user: userModel) => {
