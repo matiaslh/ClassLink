@@ -49,10 +49,7 @@ module.exports = function doGetRequests(query) {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }, (err, res, body) => {
-		    if (err) { 
-			    reject(err);
-			    return 
-		    }
+                    if (err) { reject(err); return }
                     let courses = getAllCourses(body)
                     resolve(courses)
                 })

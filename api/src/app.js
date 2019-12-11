@@ -119,7 +119,7 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
 
 async function callRequests(user) {
 
-    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0 || !user.data.fcm_tokens || user.data.fcm_tokens.length <= 0) {
+    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0) {
         return
     }
 
