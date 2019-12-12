@@ -129,19 +129,15 @@ const constants = {
     ],
     levels: [
         { 'any': 'Any' },
-        { '010': 'Diploma - 1st Semester' },
-        { '020': 'Diploma - 2nd Semester' },
-        { '030': 'Diploma - 3rd Semester' },
-        { '040': 'Diploma - 4th Semester' },
-        { '100': 'First Year' },
-        { '200': 'Second Year' },
-        { '300': 'Third Year' },
-        { '400': 'Fourth Year' },
-        { '500': 'Graduate' },
-        { '600': 'Graduate' },
-        { '700': 'Graduate' },
-        { '800': 'Graduate' },
-        { '900': 'Transfer Credit' }
+        { '1': 'First Year' },
+        { '2': 'Second Year' },
+        { '3': 'Third Year' },
+        { '4': 'Fourth Year' },
+        { '5': 'Fifth Year' },
+        { '6': 'Sixth Year' },
+        { '7': 'Seventh Year' },
+        { '8': 'Eighth Year' },
+        { '9': 'Ninth Year' },
     ],
     emailRegex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g
 }
