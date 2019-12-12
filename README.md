@@ -34,7 +34,7 @@ Sign up [here](https://notifymeguelph.xyz/)
 
 - [ ] Ant alerts
 - [ ] Ant modals
-- [ ] Ant search
+- [ ] Ant search 
 
 - [ ] Responsive design for all pages
 - [ ] Login and signup page write up
