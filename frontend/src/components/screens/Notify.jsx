@@ -98,6 +98,7 @@ class Notify extends React.Component {
             let body = {
                 data: {
                     fcm_tokens: user.data && user.data.fcm_tokens ? user.data.fcm_tokens : [],
+                    history: user.data && user.data.history ? user.data.history : [],
                     criteria
                 }
             }
