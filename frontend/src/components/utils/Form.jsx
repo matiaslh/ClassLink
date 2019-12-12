@@ -75,7 +75,7 @@ class NormalLoginForm extends React.Component {
                             <Button style={s.button} type="primary" htmlType="submit" className="login-form-button">
                                 {this.props.type}
                             </Button>
-                            <a style={s.font} href={this.props.type === 'Sign Up'? "/login" : "/" }>
+                            <a style={s.font} href={this.props.type === 'Sign Up'? "/" : "/signup" }>
                                 {this.props.type === 'Sign Up' ? 'Already registered? Login Now!' : 'New to ClassLink? Register Now!' }
                             </a>
                         </Form.Item>

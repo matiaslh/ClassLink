@@ -16,13 +16,13 @@ class NavMenu extends Component {
 
         switch (e.key) {
             case 'home':
-                this.props.history.push('/login')
+                this.props.history.push('/')
                 break
             case 'schedule':
                 this.props.history.push('/scheduler')
                 break
             case 'notification':
-                this.props.history.push('/login')
+                this.props.history.push('/')
                 break
             case 'user':
                 this.props.history.push('/scheduler')

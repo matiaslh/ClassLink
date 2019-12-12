@@ -23,6 +23,7 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [x] Lectures that are 50 mins long shows as 1h on the schedule
 - [x] Make agenda items clickable
 - [x] Remove unneeded small red description on items
+- [x] Logo done
 
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
@@ -34,7 +35,6 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Ant search
 
 - [ ] Responsive design for all pages
-- [ ] Logo?
 - [ ] Login and signup page write up
 - [ ] History for notify me main page of previous searches
 - [ ] Creation timestamp and status finished and update timestap to each record in db.
