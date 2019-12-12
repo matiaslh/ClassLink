@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#stop all containers to free RAM
+docker stop auth-server api-notifications mongo
+docker rm auth-server api-notifications mongo
+
 #build frontend
 cd frontend
 npm run build
