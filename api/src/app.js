@@ -7,19 +7,31 @@ const uniqueValidator = require('mongoose-unique-validator');
 const firebase = require('firebase-admin');
 const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer-smtp-transport');
+const dotenv = require('dotenv');
+
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+// Set environment variables
+dotenv.config();
 mongoose.set('debug', false);
+
+if(!process.env.GMAIL_USER || !process.env.GMAIL_PASS){
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+}
 
 // Generate test SMTP service account from ethereal.email
 var transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
     auth: {
-        user: 'notifymeguelph@gmail.com',
-        pass: 'uoguelphnotifyme**'
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
     }
 }));
 
