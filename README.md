@@ -24,6 +24,8 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [x] Make agenda items clickable
 - [x] Remove unneeded small red description on items
 - [x] Logo done
+- [x] History for notify me main page of previous searches
+- [x] Make login the default page instead of sign up
 
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
@@ -36,10 +38,8 @@ Sign up [here](https://notifymeguelph.xyz/)
 
 - [ ] Responsive design for all pages
 - [ ] Login and signup page write up
-- [ ] History for notify me main page of previous searches
 - [ ] Creation timestamp and status finished and update timestap to each record in db.
 - [ ] Show last check for last time api searched webadvisor
-- [ ] Make login the default page instead of sign up?
 - [ ] Account page in frontend to change password/email/prefs
 - [ ] Forgot password feature
 - [ ] Mobile UI update
