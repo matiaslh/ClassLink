@@ -123,19 +123,34 @@ async function callRequests(user) {
         return
     }
 
-    let courses = await Course.find({ $or: user.data.criteria })
+    let matches = []
+    
+    let newCriteria = []
+    let history = user.data.history ? user.data.history : []
+    let fcm_tokens = _.without(user.data.fcm_tokens, null, undefined, "")
 
-    let openCourses = _.filter(courses, course => course.available > 0)
-    if (openCourses.length > 0) {
-        let titles = _.pluck(openCourses, 'title')
-        let fcm_tokens = _.without(user.data.fcm_tokens, null, undefined, "")
-        contact(titles, fcm_tokens, user.email)
-        let history = user.data.history ? user.data.history : []
-        history.push(user.data.criteria)
+
+    for(let criteria of user.data.criteria){
+        let courses = await Course.find(criteria)
+        let openCourses = _.filter(courses, course => course.available > 0)
+        if(openCourses.length > 0){
+
+            matches.push({criteria, courses, openCourses})
+            history.push(criteria)
+
+            let titles = _.pluck(openCourses, 'title')
+            contact(titles, fcm_tokens, user.email)
+
+        } else {
+            newCriteria.push(criteria)
+        }
+    }
+
+    if (matches.length > 0) {
         user.data = {
             fcm_tokens,
             history,
-            criteria: []
+            criteria: newCriteria
         }
         user.markModified('data')
         user.save()
