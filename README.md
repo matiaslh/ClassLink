@@ -57,13 +57,15 @@ Sign up [here](https://notifymeguelph.xyz/)
 - Environment variables:
 
     ClassLink/api/.env must contain:
+
         GMAIL_USER=<account email>
         GMAIL_PASS=<account password>
-
+    
     ClassLink/auth/.env must contain:
+        
         # MongoDB connection
         MONGO_URI = mongodb://mongo:27017/auth
-
+        
         # Mongo connection for courses DB
         MONGO_URI_COURSES = mongodb://mongo:27017/courses
 
@@ -76,7 +78,9 @@ Sign up [here](https://notifymeguelph.xyz/)
         JWT_SECRET = <secret>
         SESSION_SECRET = <secret>
 
+        
     ClassLink/frontend/.env must contain:
+        
         REACT_APP_HOST=notifymeguelph.xyz
         REACT_APP_PROTOCOL=https://
 
