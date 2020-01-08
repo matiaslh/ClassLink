@@ -1,6 +1,8 @@
 import React from 'react'
+import requests from '../utils/requests'
 import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import { withRouter } from "react-router-dom"
+import { openNotification } from "../utils/Alert"
 import Dropdown from '../utils/Dropdown'
 import constants from '../utils/constants'
 import css from '../utils/css';
@@ -32,17 +34,29 @@ class CourseModal extends React.Component {
         this.props.close()
     }
 
-    handleSave = () => {
+    handleSave = (newCourse) => {
+        this.props.save(newCourse)
+        this.closeModal()
+    }
 
-        let content = this.state.content
+    checkMatchedCourses = async () => {
+        let newCourse = this.state.content
 
-        if (!content || Object.keys(content).length === 0) {
+        if (!newCourse || Object.keys(newCourse).length === 0) {
             this.setState({ error: 'You must select at least one value' })
             return;
         }
 
-        this.props.save(content)
-        this.closeModal()
+        let response = await requests.getSections(newCourse)
+        let sections = response.sections
+
+        if(response.status === 'success' && sections && sections.length > 0){
+            openNotification('Matched Courses', 'There were ' + sections.length + ' matched courses.')
+            this.handleSave(newCourse)
+        } else {
+            this.setState({error: 'There were no matched courses for your criteria'})
+        }
+
     }
 
     render() {
@@ -61,7 +75,7 @@ class CourseModal extends React.Component {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.closeModal}>Cancel</Button>
-                    <Button color="primary" onClick={this.handleSave}>Save</Button>{' '}
+                    <Button color="primary" onClick={this.checkMatchedCourses}>Save</Button>{' '}
                 </ModalFooter>
             </Modal>
         )
