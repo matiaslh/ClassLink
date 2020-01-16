@@ -3,8 +3,8 @@ Get into any guelph course as soon as it is open
 
 Sign up [here](https://notifymeguelph.xyz/)
 
-![Login Page](https://imgur.com/k1Sap9v)
-![Scheduler](https://imgur.com/AFUpc94)
+![Login Page](https://i.imgur.com/k1Sap9v.png)
+![Scheduler](https://i.imgur.com/AFUpc94.png)
 
 ### TODO
 - [x] Fix login button
