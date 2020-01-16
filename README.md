@@ -3,6 +3,9 @@ Get into any guelph course as soon as it is open
 
 Sign up [here](https://notifymeguelph.xyz/)
 
+![Login Page](https://imgur.com/k1Sap9v)
+![Scheduler](https://imgur.com/AFUpc94)
+
 ### TODO
 - [x] Fix login button
 - [x] Fix logout button and home button shouldn't log user out. (Might want to redirect user's to the notify page if they're in session like on the mobile app).
