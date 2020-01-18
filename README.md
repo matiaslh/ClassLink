@@ -1,5 +1,5 @@
-# GuelphCourseReminder
-Get into any guelph course as soon as it is open
+# ClassLink
+Get into any guelph course as soon as it is open. View every combination of non-overlapping schedules possible for you!
 
 Sign up [here](https://notifymeguelph.xyz/)
 
