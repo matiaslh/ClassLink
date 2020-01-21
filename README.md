@@ -1,7 +1,7 @@
 # ClassLink
 Get into any guelph course as soon as it is open. View every combination of non-overlapping schedules possible for you!
 
-Sign up [here](https://notifymeguelph.xyz/)
+Sign up at [notifymeguelph.xyz](https://notifymeguelph.xyz/)
 
 ![Login Page](https://i.imgur.com/k1Sap9v.png)
 ![Scheduler](https://i.imgur.com/AFUpc94.png)
