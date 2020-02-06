@@ -22,7 +22,6 @@ class SignUp extends React.Component {
     }
 
     handleChange = (event) => {
-        console.log(this.state)
         this.setState({ [event.target.name]: event.target.value, errorMessage: undefined })
     }
 

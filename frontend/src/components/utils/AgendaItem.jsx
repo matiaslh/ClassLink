@@ -67,10 +67,6 @@ export default class ReactAgendaItem extends Component {
         }
     }
 
-    cellClicked = () => {
-        console.log(this.props.item.section)
-    }
-
     componentWillReceiveProps(props, next) {
         setTimeout(function () {
             this.updateDimensions();

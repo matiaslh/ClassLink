@@ -11,7 +11,7 @@ class NormalLoginForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                // console.log('Received values of form: ', values);
             }
         });
         this.props.onSubmit();
@@ -25,64 +25,77 @@ class NormalLoginForm extends React.Component {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <header style={s.header}>{this.props.type}</header>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Form onSubmit={this.handleSubmit} className="login-form">
-                        <Form.Item>
-                            {getFieldDecorator('username', {
-                                rules: [{ required: true, message: 'Please input your username!' }],
-                            })(
-                                <Input
-                                    name="email"
-                                    onChange={this.props.onChange}
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="Email"
-                                />,
-                            )}
-                        </Form.Item>
-                        <Form.Item>
-                            {getFieldDecorator('password', {
-                                rules: [{ required: true, message: 'Please input your Password!' }],
-                            })(
-                                <Input
-                                    name="password"
-                                    onChange={this.props.onChange}
-                                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    type="password"
-                                    placeholder="Password"
-                                />,
-                            )}
-                        </Form.Item>
-                            {
-                                this.props.type === 'Sign Up' &&
-                                <Form.Item>
+                <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'row' }}>
+                    <div style={{ flex: 1, borderRight: '1px solid white', color: 'white', padding: '20px' }}>
+                        <h4 style={{ color: 'white' }}>Welcome to ClassLink!</h4>
+                        <p>ClassLink is made specially for University of Guelph students.</p>
+                        <ul style={{ textAlign: 'left' }}>
+                            <li>If you are trying to get into a course that is full, just sign up and add that course to your watch list to get an email when there's an available spot!</li>
+                            <li>You can add unlimited courses and sections to your watch list and you will be notified ASAP! No need to be checking WebAdvisor every 5 minutes anymore!</li>
+                            <li>If you are trying to create a schedule for next semester, you can use ClassLink to add any courses you want to take and select the most preferable Schedule using our tool!</li>
+                        </ul>
+                    </div>
+                    <div style={{ flex: 1, padding: '20px' }}>
+                        <Form onSubmit={this.handleSubmit} className="login-form">
+                            <Form.Item>
+                                {getFieldDecorator('username', {
+                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                })(
                                     <Input
-                                        name="confirmPassword"
+                                        name="email"
+                                        onChange={this.props.onChange}
+                                        prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                        placeholder="Email"
+                                    />,
+                                )}
+                            </Form.Item>
+                            <Form.Item>
+                                {getFieldDecorator('password', {
+                                    rules: [{ required: true, message: 'Please input your Password!' }],
+                                })(
+                                    <Input
+                                        name="password"
                                         onChange={this.props.onChange}
                                         prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                         type="password"
-                                        placeholder="Confirm Password"
-                                    />
-                                </Form.Item>
-                            }
-                        <Form.Item>
-                            {getFieldDecorator('remember', {
-                                valuePropName: 'checked',
-                                initialValue: true,
-                            })(<Checkbox style={s.remember}>Remember me</Checkbox>)}
-                            <a style={s.font} className="login-form-forgot" href="">
-                                Forgot password
-                </a>
-                            <Button style={s.button} type="primary" htmlType="submit" className="login-form-button">
-                                {this.props.type}
-                            </Button>
-                            <a style={s.font} href={this.props.type === 'Sign Up'? "/login" : "/" }>
-                                {this.props.type === 'Sign Up' ? 'Already registered? Login Now!' : 'New to ClassLink? Register Now!' }
-                            </a>
-                        </Form.Item>
-                        <div style={s.errorText}>
-                            {this.props.errorMessage}
-                        </div>
-                    </Form>
+                                        placeholder="Password"
+                                        onKeyPress={(event) => {if (event.key === 'Enter') this.handleSubmit(event)} }
+                                        />
+                                )}
+                            </Form.Item>
+                                {
+                                    this.props.type === 'Sign Up' &&
+                                    <Form.Item>
+                                        <Input
+                                            name="confirmPassword"
+                                            onChange={this.props.onChange}
+                                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                            type="password"
+                                            placeholder="Confirm Password"
+                                            onKeyPress={(event) => {if (event.key === 'Enter') this.handleSubmit(event)} }
+                                        />
+                                    </Form.Item>
+                                }
+                            <Form.Item>
+                                {getFieldDecorator('remember', {
+                                    valuePropName: 'checked',
+                                    initialValue: true,
+                                })(<Checkbox style={s.remember}>Remember me</Checkbox>)}
+                                <a style={s.font} className="login-form-forgot" href="">
+                                    Forgot password
+                                </a>
+                                <Button style={s.button} type="primary" htmlType="submit" className="login-form-button">
+                                    {this.props.type}
+                                </Button>
+                                <a style={s.font} href={this.props.type === 'Sign Up'? "/login" : "/" }>
+                                    {this.props.type === 'Sign Up' ? 'Already registered? Login Now!' : 'New to ClassLink? Register Now!' }
+                                </a>
+                            </Form.Item>
+                            <div style={s.errorText}>
+                                {this.props.errorMessage}
+                            </div>
+                        </Form>
+                    </div>
                 </div>
             </div>
         );
