@@ -7,19 +7,31 @@ const uniqueValidator = require('mongoose-unique-validator');
 const firebase = require('firebase-admin');
 const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer-smtp-transport');
+const dotenv = require('dotenv');
+
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+// Set environment variables
+dotenv.config();
 mongoose.set('debug', false);
+
+if(!process.env.GMAIL_USER || !process.env.GMAIL_PASS){
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+    console.log('YOU HAVE NO .ENV FILE WITH GMAIL CREDENTIALS, YOU ARE AN IDIOT')
+}
 
 // Generate test SMTP service account from ethereal.email
 var transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
     auth: {
-        user: 'notifymeguelph@gmail.com',
-        pass: 'uoguelphnotifyme**'
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
     }
 }));
 
@@ -119,23 +131,38 @@ mongoose.connect(dbConnection, { useNewUrlParser: true, useFindAndModify: false,
 
 async function callRequests(user) {
 
-    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0 || !user.data.fcm_tokens || user.data.fcm_tokens.length <= 0) {
+    if (!user.data || !user.data.criteria || user.data.criteria.length <= 0) {
         return
     }
 
-    let courses = await Course.find({ $or: user.data.criteria })
+    let matches = []
+    
+    let newCriteria = []
+    let history = user.data.history ? user.data.history : []
+    let fcm_tokens = _.without(user.data.fcm_tokens, null, undefined, "")
 
-    let openCourses = _.filter(courses, course => course.available > 0)
-    if (openCourses.length > 0) {
-        let titles = _.pluck(openCourses, 'title')
-        let fcm_tokens = _.without(user.data.fcm_tokens, null, undefined, "")
-        contact(titles, fcm_tokens, user.email)
-        let history = user.data.history ? user.data.history : []
-        history.push(user.data.criteria)
+
+    for(let criteria of user.data.criteria){
+        let courses = await Course.find(criteria)
+        let openCourses = _.filter(courses, course => course.available > 0)
+        if(openCourses.length > 0){
+
+            matches.push({criteria, courses, openCourses})
+            history.push(criteria)
+
+            let titles = _.pluck(openCourses, 'title')
+            contact(titles, fcm_tokens, user.email)
+
+        } else {
+            newCriteria.push(criteria)
+        }
+    }
+
+    if (matches.length > 0) {
         user.data = {
             fcm_tokens,
             history,
-            criteria: []
+            criteria: newCriteria
         }
         user.markModified('data')
         user.save()

@@ -16,10 +16,10 @@ export default class Router extends React.Component {
                     <Header />
                     <Switch>
                         <Route exact path="/" render={() => (
-                            <SignUp />
-                        )} />
-                        <Route path="/login" render={() => (
                             <Login />
+                        )} />
+                        <Route path="/signup" render={() => (
+                            <SignUp />
                         )} />
                         <Route path="/notify" render={() => (
                             <Notify />

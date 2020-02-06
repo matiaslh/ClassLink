@@ -1,7 +1,10 @@
-# GuelphCourseReminder
-Get into any guelph course as soon as it is open
+# ClassLink
+Get into any guelph course as soon as it is open. View every combination of non-overlapping schedules possible for you!
 
-Sign up [here](https://notifymeguelph.xyz/)
+Sign up at [notifymeguelph.xyz](https://notifymeguelph.xyz/)
+
+![Login Page](https://i.imgur.com/k1Sap9v.png)
+![Scheduler](https://i.imgur.com/AFUpc94.png)
 
 ### TODO
 - [x] Fix login button
@@ -23,6 +26,9 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [x] Lectures that are 50 mins long shows as 1h on the schedule
 - [x] Make agenda items clickable
 - [x] Remove unneeded small red description on items
+- [x] Logo done
+- [x] History for notify me main page of previous searches
+- [x] Make login the default page instead of sign up
 
 - [ ] Scheduler frontend
 - [ ] Save favourite schedules
@@ -34,12 +40,9 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Ant search
 
 - [ ] Responsive design for all pages
-- [ ] Logo?
 - [ ] Login and signup page write up
-- [ ] History for notify me main page of previous searches
 - [ ] Creation timestamp and status finished and update timestap to each record in db.
 - [ ] Show last check for last time api searched webadvisor
-- [ ] Make login the default page instead of sign up?
 - [ ] Account page in frontend to change password/email/prefs
 - [ ] Forgot password feature
 - [ ] Mobile UI update
@@ -52,3 +55,38 @@ Sign up [here](https://notifymeguelph.xyz/)
 - [ ] Textbook marketplace
 
 > classlink.ca is available
+
+### Setup
+- Environment variables:
+
+    ClassLink/api/.env must contain:
+
+        GMAIL_USER=<account email>
+        GMAIL_PASS=<account password>
+    
+    ClassLink/auth/.env must contain:
+        
+        # MongoDB connection
+        MONGO_URI = mongodb://mongo:27017/auth
+        
+        # Mongo connection for courses DB
+        MONGO_URI_COURSES = mongodb://mongo:27017/courses
+
+        # Email credentials for forgotten password email reset
+        EMAIL_ADDRESS = <email>
+        EMAIL_PASSWORD = <password>
+
+        # Secrets for JWT and Express-Session.
+        # Secrets should be a random, private string.
+        JWT_SECRET = <secret>
+        SESSION_SECRET = <secret>
+
+        
+    ClassLink/frontend/.env must contain:
+        
+        REACT_APP_HOST=notifymeguelph.xyz
+        REACT_APP_PROTOCOL=https://
+
+- Service Account JSON:
+
+    ClassLink/api/serviceAccount.json must contain the firebase private keys and other info.

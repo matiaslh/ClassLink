@@ -56,13 +56,14 @@ router.get("/user", ensureAuthenticated, (req: Request, res: Response) => {
   sendResponse(user, 200, res);
 });
 
-/*
+
 router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
   const { data, email } = req.body;
+  const user: any = req.user;
   if (!data && !email) return res.redirect('/redirect/missingFieldError');
-  req.user.data = data ? data : req.user.data;
-  req.user.email = email ? email : req.user.email;
-  req.user.save()
+  user.data = data ? data : user.data;
+  user.email = email ? email : user.email;
+  user.save()
     .then((user: userModel) => {
       sendResponse('Successfully updated user.', 200, res);
     })
@@ -72,7 +73,8 @@ router.put('/user', ensureAuthenticated, (req: Request, res: Response) => {
 });
 
 router.delete("/user", ensureAuthenticated, (req: Request, res: Response) => {
-  User.findByIdAndDelete({ _id: req.user.id })
+  const user: any = req.user;
+  User.findByIdAndDelete({ _id: user.id })
     .then((user: userModel) => {
       sendResponse("Successfully deleted user.", 200, res);
     })
@@ -80,6 +82,5 @@ router.delete("/user", ensureAuthenticated, (req: Request, res: Response) => {
       sendResponse(err, 500, res);
     });
 });
-*/
 
 export const profileRouter: Router = router;

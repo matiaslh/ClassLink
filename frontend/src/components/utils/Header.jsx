@@ -27,13 +27,13 @@ class Header extends React.Component {
         let isLoggedIn = requests.isLoggedIn()
 
         if (this.props.location.pathname === '/') {
-            button = <NavLink style={styles.font} href='/login'>Log In</NavLink>
-        } else if (this.props.location.pathname === '/login') {
-            button = <NavLink style={styles.font} href='/'>Sign Up</NavLink>
+            button = <NavLink style={styles.font} href='/signup'>Sign Up</NavLink>
+        } else if (this.props.location.pathname === '/signup') {
+            button = <NavLink style={styles.font} href='/'>Log In</NavLink>
         } else if (isLoggedIn) {
-            button = <NavLink style={styles.font} href='/login' onClick={this.handleLogout}>Log Out</NavLink>
+            button = <NavLink style={styles.font} href='/' onClick={this.handleLogout}>Log Out</NavLink>
         } else {
-            button = <NavLink style={styles.font} href='/login'>Log In</NavLink>
+            button = <NavLink style={styles.font} href='/'>Log In</NavLink>
         } 
 
         return (

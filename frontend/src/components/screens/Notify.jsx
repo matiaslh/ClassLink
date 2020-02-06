@@ -40,7 +40,7 @@ class Notify extends React.Component {
                 this.state.userLoaded = true
                 this.forceUpdate()
             } else {
-                props.history.push('/login')
+                props.history.push('/')
             }
         })
     }
@@ -97,7 +97,8 @@ class Notify extends React.Component {
             let user = response.info
             let body = {
                 data: {
-                    fcm_tokens: user.data.fcm_tokens ? user.data.fcm_tokens : [],
+                    fcm_tokens: user.data && user.data.fcm_tokens ? user.data.fcm_tokens : [],
+                    history: user.data && user.data.history ? user.data.history : [],
                     criteria
                 }
             }
@@ -108,7 +109,7 @@ class Notify extends React.Component {
                 openNotification('Error', message.info)
             }
         } else {
-            this.props.history.push('/login')
+            this.props.history.push('/')
         }
     }
 
