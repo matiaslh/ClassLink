@@ -19,7 +19,7 @@
   "dependencies": {
     "firebase-admin": "^8.2.0",
     "jsdom": "^15.1.1",
-    "mongoose": "^5.6.1",
+    "mongoose": "^5.7.5",
     "mongoose-unique-validator": "^2.0.3",
     "nodemailer": "^6.3.0",
     "nodemailer-smtp-transport": "^2.7.4",
